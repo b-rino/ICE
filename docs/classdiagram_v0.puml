@@ -1,0 +1,94 @@
+@startuml
+!pragma layout smetana
+
+class Main{
++ static void main(String[] args)
+
+}
+
+class Media{
+- String title
+- int year
+- String category
+- float rating
++Media(String title, int year, String category, float rating)
+
+}
+
+class MediaClient{
+-TextUI ui
+-FileIO io
+-List<Media> mediaList
+-User currentUser;
++MediaClient(User currentUser)
++void displayMenu()
++searchByCategory()
++searchByTitle()
++addToWatchAgain()
++addToWatchLater()
++displayWatchAgain()
++displayWatchLater()
+}
+
+
+class User{
+-String pathWatchAgain;
+-String pathWatchLater;
+-String username
+-String password
++User(String username, String password)
++getUsername()
++getPassword()
++getPathWatchAgain();
++getPathWatchLater();
+}
+
+
+class Movie{
+
++ Movie(String title, int releaseYear, String category, float rating)
+}
+
+class Series{
+- int episodes
+- int seasons
++Series(String title, int year, String category, float rating, int episodes)
+}
+
+
+class UserClient{
+-TextUI ui
+-FileIO io
+-List<User> users
++login()
+}
+
+
+package "util" {
+class TextUI{
+- Scanner scanner
+
++void displayMsg(String s)
++int promptNumeric(String msg)
++String promptText(String msg)
+}
+
+class FileIO{
++List<User> readUserData(String path, User user)
++void saveUserData(User user, String path, String Header)
++List<Media> readMediaData(String path, User user)
++void saveMediaData(Media media, String path, String Header)
+}
+}
+
+
+Media<|--Series
+Media <|-- Movie
+Main *-- MediaClient
+MediaClient *-- "util"
+MediaClient -- Media
+Main *-- UserClient
+UserClient -- User
+UserClient *--"util"
+
+@enduml

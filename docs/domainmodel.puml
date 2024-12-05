@@ -1,0 +1,23 @@
+@startuml
+!pragma layout smetana
+
+object MediaClient
+object Media
+object Series
+object Movie
+object User
+
+
+
+
+MediaClient*-- User
+MediaClient *-- Media
+
+Media <|--"100" Movie
+Media <|--"100" Series
+
+
+
+
+
+@enduml
