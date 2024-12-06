@@ -21,12 +21,35 @@ public class Media {
         return category;
     }
 
+    public int getReleaseYear() {
+        return releaseYear;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
     @Override
     public String toString() {
         return title + "; " + releaseYear + "; " + category +"; " + rating;
     }
 
-    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;

@@ -60,27 +60,29 @@ public class DBConnector {
     }
 
     public List<Media> readMediaData() {
-        String sql = "SELECT * FROM Media";
+        String movieSql = "SELECT movie_id AS ID, title, releaseYear, category, rating, 'movie' AS type FROM Movies";
+        String seriesSql = "SELECT series_id AS id, title, releaseYear, category, rating, 'series' AS type FROM Series";
+        String sql = movieSql + " UNION ALL " + seriesSql;
         List<Media> mediaList = new ArrayList<>();
 
-        try (Connection conn = this.connect() ;
+        try (Connection conn = this.connect();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(sql)){
 
             while (rs.next()) {
                 String title = rs.getString("title");
-                int year = rs.getInt("year");
+                int releaseYear = rs.getInt("releaseYear");
                 String category = rs.getString("category");
                 float rating = rs.getFloat("rating");
                 String type = rs.getString("type");
 
                 if (type.equals("movie")) {
-                    Movie movie = new Movie(title, year, category, rating);
+                    Movie movie = new Movie(title, releaseYear, category, rating);
                     mediaList.add(movie);
                 } else if (type.equals("series")) {
                     int season = rs.getInt("season");
                     int episode = rs.getInt("episode");
-                    Series series = new Series(title, year, category, rating, season, episode);
+                    Series series = new Series(title, releaseYear, category, rating, season, episode);
                     mediaList.add(series);
 
                 }
@@ -92,28 +94,31 @@ public class DBConnector {
         }
 
     public void saveMediaData(Media media) {
-        String sql = "INSERT INTO Media (title, year, category, rating, season, episode, type) VALUES (?,?,?,?,?,?,?)";
+        String movieSql = "INSERT INTO Movies (title, releaseYear, category, rating, type) VALUES (?,?,?,?, 'movie')";
+        String seriesSql = "INSERT INTO Series (title, releaseYear, category, rating, season, episode, type) VALUES (?, ?, ?, ?, ?, ?, 'series')";
 
-        try(Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql)){
-                pstmt.setString(1, media.getTitle());
-                pstmt.setInt(2, media.getReleaseYear());
-                pstmt.setString(3, media.getCategory());
-                pstmt.setFloat(4, media.getRating());
-
-                if(media instanceof Movie){
-                    pstmt.setNull(5, java.sql.Types.INTEGER);
-                    pstmt.setNull((6, java.sql.Types.INTEGER);
-                    pstmt.setString(7, "movie");
-
-                }else if(media instanceof Series){
+        try (Connection conn = this.connect()) {
+            if (media instanceof Movie) {
+                try (PreparedStatement pstmt = conn.prepareStatement(movieSql)) {
+                    pstmt.setString(1, media.getTitle());
+                    pstmt.setInt(2, media.getReleaseYear());
+                    pstmt.setString(3, media.getCategory());
+                    pstmt.setFloat(4, media.getRating());
+                    pstmt.executeUpdate();
+                }
+            } else if (media instanceof Series) {
+                try (PreparedStatement pstmt = conn.prepareStatement(seriesSql)) {
                     Series series = (Series) media;
+                    pstmt.setString(1, media.getTitle());
+                    pstmt.setInt(2, media.getReleaseYear());
+                    pstmt.setString(3, media.getCategory());
+                    pstmt.setFloat(4, media.getRating());
                     pstmt.setInt(5, series.getSeasons());
                     pstmt.setInt(6, series.getEpisodes());
-                    pstmt.setString(7, "series");
+                    pstmt.executeUpdate();
+                }
             }
-                pstmt.executeUpdate();
-        }catch(SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
