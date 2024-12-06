@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 
 public class UserClient {
+
+    
     public ArrayList<String> selectUsers() {
         // initialize a List to return the selected data as string elements
         ArrayList<String> data = new ArrayList<>();
