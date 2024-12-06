@@ -1,3 +1,4 @@
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -7,7 +8,8 @@ import java.util.Scanner;
 
 public class UserClient {
 
-    
+    DBConnector dbConnector = new DBConnector();
+
     public ArrayList<String> selectUsers() {
         // initialize a List to return the selected data as string elements
         ArrayList<String> data = new ArrayList<>();
@@ -15,6 +17,7 @@ public class UserClient {
         String sql = "SELECT Username, PhoneNumber, Password, Email FROM Users";
 
         try {
+            Connection conn = dbConnector.connect();
             Statement stmt = conn.createStatement();
 
             // execute the query
@@ -51,7 +54,8 @@ public class UserClient {
 
         String sql = "INSERT INTO Users (Username, PhoneNumber, Password, Email) VALUES ('" + Username + "', '" + PhoneNumber + "', '" + Password + "', '" + Email + "')";
 
-        try (Statement stmt = conn.createStatement()) {
+        try (   Connection conn = dbConnector.connect();
+                Statement stmt = conn.createStatement()) {
             int rowsAffected = stmt.executeUpdate(sql);
             System.out.println(rowsAffected + " row(s) inserted.");
         }

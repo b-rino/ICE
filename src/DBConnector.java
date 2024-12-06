@@ -14,7 +14,7 @@ public class DBConnector {
 
     private static final String URL = "jdbc:sqlite:Blogbuster.db";
 
-    private Connection connect() {
+        public Connection connect() {
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(URL);
@@ -59,11 +59,11 @@ public class DBConnector {
 
     }
 
-    public List<Media> readMediaData() {
-        String movieSql = "SELECT movie_id AS ID, title, releaseYear, category, rating, 'movie' AS type FROM Movies";
-        String seriesSql = "SELECT series_id AS id, title, releaseYear, category, rating, 'series' AS type FROM Series";
+    public List<MediaItem> readMediaData() {
+        String movieSql = "SELECT title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'movie' AS type FROM Movies";
+        String seriesSql = "SELECT title, releaseYear, category, rating, season, episode, 'series' AS type FROM Series";
         String sql = movieSql + " UNION ALL " + seriesSql;
-        List<Media> mediaList = new ArrayList<>();
+        List<MediaItem> mediaList = new ArrayList<>();
 
         try (Connection conn = this.connect();
         Statement stmt = conn.createStatement();
@@ -79,7 +79,8 @@ public class DBConnector {
                 if (type.equals("movie")) {
                     Movie movie = new Movie(title, releaseYear, category, rating);
                     mediaList.add(movie);
-                } else if (type.equals("series")) {
+                }
+                if (type.equals("series")) {
                     int season = rs.getInt("season");
                     int episode = rs.getInt("episode");
                     Series series = new Series(title, releaseYear, category, rating, season, episode);
@@ -93,7 +94,7 @@ public class DBConnector {
             return mediaList;
         }
 
-    public void saveMediaData(Media media) {
+    public void saveMediaData(MediaItem media) {
         String movieSql = "INSERT INTO Movies (title, releaseYear, category, rating, type) VALUES (?,?,?,?, 'movie')";
         String seriesSql = "INSERT INTO Series (title, releaseYear, category, rating, season, episode, type) VALUES (?, ?, ?, ?, ?, ?, 'series')";
 
