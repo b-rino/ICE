@@ -1,12 +1,12 @@
 import java.util.Objects;
 
-public class Media {
+    public class MediaItem {
     private String title;
     private int releaseYear;
     private String category;
     private float rating;
 
-    public Media(String title, int releaseYear, String category, float rating) {
+    public MediaItem(String title, int releaseYear, String category, float rating) {
         this.title = title;
         this.releaseYear = releaseYear;
         this.category = category;
@@ -47,13 +47,13 @@ public class Media {
 
     @Override
     public String toString() {
-        return title + "; " + releaseYear + "; " + category +"; " + rating;
+        return "Title: " + title + ", Year: " + releaseYear + ", Category: " + category + ", Rating: " + rating;
     }
 
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        Media media = (Media) obj;
+        MediaItem media = (MediaItem) obj;
         return Objects.equals(title, media.title);
     }
 

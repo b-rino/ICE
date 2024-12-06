@@ -1,4 +1,4 @@
-public class Series extends Media {
+public class Series extends MediaItem {
 
     private int season;
     private int episode;
@@ -23,5 +23,10 @@ public class Series extends Media {
 
     public void setEpisode(int episode) {
         this.episode = episode;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " Season: " + season + " Episode: " + episode;
     }
 }
