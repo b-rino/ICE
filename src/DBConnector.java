@@ -42,6 +42,7 @@ public class DBConnector {
 
     public void createUser() {
         Scanner scanner = new Scanner(System.in);
+        // TODO: TextUI implemented and used here instead of scanner
         System.out.println("Please enter your username: ");
         String Username = scanner.nextLine();
 
