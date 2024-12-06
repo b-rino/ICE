@@ -1,7 +1,7 @@
 @startuml
 !pragma layout smetana
 
-class Main{
+class BlogBuster{
 + static void main(String[] args)
 
 }
@@ -17,7 +17,7 @@ class Media{
 
 class MediaClient{
 -TextUI ui
--FileIO io
+-DBConnector dbc
 -List<Media> mediaList
 -User currentUser;
 +MediaClient(User currentUser)
@@ -55,10 +55,16 @@ class Series{
 +Series(String title, int year, String category, float rating, int episodes)
 }
 
+class Games{
+- String studio
+- String platform
++ Games(String title, int releaseYear, String category, float rating, String studio, String platform)
+}
+
 
 class UserClient{
 -TextUI ui
--FileIO io
+-DBConnector dbc
 -List<User> users
 +login()
 }
@@ -67,13 +73,16 @@ class UserClient{
 package "util" {
 class TextUI{
 - Scanner scanner
-
 +void displayMsg(String s)
 +int promptNumeric(String msg)
 +String promptText(String msg)
 }
+}
 
-class FileIO{
+package "mapper" {
+class DBConnector{
+- Connection conn
++ connect(String url)
 +List<User> readUserData(String path, User user)
 +void saveUserData(User user, String path, String Header)
 +List<Media> readMediaData(String path, User user)
@@ -84,11 +93,14 @@ class FileIO{
 
 Media<|--Series
 Media <|-- Movie
-Main *-- MediaClient
+BlogBuster *-- MediaClient
 MediaClient *-- "util"
 MediaClient -- Media
-Main *-- UserClient
+BlogBuster *-- UserClient
 UserClient -- User
 UserClient *--"util"
+UserClient *-- "mapper"
+MediaClient *-- "mapper"
+Media <|-- Games
 
 @enduml
