@@ -113,8 +113,8 @@ public class DBConnector {
                     pstmt.setInt(2, media.getReleaseYear());
                     pstmt.setString(3, media.getCategory());
                     pstmt.setFloat(4, media.getRating());
-                    pstmt.setInt(5, series.getSeasons());
-                    pstmt.setInt(6, series.getEpisodes());
+                    pstmt.setInt(5, series.getSeason());
+                    pstmt.setInt(6, series.getEpisode());
                     pstmt.executeUpdate();
                 }
             }
