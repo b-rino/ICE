@@ -1,24 +1,24 @@
 -------------------------------------------------------------------------------
 Test set: DBConnectorTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 3, Errors: 2, Skipped: 0, Time elapsed: 0.161 s <<< FAILURE! - in DBConnectorTest
-DBConnectorTest.testReadUserDataNoUsers  Time elapsed: 0.128 s  <<< FAILURE!
+Tests run: 5, Failures: 3, Errors: 2, Skipped: 0, Time elapsed: 0.156 s <<< FAILURE! - in DBConnectorTest
+DBConnectorTest.testReadUserDataNoUsers  Time elapsed: 0.125 s  <<< FAILURE!
 org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
-	at DBConnectorTest.testReadUserDataNoUsers(DBConnectorTest.java:136)
+	at DBConnectorTest.testReadUserDataNoUsers(DBConnectorTest.java:155)
 
-DBConnectorTest.testReadUserData  Time elapsed: 0.004 s  <<< FAILURE!
-org.opentest4j.AssertionFailedError: expected: <1> but was: <5>
-	at DBConnectorTest.testReadUserData(DBConnectorTest.java:44)
+DBConnectorTest.testReadUserData  Time elapsed: 0.006 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <testUser> but was: <Philip>
+	at DBConnectorTest.testReadUserData(DBConnectorTest.java:65)
 
-DBConnectorTest.testSaveUserData  Time elapsed: 0.005 s  <<< FAILURE!
+DBConnectorTest.testSaveUserData  Time elapsed: 0.003 s  <<< FAILURE!
 org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
-	at DBConnectorTest.testSaveUserData(DBConnectorTest.java:62)
+	at DBConnectorTest.testSaveUserData(DBConnectorTest.java:81)
 
 DBConnectorTest.testSaveMediaData  Time elapsed: 0.006 s  <<< ERROR!
 org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (no such table: Movies)
-	at DBConnectorTest.testSaveMediaData(DBConnectorTest.java:111)
+	at DBConnectorTest.testSaveMediaData(DBConnectorTest.java:130)
 
 DBConnectorTest.testReadMediaData  Time elapsed: 0.002 s  <<< ERROR!
 org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (no such table: Movies)
-	at DBConnectorTest.testReadMediaData(DBConnectorTest.java:75)
+	at DBConnectorTest.testReadMediaData(DBConnectorTest.java:94)
 

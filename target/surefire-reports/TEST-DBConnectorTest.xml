@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="DBConnectorTest" time="0.161" tests="5" errors="2" skipped="0" failures="3">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="DBConnectorTest" time="0.156" tests="5" errors="2" skipped="0" failures="3">
   <properties>
     <property name="java.specification.version" value="23"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/opt/jdk-23/lib"/>
-    <property name="sun.java.command" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter14866823721473799249.jar /home/mikkel/Desktop/Code/ICE/target/surefire 2024-12-08T21-49-42_858-jvmRun1 surefire9447700877155695997tmp surefire_01723230198876409348tmp"/>
+    <property name="sun.java.command" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter10403896675584298758.jar /home/mikkel/Desktop/Code/ICE/target/surefire 2024-12-08T22-13-46_100-jvmRun1 surefire4588021722691171446tmp surefire_015605136347932428310tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/mikkel/Desktop/Code/ICE/target/test-classes:/home/mikkel/Desktop/Code/ICE/target/classes:/home/mikkel/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2.jar:/home/mikkel/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/home/mikkel/.m2/repository/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2.jar:/home/mikkel/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/mikkel/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.2/junit-jupiter-engine-5.8.2.jar:/home/mikkel/.m2/repository/org/junit/platform/junit-platform-engine/1.8.2/junit-platform-engine-1.8.2.jar:/home/mikkel/.m2/repository/org/mockito/mockito-inline/4.8.0/mockito-inline-4.8.0.jar:/home/mikkel/.m2/repository/org/mockito/mockito-core/4.8.0/mockito-core-4.8.0.jar:/home/mikkel/.m2/repository/net/bytebuddy/byte-buddy/1.12.14/byte-buddy-1.12.14.jar:/home/mikkel/.m2/repository/net/bytebuddy/byte-buddy-agent/1.12.14/byte-buddy-agent-1.12.14.jar:/home/mikkel/.m2/repository/org/objenesis/objenesis/3.2/objenesis-3.2.jar:/home/mikkel/.m2/repository/org/xerial/sqlite-jdbc/3.42.0.0/sqlite-jdbc-3.42.0.0.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -28,7 +28,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter14866823721473799249.jar"/>
+    <property name="surefire.real.class.path" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter10403896675584298758.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="23.0.1+11-39"/>
     <property name="user.name" value="mikkel"/>
@@ -54,33 +54,36 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="67.0"/>
   </properties>
-  <testcase name="testReadUserDataNoUsers" classname="DBConnectorTest" time="0.128">
+  <testcase name="testReadUserDataNoUsers" classname="DBConnectorTest" time="0.125">
     <failure type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
-	at DBConnectorTest.testReadUserDataNoUsers(DBConnectorTest.java:136)
+	at DBConnectorTest.testReadUserDataNoUsers(DBConnectorTest.java:155)
 ]]></failure>
   </testcase>
-  <testcase name="testReadUserData" classname="DBConnectorTest" time="0.004">
-    <failure type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: expected: <1> but was: <5>
-	at DBConnectorTest.testReadUserData(DBConnectorTest.java:44)
+  <testcase name="testReadUserData" classname="DBConnectorTest" time="0.006">
+    <failure type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: expected: <testUser> but was: <Philip>
+	at DBConnectorTest.testReadUserData(DBConnectorTest.java:65)
 ]]></failure>
+    <system-out><![CDATA[Table 'Users' exists!
+Number of users with username 'testUser': 1
+]]></system-out>
   </testcase>
-  <testcase name="testSaveUserData" classname="DBConnectorTest" time="0.005">
+  <testcase name="testSaveUserData" classname="DBConnectorTest" time="0.003">
     <failure type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
-	at DBConnectorTest.testSaveUserData(DBConnectorTest.java:62)
+	at DBConnectorTest.testSaveUserData(DBConnectorTest.java:81)
 ]]></failure>
     <system-out><![CDATA[[SQLITE_CONSTRAINT_NOTNULL] A NOT NULL constraint failed (NOT NULL constraint failed: Users.Email)
 ]]></system-out>
   </testcase>
   <testcase name="testSaveMediaData" classname="DBConnectorTest" time="0.006">
     <error type="org.sqlite.SQLiteException"><![CDATA[org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (no such table: Movies)
-	at DBConnectorTest.testSaveMediaData(DBConnectorTest.java:111)
+	at DBConnectorTest.testSaveMediaData(DBConnectorTest.java:130)
 ]]></error>
     <system-out><![CDATA[[SQLITE_CONSTRAINT_UNIQUE] A UNIQUE constraint failed (UNIQUE constraint failed: Series.Title, Series.ReleaseYear)
 ]]></system-out>
   </testcase>
   <testcase name="testReadMediaData" classname="DBConnectorTest" time="0.002">
     <error type="org.sqlite.SQLiteException"><![CDATA[org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (no such table: Movies)
-	at DBConnectorTest.testReadMediaData(DBConnectorTest.java:75)
+	at DBConnectorTest.testReadMediaData(DBConnectorTest.java:94)
 ]]></error>
   </testcase>
 </testsuite>
