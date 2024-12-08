@@ -1,0 +1,9 @@
+Series.class
+MediaClient.class
+Main.class
+User.class
+Movie.class
+TextUI.class
+MediaItem.class
+UserClient.class
+DBConnector.class
