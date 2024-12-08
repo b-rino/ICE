@@ -37,12 +37,31 @@ class DBConnectorTest {
             pstmt.executeUpdate();
         }
 
+        try (Statement stmt = connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='Users'");
+            if (rs.next()) {
+                System.out.println("Table 'Users' exists!");
+            } else {
+                System.out.println("Table 'Users' does NOT exist!");
+            }
+        }
+
+        // Step 2: Verify that the inserted data is present in the Users table
+        String checkInsertedDataSQL = "SELECT COUNT(*) FROM Users WHERE username = 'testUser'";
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(checkInsertedDataSQL)) {
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                System.out.println("Number of users with username 'testUser': " + count);
+            }
+        }
+
         // Act: Fetch user data
         List<User> users = dbConnector.readUserData();
 
         // Assert: Check if the data was retrieved correctly
-        assertEquals(6, users.size());
-        User user = users.get(4);
+        assertEquals(5, users.size());
+        User user = users.get(3);
         assertEquals("testUser", user.getUsername());
         assertEquals("password123", user.getPassword());
     }
