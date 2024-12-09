@@ -87,12 +87,13 @@ public class MediaClient {
 
     }
 
+    //Der skal tilføjes så den købte film bliver lagt i en liste over "ejede medier" og måske også en mulighed for at gemme den til senere køb??
     public void buyMedia(List<MediaItem> mediaOptions) {
         int mediaOption = ui.promptNumeric("Please pick a media option");
 
         if (mediaOption > 0 && mediaOption <= mediaOptions.size()) {
             MediaItem selectedMedia = mediaOptions.get(mediaOption - 1);
-            String confirmation = ui.promptText("Do you want to buy " + selectedMedia + " for 30dkk or 1 punch? (Y/N)");
+            String confirmation = ui.promptText("Do you want to buy \"" + selectedMedia.getTitle() + "\" for 30dkk or 1 punch? (Y/N)");
 
             if (confirmation.equalsIgnoreCase("Y")) {
                 int payMethod = ui.promptNumeric("How do you want to pay?\n1. Account Wallet\n2. Punch card\n3. Go back to main menu");
