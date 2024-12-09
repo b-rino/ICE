@@ -115,4 +115,46 @@ public class UserClient {
         }
         return null;
     }
+
+    public void addFunds(){
+        dbConnector.connect();
+    }
+
+    public void displayAccount(){
+        System.out.println("ACCOUNT INFORMATION\n");
+        MediaClient mediaClient = new MediaClient();
+        ArrayList<String> accountOptions = new ArrayList<>();
+        accountOptions.add("1. Add funds");
+        accountOptions.add("2. Buy membership");
+        accountOptions.add("3. Return to main menu");
+        accountOptions.add("4. Delete account");
+
+        for (int i = 0; i < accountOptions.size(); i++) {
+            System.out.println(accountOptions.get(i));
+        }
+
+        int answer = ui.promptNumeric("Please choose a number ");
+
+        switch (answer) {
+            case 1:
+                addFunds();
+                break;
+            case 2:
+
+                break;
+            case 3:
+                mediaClient.displayMenu();
+                break;
+            case 4:
+                deleteAccount();
+                break;
+            default:
+                System.out.println("Invalid choice - please choose a number between 1 and 4");
+                displayAccount();
+                break;
+        }
+    }
+
+    public void deleteAccount(){
+    }
 }

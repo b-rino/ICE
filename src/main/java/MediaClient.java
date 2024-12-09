@@ -3,8 +3,9 @@ import java.util.Scanner;
 
 public class MediaClient {
     private DBConnector dbc = new DBConnector();
-    private TextUI textUI = new TextUI();
+    private TextUI ui = new TextUI();
     private User currentUser;
+
     public MediaClient(User currentUser){
         this.currentUser = currentUser;
         System.out.println("Current User is " + currentUser);
@@ -18,6 +19,7 @@ public class MediaClient {
         options.add("2. See History: ");
         options.add("3. Display Favorites: ");
         options.add("4. Account Information");
+        options.add("5. Exit");
 
         for (int i = 0; i < options.size(); i++){
             System.out.println(options.get(i));
@@ -36,10 +38,15 @@ public class MediaClient {
                 System.out.println("FAVORITES");
                 break;
             case 4:
-                System.out.println("ACCOUNT INFORMATION");
+                UserClient userClient = new UserClient();
+                userClient.displayAccount();
+                break;
+            case 5:
+                System.out.println("Thank you for using BlogBuster");
+                System.exit(0);
                 break;
             default:
-                System.out.println("Invalid choice. Please enter a number from the displayed options.");
-        }
+                System.out.println("Invalid choice - please choose a number between 1 and 4");
+                displayMenu();        }
     }
 }

@@ -1,7 +1,7 @@
 @startuml
 !pragma layout smetana
 
-class BlogBuster{
+class Main{
 + static void main(String[] args)
 
 }
@@ -93,10 +93,10 @@ class DBConnector{
 
 Media<|--Series
 Media <|-- Movie
-BlogBuster *-- MediaClient
+Main *-- MediaClient
 MediaClient *-- "util"
 MediaClient -- Media
-BlogBuster *-- UserClient
+Main *-- UserClient
 UserClient -- User
 UserClient *--"util"
 UserClient *-- "mapper"
