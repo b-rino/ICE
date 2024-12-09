@@ -209,7 +209,7 @@ public class DBConnector {
         return membership;
     }
 
-    public void updateUserPunchcard(User user, String username, int punchcard) {
+    public void updateUserPunchcard(User user, int punchcard) {
         String sql = "UPDATE Users SET punchcard = ? WHERE username = ?";
 
         try (Connection conn = this.connect();

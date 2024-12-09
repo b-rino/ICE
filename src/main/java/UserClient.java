@@ -197,7 +197,7 @@ public class UserClient {
             if (dbConnector.getUserBalance(currentUser.getUsername()) >= 200 && dbConnector.getUserMembership(currentUser.getUsername()) == 0) {
                 ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership");
                 dbConnector.updateUserBalance(currentUser, 200, true);
-                dbConnector.updateUserPunchcard(currentUser, currentUser.getUsername(), 10);
+                dbConnector.updateUserPunchcard(currentUser, 10);
                 dbConnector.updateUserMembership(currentUser, currentUser.getUsername(), 1);
                 mc.displayMenu();
             }
