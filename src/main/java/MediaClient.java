@@ -1,8 +1,9 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MediaClient {
-    private DBConnector dbc = new DBConnector();
+    private DBConnector DBConnector = new DBConnector();
     private TextUI ui = new TextUI();
     private User currentUser;
 
@@ -30,7 +31,7 @@ public class MediaClient {
 
         switch (choice){
             case 1:
-                ui.displayMsg("Browsing All Media");
+                displayMedia();
                 break;
             case 2:
                 System.out.println("HISTORY");
@@ -52,7 +53,41 @@ public class MediaClient {
     }
 
     public void displayMedia(){
-        ArrayList<String> mediaOptions = new ArrayList<>();
+        List<MediaItem> mediaOptions = new ArrayList<>();
+
+        int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n3.Browse All");
+
+        switch (answer){
+            case 1:
+                ui.displayMsg("Browsing All Movies");
+                mediaOptions = DBConnector.readMediaData("movie");
+                for(int i = 0; i < mediaOptions.size(); i++){
+                    ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
+                }
+                displayMenu();
+                break;
+            case 2:
+                ui.displayMsg("Browsing All Series");
+                mediaOptions = DBConnector.readMediaData("series");
+                for(int i = 0; i < mediaOptions.size(); i++){
+                    ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
+                }
+                displayMenu();
+                break;
+            case 3:
+                ui.displayMsg("Browsing All Media");
+                mediaOptions = DBConnector.readMediaData("combi");
+                for(int i = 0; i < mediaOptions.size(); i++){
+                    ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
+                }
+                displayMenu();
+                break;
+        }
+
+    }
+
+    public void buyMedia(){
+        int mediaOption = ui.promptNumeric("Please pick a media option");
 
     }
 }
