@@ -30,7 +30,7 @@ public class User {
 
     public int getBalance(){return balance;}
 
-    public int setBalance(int balance) {
+    public void setBalance(int balance) {
         this.balance = balance;
     }
 

@@ -41,12 +41,10 @@ public class UserClient {
         scanner.nextLine(); // Consume newline
 
         if (choice == 1) {
-            currentUser = login();
-            return login(); // Perform login and return the logged-in user
+            return currentUser = login(); // Perform login and return the logged-in user
         } else if (choice == 2) {
             createUser();
-            currentUser = login();
-            return login(); // Log in the new user
+            return currentUser = login();
         } else {
             System.out.println("Invalid choice.");
             return loginMenu();
@@ -120,10 +118,27 @@ public class UserClient {
     }
 
     public void addFunds(){
-        dbConnector.connect();
+        int amount = ui.promptNumeric("How much do you want to add");
+        String sql = "UPDATE Users SET balance = balance + ? WHERE username = ?";
+        try (Connection conn = dbConnector.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, amount);
+            pstmt.setString(2, currentUser.getUsername());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Successfully added " + amount + " funds.");
+            }
+            else {
+                System.out.println("Failed to add " + amount + " funds.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void displayAccount(){
+        public void displayAccount(){
         System.out.println("ACCOUNT INFORMATION\n");
         MediaClient mediaClient = new MediaClient(currentUser);
         ArrayList<String> accountOptions = new ArrayList<>();
