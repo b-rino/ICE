@@ -14,7 +14,7 @@ public class DBConnector {
 
     private static final String URL = "jdbc:sqlite:Blogbuster.db";
 
-        public Connection connect() {
+    public Connection connect() {
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(URL);
@@ -35,7 +35,9 @@ public class DBConnector {
             while (rs.next()) {
                 String username = rs.getString("username");
                 String password = rs.getString("password");
-                User user = new User(username, password);
+                String email = rs.getString("email");
+                int phoneNumber = rs.getInt("phoneNumber");
+                User user = new User(username, password,email,phoneNumber);
                 userData.add(user);
             }
         } catch (SQLException e) {
@@ -66,8 +68,8 @@ public class DBConnector {
         List<MediaItem> mediaList = new ArrayList<>();
 
         try (Connection conn = this.connect();
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery(sql)){
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)){
 
             while (rs.next()) {
                 String title = rs.getString("title");
@@ -91,8 +93,8 @@ public class DBConnector {
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
-            return mediaList;
-        }
+        return mediaList;
+    }
 
     public void saveMediaData(MediaItem media) {
         String movieSql = "INSERT INTO Movies (title, releaseYear, category, rating, type) VALUES (?,?,?,?, 'movie')";

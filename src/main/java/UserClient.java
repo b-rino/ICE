@@ -1,14 +1,11 @@
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 
 public class UserClient {
 
     DBConnector dbConnector = new DBConnector();
+    private TextUI ui = new TextUI();
 
     public ArrayList<String> selectUsers() {
         // initialize a List to return the selected data as string elements
@@ -34,6 +31,24 @@ public class UserClient {
         }
         return data;
     }
+    public User loginMenu() {
+        System.out.println("Welcome to BlogBuster. Please create an account or log in.");
+        System.out.println("1. Log in\n2. Create Account");
+
+        Scanner scanner = new Scanner(System.in);
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // Consume newline
+
+        if (choice == 1) {
+            return login(); // Perform login and return the logged-in user
+        } else if (choice == 2) {
+            createUser();
+            return login(); // Log in the new user
+        } else {
+            System.out.println("Invalid choice.");
+            return loginMenu();
+        }
+    }
 
     public void createUser() {
         Scanner scanner = new Scanner(System.in);
@@ -43,7 +58,7 @@ public class UserClient {
 
         System.out.println("Please enter your phonenumber: ");
         int PhoneNumber = scanner.nextInt();
-        scanner.nextLine(); // Clear the newline character from the buffer
+        scanner.nextLine(); // Clear the newline
 
 
         System.out.println("Please enter your password: ");
@@ -58,9 +73,46 @@ public class UserClient {
                 Statement stmt = conn.createStatement()) {
             int rowsAffected = stmt.executeUpdate(sql);
             System.out.println(rowsAffected + " row(s) inserted.");
+            System.out.println("Account Created!");
         }
         catch (SQLException e) {
             System.out.println("Error inserting player: " + e.getMessage());
         }
+    }
+    public User login(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter your username: ");
+        String username = scanner.nextLine();
+
+        System.out.println("Please enter your password: ");
+        String password = scanner.nextLine();
+
+        String sql = "SELECT * FROM Users WHERE username = ? AND password = ?"; //Finding the table in Users where "username" and "password" match what the user inputs. The "?" tells the database we will find the value later
+
+        try (   Connection conn = dbConnector.connect();
+                PreparedStatement pstm = conn.prepareStatement(sql)) { //PreparedStatement allows the database to pre-compile the query structure, and it knows that the "?" are placeholders.
+
+            pstm.setString(1, username); //Here, with the "setString" method, we tell the database to take the value of the variable "username" and place it in for the first "?" in the query
+            pstm.setString(2, password);
+
+            ResultSet rs = pstm.executeQuery();
+
+            if (rs.next()){
+                String dbUsername = rs.getString("username");
+                String dbPassword = rs.getString("password");
+                String email = rs.getString("email");
+                int phoneNumber = rs.getInt("phoneNumber");
+
+                System.out.println("Login successful! Welcome, " + username);
+                return new User(dbUsername, dbPassword, email, phoneNumber);
+            }else {
+                System.out.println("Invalid username or password. Please try again.");
+                login();
+            }
+        }
+        catch (SQLException e) {
+            System.out.println("Error inserting player: " + e.getMessage());
+        }
+        return null;
     }
 }

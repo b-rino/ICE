@@ -6,13 +6,15 @@ import java.io.File;
 public class User {
     private String password;
     private String username;
+    private String email;
+    private int phoneNumber;
 
-    public User(String username, String password) {
+    public User(String username, String password, String email, int phoneNumber) {
         this.username = username;
         this.password = password;
-
+        this.email = email;
+        this.phoneNumber = phoneNumber;
     }
-
 
     public String getUsername() {
         return username;
@@ -21,6 +23,8 @@ public class User {
     public String getPassword() {
         return password;
     }
+    public String getEmail(){return email;}
+    public int getPhoneNumber(){return phoneNumber;}
 
     @Override
     public boolean equals(Object o) {
@@ -32,7 +36,7 @@ public class User {
 
     @Override
     public String toString() {
-        return  username + "; " + password;
+        return  username + "; " + password + "; " + email + "; " + phoneNumber;
     }
 
     @Override
