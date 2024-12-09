@@ -176,7 +176,7 @@ public class DBConnector {
         return balance;
     }
 
-    public void updateUserMembership(User user, String username, int membership) {
+    public void updateUserMembership(User user, int membership) {
         String sql = "UPDATE Users SET membership = ? WHERE username = ?";
 
         try (Connection conn = this.connect();

@@ -198,7 +198,7 @@ public class UserClient {
                 ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership");
                 dbConnector.updateUserBalance(currentUser, 200, true);
                 dbConnector.updateUserPunchcard(currentUser, 10);
-                dbConnector.updateUserMembership(currentUser, currentUser.getUsername(), 1);
+                dbConnector.updateUserMembership(currentUser, 1);
                 mc.displayMenu();
             }
             else if (dbConnector.getUserMembership(currentUser.getUsername()) == 1) {
@@ -208,6 +208,9 @@ public class UserClient {
                 ui.displayMsg("You have insufficient funds to buy a membership");
                 displayAccount();
             }
+        }
+        if (answer.equalsIgnoreCase("n")) {
+            displayAccount();
         }
     }
 }

@@ -95,7 +95,7 @@ public class MediaClient {
             String confirmation = ui.promptText("Do you want to buy " + selectedMedia + " for 30dkk or 1 punch? (Y/N)");
 
             if (confirmation.equalsIgnoreCase("Y")) {
-                int payMethod = ui.promptNumeric("How do you want to pay?\n1. Account Wallet\n2. Punch card");
+                int payMethod = ui.promptNumeric("How do you want to pay?\n1. Account Wallet\n2. Punch card\n3. Go back to main menu");
                 if (payMethod == 1 && DBConnector.getUserBalance(currentUser.getUsername()) >= 30) {
                     ui.displayMsg("You have bought " + selectedMedia.getTitle());
                     DBConnector.updateUserBalance(currentUser, 30, true);
@@ -104,7 +104,10 @@ public class MediaClient {
                     ui.displayMsg("You have bought " + selectedMedia.getTitle());
                     DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) -1);
                     displayMenu();
-                } else {
+                }else if( payMethod == 3){
+                    displayMenu();
+                }
+                else {
                     ui.displayMsg("Purchase cancelled - insufficient funds");
                     displayMenu();
                 }
