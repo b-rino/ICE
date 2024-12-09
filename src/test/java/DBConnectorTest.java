@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DBConnectorTest {
 
     private DBConnector dbConnector;
+
     private Connection connection;
 
     @BeforeEach
@@ -61,7 +62,7 @@ class DBConnectorTest {
 
         // Assert: Check if the data was retrieved correctly
         assertEquals(5, users.size());
-        User user = users.get(3);
+        User user = users.get(0);
         assertEquals("testUser", user.getUsername());
         assertEquals("password123", user.getPassword());
     }
