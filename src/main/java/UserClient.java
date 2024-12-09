@@ -4,8 +4,9 @@ import java.util.Scanner;
 
 public class UserClient {
 
-    DBConnector dbConnector = new DBConnector();
+    private DBConnector dbConnector = new DBConnector();
     private TextUI ui = new TextUI();
+    private User currentUser;
 
     public ArrayList<String> selectUsers() {
         // initialize a List to return the selected data as string elements
@@ -40,10 +41,10 @@ public class UserClient {
         scanner.nextLine(); // Consume newline
 
         if (choice == 1) {
-            return login(); // Perform login and return the logged-in user
+            return currentUser = login(); // Perform login and return the logged-in user
         } else if (choice == 2) {
             createUser();
-            return login(); // Log in the new user
+            return currentUser = login();
         } else {
             System.out.println("Invalid choice.");
             return loginMenu();
@@ -114,5 +115,64 @@ public class UserClient {
             System.out.println("Error inserting player: " + e.getMessage());
         }
         return null;
+    }
+
+    public void addFunds(){
+        int amount = ui.promptNumeric("How much do you want to add");
+        String sql = "UPDATE Users SET balance = balance + ? WHERE username = ?";
+        try (Connection conn = dbConnector.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, amount);
+            pstmt.setString(2, currentUser.getUsername());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Successfully added " + amount + " funds.");
+            }
+            else {
+                System.out.println("Failed to add " + amount + " funds.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+        public void displayAccount(){
+        System.out.println("ACCOUNT INFORMATION\n");
+        MediaClient mediaClient = new MediaClient(currentUser);
+        ArrayList<String> accountOptions = new ArrayList<>();
+        accountOptions.add("1. Add funds");
+        accountOptions.add("2. Buy membership");
+        accountOptions.add("3. Return to main menu");
+        accountOptions.add("4. Delete account");
+
+        for (int i = 0; i < accountOptions.size(); i++) {
+            System.out.println(accountOptions.get(i));
+        }
+
+        int answer = ui.promptNumeric("Please choose a number ");
+
+        switch (answer) {
+            case 1:
+                addFunds();
+                break;
+            case 2:
+
+                break;
+            case 3:
+                mediaClient.displayMenu();
+                break;
+            case 4:
+                deleteAccount();
+                break;
+            default:
+                System.out.println("Invalid choice - please choose a number between 1 and 4");
+                displayAccount();
+                break;
+        }
+    }
+
+    public void deleteAccount(){
     }
 }
