@@ -8,6 +8,8 @@ public class User {
     private String username;
     private String email;
     private int phoneNumber;
+    private int balance = 0;
+    private boolean membership = false;
 
     public User(String username, String password, String email, int phoneNumber) {
         this.username = username;
@@ -25,6 +27,12 @@ public class User {
     }
     public String getEmail(){return email;}
     public int getPhoneNumber(){return phoneNumber;}
+
+    public int getBalance(){return balance;}
+
+    public int setBalance(int balance) {
+        this.balance = balance;
+    }
 
     @Override
     public boolean equals(Object o) {

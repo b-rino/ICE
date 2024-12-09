@@ -4,8 +4,9 @@ import java.util.Scanner;
 
 public class UserClient {
 
-    DBConnector dbConnector = new DBConnector();
+    private DBConnector dbConnector = new DBConnector();
     private TextUI ui = new TextUI();
+    private User currentUser;
 
     public ArrayList<String> selectUsers() {
         // initialize a List to return the selected data as string elements
@@ -40,9 +41,11 @@ public class UserClient {
         scanner.nextLine(); // Consume newline
 
         if (choice == 1) {
+            currentUser = login();
             return login(); // Perform login and return the logged-in user
         } else if (choice == 2) {
             createUser();
+            currentUser = login();
             return login(); // Log in the new user
         } else {
             System.out.println("Invalid choice.");
@@ -122,7 +125,7 @@ public class UserClient {
 
     public void displayAccount(){
         System.out.println("ACCOUNT INFORMATION\n");
-        MediaClient mediaClient = new MediaClient();
+        MediaClient mediaClient = new MediaClient(currentUser);
         ArrayList<String> accountOptions = new ArrayList<>();
         accountOptions.add("1. Add funds");
         accountOptions.add("2. Buy membership");
