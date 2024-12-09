@@ -8,8 +8,9 @@ public class MediaClient {
 
     public MediaClient(User currentUser){
         this.currentUser = currentUser;
-        System.out.println("Current User is " + currentUser);
+        System.out.println("Current User is " + currentUser.getUsername());
     }
+
 
     public void displayMenu(){
         ArrayList<String> options = new ArrayList<>();
@@ -38,7 +39,7 @@ public class MediaClient {
                 System.out.println("FAVORITES");
                 break;
             case 4:
-                UserClient userClient = new UserClient();
+                UserClient userClient = new UserClient(currentUser);
                 userClient.displayAccount();
                 break;
             case 5:

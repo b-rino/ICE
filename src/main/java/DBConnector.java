@@ -37,7 +37,7 @@ public class DBConnector {
                 String password = rs.getString("password");
                 String email = rs.getString("email");
                 int phoneNumber = rs.getInt("phoneNumber");
-                User user = new User(username, password,email,phoneNumber);
+                User user = new User(username, password, email, phoneNumber);
                 userData.add(user);
             }
         } catch (SQLException e) {
@@ -69,7 +69,7 @@ public class DBConnector {
 
         try (Connection conn = this.connect();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)){
+             ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 String title = rs.getString("title");
@@ -90,7 +90,7 @@ public class DBConnector {
 
                 }
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return mediaList;
@@ -124,5 +124,37 @@ public class DBConnector {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public void withdrawUserBalance(User user, int amount) {
+        String sql = "UPDATE Users SET balance = ? WHERE username = ?";
+
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, getUserBalance(user.getUsername()) - amount);
+            pstmt.setString(2, user.getUsername());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public int getUserBalance(String username) {
+        String sql = "SELECT balance FROM users WHERE username = ?";
+        int balance = 0;
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                balance = rs.getInt("balance");
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return balance;
     }
 }

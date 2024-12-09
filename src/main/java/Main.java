@@ -8,7 +8,7 @@ public class Main {
         //Todo: tilføj stien til din .db fil
         var url = "jdbc:sqlite:Blogbuster.db";
         DBConnector dbConnector = new DBConnector();
-        UserClient uc = new UserClient();
+        UserClient uc = new UserClient(null);
 
         User loggedInUser = uc.loginMenu();
 

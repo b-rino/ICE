@@ -8,6 +8,11 @@ public class UserClient {
     private TextUI ui = new TextUI();
     private User currentUser;
 
+    public UserClient(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
+
     public ArrayList<String> selectUsers() {
         // initialize a List to return the selected data as string elements
         ArrayList<String> data = new ArrayList<>();
@@ -32,6 +37,7 @@ public class UserClient {
         }
         return data;
     }
+
     public User loginMenu() {
         System.out.println("Welcome to BlogBuster. Please create an account or log in.");
         System.out.println("1. Log in\n2. Create Account");
@@ -41,10 +47,12 @@ public class UserClient {
         scanner.nextLine(); // Consume newline
 
         if (choice == 1) {
-            return currentUser = login(); // Perform login and return the logged-in user
+            currentUser = login();
+            return currentUser;// Perform login and return the logged-in user
         } else if (choice == 2) {
             createUser();
-            return currentUser = login();
+            currentUser = login();
+            return currentUser;
         } else {
             System.out.println("Invalid choice.");
             return loginMenu();
@@ -68,19 +76,20 @@ public class UserClient {
         System.out.println("Please enter your email: ");
         String Email = scanner.nextLine();
 
+        //TODO: SQL INJECTION
         String sql = "INSERT INTO Users (Username, PhoneNumber, Password, Email) VALUES ('" + Username + "', '" + PhoneNumber + "', '" + Password + "', '" + Email + "')";
 
-        try (   Connection conn = dbConnector.connect();
-                Statement stmt = conn.createStatement()) {
+        try (Connection conn = dbConnector.connect();
+             Statement stmt = conn.createStatement()) {
             int rowsAffected = stmt.executeUpdate(sql);
             System.out.println(rowsAffected + " row(s) inserted.");
             System.out.println("Account Created!");
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Error inserting player: " + e.getMessage());
         }
     }
-    public User login(){
+
+    public User login() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please enter your username: ");
         String username = scanner.nextLine();
@@ -90,34 +99,35 @@ public class UserClient {
 
         String sql = "SELECT * FROM Users WHERE username = ? AND password = ?"; //Finding the table in Users where "username" and "password" match what the user inputs. The "?" tells the database we will find the value later
 
-        try (   Connection conn = dbConnector.connect();
-                PreparedStatement pstm = conn.prepareStatement(sql)) { //PreparedStatement allows the database to pre-compile the query structure, and it knows that the "?" are placeholders.
+        try (Connection conn = dbConnector.connect();
+             PreparedStatement pstm = conn.prepareStatement(sql)) { //PreparedStatement allows the database to pre-compile the query structure, and it knows that the "?" are placeholders.
 
             pstm.setString(1, username); //Here, with the "setString" method, we tell the database to take the value of the variable "username" and place it in for the first "?" in the query
             pstm.setString(2, password);
 
             ResultSet rs = pstm.executeQuery();
 
-            if (rs.next()){
+            if (rs.next()) {
                 String dbUsername = rs.getString("username");
                 String dbPassword = rs.getString("password");
                 String email = rs.getString("email");
                 int phoneNumber = rs.getInt("phoneNumber");
 
                 System.out.println("Login successful! Welcome, " + username);
-                return new User(dbUsername, dbPassword, email, phoneNumber);
-            }else {
+                currentUser = new User(dbUsername, dbPassword, email, phoneNumber);
+                return currentUser;
+            } else {
                 System.out.println("Invalid username or password. Please try again.");
                 login();
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             System.out.println("Error inserting player: " + e.getMessage());
+            return null;
         }
-        return null;
+        return currentUser = loginMenu();
     }
 
-    public void addFunds(){
+    public void addFunds() {
         int amount = ui.promptNumeric("How much do you want to add");
         String sql = "UPDATE Users SET balance = balance + ? WHERE username = ?";
         try (Connection conn = dbConnector.connect();
@@ -129,8 +139,7 @@ public class UserClient {
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Successfully added " + amount + " funds.");
-            }
-            else {
+            } else {
                 System.out.println("Failed to add " + amount + " funds.");
             }
         } catch (SQLException e) {
@@ -138,15 +147,16 @@ public class UserClient {
         }
     }
 
-        public void displayAccount(){
+    public void displayAccount() {
+        MediaClient mc = new MediaClient(currentUser);
         System.out.println("ACCOUNT INFORMATION\n");
-        MediaClient mediaClient = new MediaClient(currentUser);
         ArrayList<String> accountOptions = new ArrayList<>();
         accountOptions.add("1. Add funds");
         accountOptions.add("2. Buy membership");
         accountOptions.add("3. Return to main menu");
         accountOptions.add("4. Delete account");
 
+        //   System.out.println(currentUser.getUsername() + " TEST");
         for (int i = 0; i < accountOptions.size(); i++) {
             System.out.println(accountOptions.get(i));
         }
@@ -158,10 +168,10 @@ public class UserClient {
                 addFunds();
                 break;
             case 2:
-
+                buyMembership();
                 break;
             case 3:
-                mediaClient.displayMenu();
+                mc.displayMenu();
                 break;
             case 4:
                 deleteAccount();
@@ -173,6 +183,24 @@ public class UserClient {
         }
     }
 
-    public void deleteAccount(){
+    public void deleteAccount() {
+    }
+
+    public void buyMembership() {
+        MediaClient mc = new MediaClient(currentUser);
+        ui.displayMsg("Welcome to Club BlogBuster\nA membership at Club BlogBuster includes:" +
+                "\n- Punch card with 10 punches for using content of you choice\n- Extended rental period (72hrs instead of 48hrs)\n");
+        String answer = ui.promptText("Do you want to buy a membership for 200dkk? Y/N");
+        if (answer.equalsIgnoreCase("y")) {
+            if (dbConnector.getUserBalance(currentUser.getUsername()) >= 200) {
+                ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership");
+                dbConnector.withdrawUserBalance(currentUser, 200);
+                mc.displayMenu();
+            }
+            else{
+                ui.displayMsg("You don't have enough money to buy a membership");
+                displayAccount();
+            }
+        }
     }
 }
