@@ -139,8 +139,10 @@ public class UserClient {
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Successfully added " + amount + " funds.");
+                displayAccount();
             } else {
                 System.out.println("Failed to add " + amount + " funds.");
+                displayAccount();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -194,7 +196,9 @@ public class UserClient {
         if (answer.equalsIgnoreCase("y")) {
             if (dbConnector.getUserBalance(currentUser.getUsername()) >= 200) {
                 ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership");
-                dbConnector.withdrawUserBalance(currentUser, 200);
+                dbConnector.updateUserBalance(currentUser, 200, true);
+                dbConnector.updateUserPunchcard(currentUser, currentUser.getUsername(), 10);
+                dbConnector.updateUserMembership(currentUser, currentUser.getUsername(), 1);
                 mc.displayMenu();
             }
             else{
