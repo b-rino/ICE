@@ -39,12 +39,8 @@ public class UserClient {
     }
 
     public User loginMenu() {
-        System.out.println("Welcome to BlogBuster. Please create an account or log in.");
-        System.out.println("1. Log in\n2. Create Account");
-
-        Scanner scanner = new Scanner(System.in);
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        ui.displayMsg("Welcome to BlogBuster. Please create an account or log in.");
+        int choice = ui.promptNumeric("1. Log in\n2. Create Account");
 
         if (choice == 1) {
             currentUser = login();
@@ -54,16 +50,23 @@ public class UserClient {
             currentUser = login();
             return currentUser;
         } else {
-            System.out.println("Invalid choice.");
+            System.out.println("Invalid choice");
             return loginMenu();
         }
     }
 
     public void createUser() {
-        String username = ui.promptText("Please enter your username: ");
+        String username = ui.promptText("Please enter a username of minimum 1 and maximum 12 characters: ");
+        if (username.equals("") || username.length() > 12 || DBConnector.) {
+            ui.displayMsg("Please enter a valid username\n");
+            loginMenu();
+        }
 
-        String password = ui.promptText("Please enter your password: ");
-
+        String password = ui.promptText("Please enter a password of minimum 1 and maximum 12 characters: ");
+        if (password.equals("") || password.length() > 12) {
+            ui.displayMsg("Please enter a valid password\n");
+            loginMenu();
+        }
 
         String sql = "INSERT INTO Users (Username, Password) VALUES (?, ?)";
 
