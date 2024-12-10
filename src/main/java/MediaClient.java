@@ -17,10 +17,9 @@ public class MediaClient {
         System.out.println("MAIN MENU");
 
         options.add("1. Browse Media");
-        options.add("2. See History");
-        options.add("3. Display Favorites:");
-        options.add("4. Account Information");
-        options.add("5. Exit");
+        options.add("2. Your Media");
+        options.add("3. Account Information");
+        options.add("4. Exit");
 
         for (int i = 0; i < options.size(); i++) {
             System.out.println(options.get(i));
@@ -31,19 +30,16 @@ public class MediaClient {
 
         switch (choice) {
             case 1:
-                displayMedia();
+                browseMedia();
                 break;
             case 2:
-                System.out.println("HISTORY");
+                System.out.println("Your Media");
                 break;
             case 3:
-                System.out.println("FAVORITES");
-                break;
-            case 4:
                 UserClient userClient = new UserClient(currentUser);
                 userClient.displayAccount();
                 break;
-            case 5:
+            case 4:
                 System.out.println("Thank you for using BlogBuster");
                 System.exit(0);
                 break;
@@ -53,7 +49,7 @@ public class MediaClient {
         }
     }
 
-    public void displayMedia() {
+    public void browseMedia() {
         List<MediaItem> mediaOptions = new ArrayList<>();
 
         int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n3. Browse All");
@@ -98,14 +94,22 @@ public class MediaClient {
             if (confirmation.equalsIgnoreCase("Y")) {
                 int payMethod = ui.promptNumeric("How do you want to pay?\n1. Account Wallet\n2. Punch card\n3. Go back to main menu");
                 if (payMethod == 1 && DBConnector.getUserBalance(currentUser.getUsername()) >= 30) {
-                    ui.displayMsg("You have bought " + selectedMedia.getTitle());
+                    ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"");
                     DBConnector.updateUserBalance(currentUser, 30, true);
+                    mediaTypeSelection(selectedMedia, mediaOption);
                     displayMenu();
-                } else if (payMethod == 2 && DBConnector.getUserPunchcardBalance(currentUser.getUsername()) >= 1) {
-                    ui.displayMsg("You have bought " + selectedMedia.getTitle());
-                    DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) -1);
+                } else if (payMethod == 2 && DBConnector.getUserPunchcardBalance(currentUser.getUsername()) > 1) {
+                    ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"");
+                    DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) - 1);
+                    mediaTypeSelection(selectedMedia, mediaOption);
                     displayMenu();
-                }else if( payMethod == 3){
+                }else if(payMethod == 2 && DBConnector.getUserPunchcardBalance(currentUser.getUsername()) == 1) {
+                    ui.displayMsg("You have bought " + selectedMedia.getTitle() + " with your last available punch. You can find your purchase in \"Your Media\"");
+                    DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) - 1);
+                    DBConnector.updateUserMembership(currentUser, 0);
+                    mediaTypeSelection(selectedMedia, mediaOption);
+                    displayMenu();
+                }else if(payMethod == 3){
                     displayMenu();
                 }
                 else {
@@ -116,6 +120,14 @@ public class MediaClient {
                 ui.displayMsg("Invalid option");
             }
             displayMenu();
+        }
+    }
+
+    public void mediaTypeSelection(MediaItem selectedMedia, int mediaOption) {
+        if(selectedMedia instanceof Movie){
+            DBConnector.addToPersonalList(currentUser, mediaOption, "movie");
+        }else if(selectedMedia instanceof Series){
+            DBConnector.addToPersonalList(currentUser, mediaOption, "series");
         }
     }
 }

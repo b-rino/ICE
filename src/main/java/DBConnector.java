@@ -243,4 +243,84 @@ public class DBConnector {
         return punchcardBalance;
     }
 
+    public int getUserID(String username) {
+        String sql = "SELECT UserID FROM users WHERE username = ?";
+
+        int ID = 0;
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                ID = rs.getInt("UserID");
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return ID;
+    }
+
+    /*public int getMovieID(String title) {
+        String sql = "SELECT MovieID FROM Movies WHERE username = ?";
+
+        int ID = 0;
+
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, title);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                ID = rs.getInt("MovieID");
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return ID;
+    }
+
+    public int getSeriesID(String title) {
+        String sql = "SELECT SeriesID FROM Series WHERE username = ?";
+
+        int ID = 0;
+
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, title);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                ID = rs.getInt("SeriesID");
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return ID;
+    }*/
+
+
+    public void addToPersonalList(User user, int ID, String sql) {
+        String MovieSql = "INSERT INTO PersonalMediaLists (UserID, MovieID) VALUES (?, ?)";
+        String SeriesSql = "INSERT INTO PersonalMediaLists (UserID, SeriesID) VALUES (?, ?)";
+        String actualSql = null;
+
+        if (sql.equalsIgnoreCase("movie")){
+            actualSql = MovieSql;
+        }
+        if (sql.equalsIgnoreCase("series")){
+            actualSql = SeriesSql;
+        }
+
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(actualSql)){
+            pstmt.setInt(1, getUserID(user.getUsername()));
+            pstmt.setInt(2, ID);
+            pstmt.executeUpdate();
+
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
 }
