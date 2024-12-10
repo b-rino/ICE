@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class UserClient {
 
-    private DBConnector dbConnector = new DBConnector();
+    private DBConnector DBConnector = new DBConnector();
     private TextUI ui = new TextUI();
     private User currentUser;
 
@@ -20,7 +20,7 @@ public class UserClient {
         String sql = "SELECT Username, PhoneNumber, Password, Email FROM Users";
 
         try {
-            Connection conn = dbConnector.connect();
+            Connection conn = DBConnector.connect();
             Statement stmt = conn.createStatement();
 
             // execute the query
@@ -79,7 +79,7 @@ public class UserClient {
         //TODO: SQL INJECTION
         String sql = "INSERT INTO Users (Username, PhoneNumber, Password, Email) VALUES ('" + Username + "', '" + PhoneNumber + "', '" + Password + "', '" + Email + "')";
 
-        try (Connection conn = dbConnector.connect();
+        try (Connection conn = DBConnector.connect();
              Statement stmt = conn.createStatement()) {
             int rowsAffected = stmt.executeUpdate(sql);
             System.out.println(rowsAffected + " row(s) inserted.");
@@ -99,7 +99,7 @@ public class UserClient {
 
         String sql = "SELECT * FROM Users WHERE username = ? AND password = ?"; //Finding the table in Users where "username" and "password" match what the user inputs. The "?" tells the database we will find the value later
 
-        try (Connection conn = dbConnector.connect();
+        try (Connection conn = DBConnector.connect();
              PreparedStatement pstm = conn.prepareStatement(sql)) { //PreparedStatement allows the database to pre-compile the query structure, and it knows that the "?" are placeholders.
 
             pstm.setString(1, username); //Here, with the "setString" method, we tell the database to take the value of the variable "username" and place it in for the first "?" in the query
@@ -130,7 +130,7 @@ public class UserClient {
     public void addFunds() {
         int amount = ui.promptNumeric("How much do you want to add");
         String sql = "UPDATE Users SET balance = balance + ? WHERE username = ?";
-        try (Connection conn = dbConnector.connect();
+        try (Connection conn = DBConnector.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, amount);
@@ -186,6 +186,19 @@ public class UserClient {
     }
 
     public void deleteAccount() {
+        String answer = ui.promptText("Are you sure you want to delete this account? (Y/N)");
+        if (answer.equalsIgnoreCase("Y")) {
+            ui.displayMsg("Thanks for using BlogBuster. You are always welcome back.\nYour account has been deleted.");
+            DBConnector.deleteUserData(currentUser);
+            System.exit(0);
+        }
+        else if (answer.equalsIgnoreCase("N")) {
+            displayAccount();
+        }
+        else{
+            System.out.println("Invalid choice");
+            displayAccount();
+        }
     }
 
     public void buyMembership() {
@@ -194,15 +207,15 @@ public class UserClient {
                 "\n- Punch card with 10 punches for using content of you choice\n- Extended rental period (72hrs instead of 48hrs)\n");
         String answer = ui.promptText("Do you want to buy a membership for 200dkk? Y/N");
         if (answer.equalsIgnoreCase("y")) {
-            if (dbConnector.getUserBalance(currentUser.getUsername()) >= 200 && dbConnector.getUserMembership(currentUser.getUsername()) == 0) {
+            if (DBConnector.getUserBalance(currentUser.getUsername()) >= 200 && DBConnector.getUserMembership(currentUser.getUsername()) == 0) {
                 ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership");
-                dbConnector.updateUserBalance(currentUser, 200, true);
-                dbConnector.updateUserPunchcard(currentUser, 10);
-                dbConnector.updateUserMembership(currentUser, 1);
+                DBConnector.updateUserBalance(currentUser, 200, true);
+                DBConnector.updateUserPunchcard(currentUser, 10);
+                DBConnector.updateUserMembership(currentUser, 1);
                 mc.displayMenu();
             }
-            else if (dbConnector.getUserMembership(currentUser.getUsername()) == 1) {
-                ui.displayMsg("You are already member of Club BlogBuster and have " + dbConnector.getUserPunchcardBalance(currentUser.getUsername()) + " punches left");
+            else if (DBConnector.getUserMembership(currentUser.getUsername()) == 1) {
+                ui.displayMsg("You are already member of Club BlogBuster and have " + DBConnector.getUserPunchcardBalance(currentUser.getUsername()) + " punches left");
                 displayAccount();
             }else{
                 ui.displayMsg("You have insufficient funds to buy a membership");

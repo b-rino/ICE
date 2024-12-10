@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 //TODO: HVIS DU FAILER LOGIN I FØRSTE FORSØG SKAL DU LOGGE IND TO GANGE EFTERFØLGENDE!!! DISPLAY FUNDS OG MEMBERSHIP STATUS
 //TODO: Husk modeller før aflevering
+//TODO: Restriktioner på alle informationer givet med create user
 
 
 

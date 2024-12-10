@@ -61,6 +61,19 @@ public class DBConnector {
 
     }
 
+    public void deleteUserData(User user) {
+        String sql = "DELETE FROM Users WHERE username = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, user.getUsername());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public List<MediaItem> readMediaData(String sqlQuery) {
 
         String movieSql = "SELECT title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'movie' AS type FROM Movies";
