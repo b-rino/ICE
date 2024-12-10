@@ -5,9 +5,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DBConnectorTest {
-
     private DBConnector dbConnector;
-
     private Connection connection;
 
     @BeforeEach
@@ -15,56 +13,28 @@ class DBConnectorTest {
         // Create a new instance of DBConnector and an in-memory SQLite database
         dbConnector = new DBConnector();
         connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
-        setUpDatabase(connection);
     }
 
-    // Helper method to set up the database schema
-    private void setUpDatabase(Connection connection) throws SQLException {
-        try (Statement stmt = connection.createStatement()) {
-            // Create Users table
-            String createTableSQL = "CREATE TABLE IF NOT EXISTS Users (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "username TEXT, " +
-                    "password TEXT)";
-            stmt.execute(createTableSQL);
-        }
-    }
-
-    /*
     @Test
-    void testReadUserData() throws SQLException {
+    void testReadUserDataFindDiller() throws SQLException {
         // Arrange: Insert a test user into the database
-        String insertSQL = "INSERT INTO Users (username, password) VALUES ('testUser', 'password123')";
-        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.executeUpdate();
-        }
-
-        try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='Users'");
-            if (rs.next()) {
-                System.out.println("Table 'Users' exists!");
-            } else {
-                System.out.println("Table 'Users' does NOT exist!");
+        List<User> userList = dbConnector.readUserData();
+        System.out.println(userList); // Sout to see if list gets filled
+        assertNotNull(userList);
+        assertTrue(userList.size() > 0); // Contains at least 1 movie
+        boolean found = false;
+        for (User item : userList) {
+            if (item instanceof User) {
+                User user = (User) item;
+                if ("Diller".equals(user.getUsername())) {
+                        //&& "dalgalasg".equals(user.getEmail())) {
+                    found = true;
+                    break;
+                }
             }
         }
-
-        // Step 2: Verify that the inserted data is present in the Users table
-        String checkInsertedDataSQL = "SELECT COUNT(*) FROM Users WHERE username = 'testUser'";
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(checkInsertedDataSQL)) {
-            if (rs.next()) {
-                int count = rs.getInt(1);
-                System.out.println("Number of users with username 'testUser': " + count);
-            }
-        }
-
-        // Act: Fetch user data
-        List<User> users = dbConnector.readUserData();
-        // Assert: Check if the data was retrieved correctly
-        assertEquals(5, users.size());
-        User user = users.get(0);
-        assertEquals("testUser", user.getUsername());
-        assertEquals("password123", user.getPassword());
+        System.out.println("User found: " + found);
+        assertTrue(found);
     }
 
     /*
@@ -91,7 +61,7 @@ class DBConnectorTest {
     void readMediaDataForSpecificMovie() throws SQLException {
         // Call the method to read movies
         List<MediaItem> mediaList = dbConnector.readMediaData("movie");
-        // System.out.println(mediaList);
+        System.out.println(mediaList);
         assertNotNull(mediaList); // Ensures that the list isn't null
         assertTrue(mediaList.size() > 0); // Contains at least 1 movie
         // Search for "The Shawshank Redemption"
