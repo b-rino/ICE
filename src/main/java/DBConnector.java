@@ -61,38 +61,54 @@ public class DBConnector {
 
     }
 
-    public List<MediaItem> readMediaData() {
+    public List<MediaItem> readMediaData(String sqlQuery) {
+
         String movieSql = "SELECT title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'movie' AS type FROM Movies";
         String seriesSql = "SELECT title, releaseYear, category, rating, season, episode, 'series' AS type FROM Series";
-        String sql = movieSql + " UNION ALL " + seriesSql;
+        String combiSql = movieSql + " UNION ALL " + seriesSql;
         List<MediaItem> mediaList = new ArrayList<>();
 
-        try (Connection conn = this.connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        String actualSqlQuery = null;
 
-            while (rs.next()) {
-                String title = rs.getString("title");
-                int releaseYear = rs.getInt("releaseYear");
-                String category = rs.getString("category");
-                float rating = rs.getFloat("rating");
-                String type = rs.getString("type");
-
-                if (type.equals("movie")) {
-                    Movie movie = new Movie(title, releaseYear, category, rating);
-                    mediaList.add(movie);
-                }
-                if (type.equals("series")) {
-                    int season = rs.getInt("season");
-                    int episode = rs.getInt("episode");
-                    Series series = new Series(title, releaseYear, category, rating, season, episode);
-                    mediaList.add(series);
-
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        switch (sqlQuery) {
+            case "movie":
+                actualSqlQuery = movieSql;
+                break;
+            case "series":
+                actualSqlQuery = seriesSql;
+                break;
+            case "combi":
+                actualSqlQuery = combiSql;
+                break;
         }
+
+
+            try (Connection conn = this.connect();
+                 Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery(actualSqlQuery)) {
+
+                while (rs.next()) {
+                    String title = rs.getString("title");
+                    int releaseYear = rs.getInt("releaseYear");
+                    String category = rs.getString("category");
+                    float rating = rs.getFloat("rating");
+                    String type = rs.getString("type");
+
+                    if (type.equals("movie")) {
+                        Movie movie = new Movie(title, releaseYear, category, rating);
+                        mediaList.add(movie);
+                    }
+                    if (type.equals("series")) {
+                        int season = rs.getInt("season");
+                        int episode = rs.getInt("episode");
+                        Series series = new Series(title, releaseYear, category, rating, season, episode);
+                        mediaList.add(series);
+
+                    }
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
         return mediaList;
     }
 
@@ -126,12 +142,14 @@ public class DBConnector {
         }
     }
 
-    public void withdrawUserBalance(User user, int amount) {
+    public void updateUserBalance(User user, int amount, boolean isWithdrawal) {
         String sql = "UPDATE Users SET balance = ? WHERE username = ?";
 
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            int currentBalance = getUserBalance(user.getUsername());
+            int newBalance = isWithdrawal ? user.getBalance() - amount : user.getBalance() + amount;
             pstmt.setInt(1, getUserBalance(user.getUsername()) - amount);
             pstmt.setString(2, user.getUsername());
             pstmt.executeUpdate();
@@ -157,4 +175,72 @@ public class DBConnector {
         }
         return balance;
     }
+
+    public void updateUserMembership(User user, int membership) {
+        String sql = "UPDATE Users SET membership = ? WHERE username = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, membership);
+            pstmt.setString(2, user.getUsername());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public int getUserMembership(String username) {
+        String sql = "SELECT membership FROM users WHERE username = ?";
+        int membership = 0;
+
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                membership = rs.getInt("membership");
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return membership;
+    }
+
+    public void updateUserPunchcard(User user, int punchcard) {
+        String sql = "UPDATE Users SET punchcard = ? WHERE username = ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, punchcard);
+            pstmt.setString(2, user.getUsername());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public int getUserPunchcardBalance(String username) {
+
+        String sql = "SELECT Punchcard FROM users WHERE username = ?";
+
+        int punchcardBalance = 0;
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                punchcardBalance = rs.getInt("punchcard");
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return punchcardBalance;
+    }
+
 }

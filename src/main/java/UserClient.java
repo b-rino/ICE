@@ -139,8 +139,10 @@ public class UserClient {
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Successfully added " + amount + " funds.");
+                displayAccount();
             } else {
                 System.out.println("Failed to add " + amount + " funds.");
+                displayAccount();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -149,14 +151,14 @@ public class UserClient {
 
     public void displayAccount() {
         MediaClient mc = new MediaClient(currentUser);
-        System.out.println("ACCOUNT INFORMATION\n");
+        System.out.println("\nACCOUNT INFORMATION\n");
         ArrayList<String> accountOptions = new ArrayList<>();
         accountOptions.add("1. Add funds");
         accountOptions.add("2. Buy membership");
         accountOptions.add("3. Return to main menu");
         accountOptions.add("4. Delete account");
 
-        //   System.out.println(currentUser.getUsername() + " TEST");
+
         for (int i = 0; i < accountOptions.size(); i++) {
             System.out.println(accountOptions.get(i));
         }
@@ -192,15 +194,23 @@ public class UserClient {
                 "\n- Punch card with 10 punches for using content of you choice\n- Extended rental period (72hrs instead of 48hrs)\n");
         String answer = ui.promptText("Do you want to buy a membership for 200dkk? Y/N");
         if (answer.equalsIgnoreCase("y")) {
-            if (dbConnector.getUserBalance(currentUser.getUsername()) >= 200) {
+            if (dbConnector.getUserBalance(currentUser.getUsername()) >= 200 && dbConnector.getUserMembership(currentUser.getUsername()) == 0) {
                 ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership");
-                dbConnector.withdrawUserBalance(currentUser, 200);
+                dbConnector.updateUserBalance(currentUser, 200, true);
+                dbConnector.updateUserPunchcard(currentUser, 10);
+                dbConnector.updateUserMembership(currentUser, 1);
                 mc.displayMenu();
             }
-            else{
-                ui.displayMsg("You don't have enough money to buy a membership");
+            else if (dbConnector.getUserMembership(currentUser.getUsername()) == 1) {
+                ui.displayMsg("You are already member of Club BlogBuster and have " + dbConnector.getUserPunchcardBalance(currentUser.getUsername()) + " punches left");
+                displayAccount();
+            }else{
+                ui.displayMsg("You have insufficient funds to buy a membership");
                 displayAccount();
             }
+        }
+        if (answer.equalsIgnoreCase("n")) {
+            displayAccount();
         }
     }
 }
