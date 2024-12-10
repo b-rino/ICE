@@ -6,6 +6,7 @@ import java.util.Scanner;
 //TODO: Husk modeller før aflevering
 //TODO: Restriktioner på alle informationer givet med create user
 
+//deleteAccount og displayAccount + småting hvor programmet crashede
 
 
 public class Main {
