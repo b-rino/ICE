@@ -151,7 +151,15 @@ public class UserClient {
 
     public void displayAccount() {
         MediaClient mc = new MediaClient(currentUser);
-        System.out.println("\nACCOUNT INFORMATION\n");
+        String membershipActive;
+        int balance = DBConnector.getUserBalance(currentUser.getUsername());
+        if (DBConnector.getUserMembership(currentUser.getUsername()) == 1){
+            membershipActive = "ACTIVE";
+        }
+        else {
+            membershipActive = "INACTIVE";
+        }
+        ui.displayMsg("\nACCOUNT INFORMATION\nUSERNAME: " + currentUser.getUsername() + " BALANCE: " + balance + " MEMBERSHIP: " + membershipActive);
         ArrayList<String> accountOptions = new ArrayList<>();
         accountOptions.add("1. Add funds");
         accountOptions.add("2. Buy membership");
@@ -208,7 +216,7 @@ public class UserClient {
         String answer = ui.promptText("Do you want to buy a membership for 200dkk? Y/N");
         if (answer.equalsIgnoreCase("y")) {
             if (DBConnector.getUserBalance(currentUser.getUsername()) >= 200 && DBConnector.getUserMembership(currentUser.getUsername()) == 0) {
-                ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership");
+                ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership\n");
                 DBConnector.updateUserBalance(currentUser, 200, true);
                 DBConnector.updateUserPunchcard(currentUser, 10);
                 DBConnector.updateUserMembership(currentUser, 1);
