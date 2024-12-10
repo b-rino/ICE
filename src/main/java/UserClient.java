@@ -60,20 +60,19 @@ public class UserClient {
     }
 
     public void createUser() {
-        // TODO: TextUI implemented and used here instead of scanner
         String username = ui.promptText("Please enter your username: ");
 
         String password = ui.promptText("Please enter your password: ");
 
 
-        //TODO: SQL INJECTION
-        String sql = "INSERT INTO Users (Username, Password) VALUES ('" + username + "', '" + password + "')";
+        String sql = "INSERT INTO Users (Username, Password) VALUES (?, ?)";
 
         try (Connection conn = DBConnector.connect();
-             Statement stmt = conn.createStatement()) {
-            int rowsAffected = stmt.executeUpdate(sql);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            pstmt.executeUpdate();
             System.out.println("Account Created!");
-            System.out.println(rowsAffected + " rows affected.");
         } catch (SQLException e) {
             System.out.println("Error inserting player: " + e.getMessage());
         }
