@@ -5,6 +5,7 @@ import java.util.Objects;
     private int releaseYear;
     private String category;
     private float rating;
+    private int id;
 
     public MediaItem(String title, int releaseYear, String category, float rating) {
         this.title = title;
@@ -12,7 +13,12 @@ import java.util.Objects;
         this.category = category;
         this.rating = rating;
     }
-
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
     public String getTitle() {
         return title;
     }

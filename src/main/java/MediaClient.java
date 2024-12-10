@@ -33,7 +33,7 @@ public class MediaClient {
                 browseMedia();
                 break;
             case 2:
-                System.out.println("Your Media");
+                displayPersonalList();
                 break;
             case 3:
                 UserClient userClient = new UserClient(currentUser);
@@ -129,5 +129,12 @@ public class MediaClient {
         }else if(selectedMedia instanceof Series){
             DBConnector.addToPersonalList(currentUser, mediaOption, "series");
         }
+    }
+    public void displayPersonalList(){
+        List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
+        for (MediaItem item: personalList) {
+            System.out.printf(item.getTitle());
+        }
+        displayMenu();
     }
 }

@@ -323,4 +323,48 @@ public class DBConnector {
         }
     }
 
+    public List<MediaItem> getPersonalList(User user) {
+        List<MediaItem> personalMediaList = new ArrayList<>();
+        String sql = "SELECT p.MovieID, p.SeriesID, " +
+                "m.title AS movieTitle, m.category AS movieCategory, m.rating AS movieRating, m.releaseYear AS movieReleaseYear, " + "s.title AS seriesTitle, s.category AS seriesCategory, s.rating AS seriesRating, s.releaseYear AS seriesReleaseYear, s.season, s.episode " + "FROM PersonalMediaLists p " + "LEFT JOIN Movies m ON p.MovieID = m.movieId " + "LEFT JOIN Series s ON p.SeriesID = s.seriesId " + "WHERE p.UserID = ?";
+        /*String sql = "SELECT p.MovieID, p.SeriesID, m.title AS movieTitle, s.title AS seriesTitle, m.category AS movieCategory, s.category AS seriesCategory, m.releaseYear AS movieReleaseYear, s.releaseYear AS seriesReleaseYear, m.rating AS movieRating, s.rating AS seriesRating"
+                + "FROM PersonalMediaLists p "
+                + "LEFT JOIN Movies m ON p.MovieID = m.movieId "
+                + "LEFT JOIN Series s ON p.SeriesID = s.seriesId "
+                + "WHERE p.UserID = ?";
+
+         */
+        int userID = getUserID(user.getUsername());
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setInt(1, userID);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()){
+                int movieId = rs.getInt("MovieID");
+                int seriesId = rs.getInt("SeriesID");
+                if (movieId != 0){
+                    String movieTitle = rs.getString("movieTitle");
+                    int releaseYear = rs.getInt("movieReleaseYear");
+                    String category = rs.getString("movieCategory");
+                    int rating = rs.getInt("movieRating");
+                    Movie movie = new Movie(movieTitle,releaseYear,category,rating);
+                    movie.setId(movieId);
+                    personalMediaList.add(movie);
+                }
+                if (seriesId != 0){
+                    String seriesTitle = rs.getString("seriesTitle");
+                    int releaseYear = rs.getInt("seriesReleaseYear");
+                    String category = rs.getString("seriesCategory");
+                    int rating = rs.getInt("seriesRating");
+                    Series series = new Series(seriesTitle,releaseYear,category,rating,0,0);
+                    series.setId(seriesId);
+                }
+            }
+        }catch (SQLException e){
+            System.out.printf(e.getMessage());
+        }
+        return personalMediaList;
+    }
 }
