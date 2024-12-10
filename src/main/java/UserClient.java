@@ -82,7 +82,6 @@ public class UserClient {
         try (Connection conn = DBConnector.connect();
              Statement stmt = conn.createStatement()) {
             int rowsAffected = stmt.executeUpdate(sql);
-            System.out.println(rowsAffected + " row(s) inserted.");
             System.out.println("Account Created!");
         } catch (SQLException e) {
             System.out.println("Error inserting player: " + e.getMessage());
