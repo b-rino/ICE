@@ -6,6 +6,8 @@ import java.util.Scanner;
 //TODO: Husk modeller før aflevering
 //TODO: Restriktioner på alle informationer givet med create user --- ER RETTET, men der skal lige kigges på hvad der gøres ved ens usernames (nu kommer den bare med en sql error)
 
+//User, createUser og Users table i database rettet i.
+
 
 
 public class Main {
