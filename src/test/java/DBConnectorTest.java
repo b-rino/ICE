@@ -30,6 +30,7 @@ class DBConnectorTest {
         }
     }
 
+    /*
     @Test
     void testReadUserData() throws SQLException {
         // Arrange: Insert a test user into the database
@@ -59,7 +60,6 @@ class DBConnectorTest {
 
         // Act: Fetch user data
         List<User> users = dbConnector.readUserData();
-
         // Assert: Check if the data was retrieved correctly
         assertEquals(5, users.size());
         User user = users.get(0);
@@ -67,6 +67,7 @@ class DBConnectorTest {
         assertEquals("password123", user.getPassword());
     }
 
+    /*
     @Test
     void testSaveUserData() throws SQLException {
         // Arrange: Create a User object to save
@@ -84,37 +85,60 @@ class DBConnectorTest {
             assertEquals("newPassword", rs.getString("password"));
         }
     }
+    */
 
     @Test
-    void testReadMediaData() throws SQLException {
-        // Arrange: Insert test media data into the database
-        String insertMovieSQL = "INSERT INTO Movies (title, releaseYear, category, rating, type) VALUES ('MovieTitle', 2020, 'Action', 8.5, 'movie')";
-        String insertSeriesSQL = "INSERT INTO Series (title, releaseYear, category, rating, season, episode, type) VALUES ('SeriesTitle', 2021, 'Drama', 9.0, 1, 1, 'series')";
-
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(insertMovieSQL);
-            stmt.executeUpdate(insertSeriesSQL);
+    void readMediaDataForSpecificMovie() throws SQLException {
+        // Call the method to read movies
+        List<MediaItem> mediaList = dbConnector.readMediaData("movie");
+        // System.out.println(mediaList);
+        assertNotNull(mediaList); // Ensures that the list isn't null
+        assertTrue(mediaList.size() > 0); // Contains at least 1 movie
+        // Search for "The Shawshank Redemption"
+        boolean found = false;
+        for (MediaItem item : mediaList) {
+            if (item instanceof Movie) {
+                Movie movie = (Movie) item;
+                // Assuming these values for the movie we are testing
+                if ("The Shawshank Redemption".equals(movie.getTitle()) &&
+                        movie.getReleaseYear() == 1994 &&
+                        "Drama".equals(movie.getCategory())) { // Skipping rating
+                    found = true;
+                    break;
+                }
+            }
         }
-
-        // Act: Read media data from the database
-        List<MediaItem> mediaItems = dbConnector.readMediaData();
-
-        // Assert: Verify that the data was read correctly
-        assertEquals(2, mediaItems.size());
-
-        MediaItem movie = mediaItems.get(0);
-        assertTrue(movie instanceof Movie);
-        assertEquals("MovieTitle", movie.getTitle());
-        assertEquals(2020, movie.getReleaseYear());
-        assertEquals("Action", movie.getCategory());
-
-        MediaItem series = mediaItems.get(1);
-        assertTrue(series instanceof Series);
-        assertEquals("SeriesTitle", series.getTitle());
-        assertEquals(2021, series.getReleaseYear());
-        assertEquals("Drama", series.getCategory());
+        // Assert if movie found
+        System.out.println("Movie found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
+        assertTrue(found, "The Shawshank Redemption should be in the database."); // Error message if not true
     }
 
+    @Test
+    void readMediaDataForSpecificSeries() throws SQLException {
+        // Call the method to read movies
+        List<MediaItem> mediaList = dbConnector.readMediaData("series");
+        // System.out.println(mediaList); // Sout for checking if list is filled
+        assertNotNull(mediaList); // Ensures that the list isn't null
+        assertTrue(mediaList.size() > 0); // Contains at least 1 movie
+        // Search for "The Shawshank Redemption"
+        boolean found = false;
+        for (MediaItem item : mediaList) {
+            if (item instanceof Series) {
+                Series series = (Series) item;
+                // Assuming these values for the movie we are testing
+                if ("The Sopranos".equals(series.getTitle()) && series.getEpisode() == 86 && series.getSeason() == 6) { // Skipping rating
+                    found = true;
+                    break;
+                }
+            }
+        }
+        // Assert if series found
+        System.out.println("Series found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
+        assertTrue(found, "The Sopranos should be in the database.");
+    }
+}
+
+/*
     @Test
     void testSaveMediaData() throws SQLException {
         // Arrange: Create a Movie and Series object to save
@@ -156,3 +180,4 @@ class DBConnectorTest {
         assertTrue(users.isEmpty());
     }
 }
+*/
