@@ -56,7 +56,7 @@ public class MediaClient {
     public void displayMedia() {
         List<MediaItem> mediaOptions = new ArrayList<>();
 
-        int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n3.Browse All");
+        int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n3. Browse All");
 
         switch (answer) {
             case 1:
