@@ -358,8 +358,11 @@ public class DBConnector {
                     int releaseYear = rs.getInt("seriesReleaseYear");
                     String category = rs.getString("seriesCategory");
                     int rating = rs.getInt("seriesRating");
-                    Series series = new Series(seriesTitle,releaseYear,category,rating,0,0);
+                    int season = rs.getInt("season");
+                    int episode = rs.getInt("episode");
+                    Series series = new Series(seriesTitle,releaseYear,category,rating,season,episode);
                     series.setId(seriesId);
+                    personalMediaList.add(series);
                 }
             }
         }catch (SQLException e){

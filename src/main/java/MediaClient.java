@@ -34,6 +34,7 @@ public class MediaClient {
                 break;
             case 2:
                 displayPersonalList();
+                personalListActions();
                 break;
             case 3:
                 UserClient userClient = new UserClient(currentUser);
@@ -132,9 +133,32 @@ public class MediaClient {
     }
     public void displayPersonalList(){
         List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
-        for (MediaItem item: personalList) {
-            System.out.printf(item.getTitle());
+        ui.displayMsg("\nYour available content\n");
+        for (int i = 0; i < personalList.size(); i++) {
+            System.out.print((i + 1) + ". " + personalList.get(i) + "\n");
         }
-        displayMenu();
+        System.out.println("");
+       // displayMenu();
+    }
+
+    public void personalListActions(){
+        List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
+        int answer = ui.promptNumeric("Please choose the number of the content you want to access");
+
+        if(answer > 0 && answer <= personalList.size()){
+            MediaItem selectedMedia = personalList.get(answer -1);
+            String choice = ui.promptText("Do you wanna watch " + selectedMedia.getTitle() + "? (Y/N)");
+            if (choice.equalsIgnoreCase("Y")) {
+                ui.displayMsg("You are now watching " + selectedMedia.getTitle() + ".\n");
+                displayMenu();
+            }
+            else if (choice.equalsIgnoreCase("N")) {
+                displayMenu();
+            }
+        }
+        else{
+            ui.displayMsg("Invalid option");
+            displayMenu();
+        }
     }
 }
