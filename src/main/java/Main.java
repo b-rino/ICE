@@ -5,6 +5,7 @@ import java.util.Scanner;
 //TODO: HVIS DU FAILER LOGIN I FØRSTE FORSØG SKAL DU LOGGE IND TO GANGE EFTERFØLGENDE!!! DISPLAY FUNDS OG MEMBERSHIP STATUS
 //TODO: Husk modeller før aflevering
 //TODO: Restriktioner på alle informationer givet med create user
+//TODO: Kig på createUser klassen. UI skal erstatte Scanner og måske vi bør slette email og telefonnummer?
 
 
 

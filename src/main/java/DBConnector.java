@@ -35,9 +35,7 @@ public class DBConnector {
             while (rs.next()) {
                 String username = rs.getString("username");
                 String password = rs.getString("password");
-                String email = rs.getString("email");
-                int phoneNumber = rs.getInt("phoneNumber");
-                User user = new User(username, password, email, phoneNumber);
+                User user = new User(username, password);
                 userData.add(user);
             }
         } catch (SQLException e) {

@@ -60,29 +60,20 @@ public class UserClient {
     }
 
     public void createUser() {
-        Scanner scanner = new Scanner(System.in);
         // TODO: TextUI implemented and used here instead of scanner
-        System.out.println("Please enter your username: ");
-        String Username = scanner.nextLine();
+        String username = ui.promptText("Please enter your username: ");
 
-        System.out.println("Please enter your phonenumber: ");
-        int PhoneNumber = scanner.nextInt();
-        scanner.nextLine(); // Clear the newline
+        String password = ui.promptText("Please enter your password: ");
 
-
-        System.out.println("Please enter your password: ");
-        String Password = scanner.nextLine();
-
-        System.out.println("Please enter your email: ");
-        String Email = scanner.nextLine();
 
         //TODO: SQL INJECTION
-        String sql = "INSERT INTO Users (Username, PhoneNumber, Password, Email) VALUES ('" + Username + "', '" + PhoneNumber + "', '" + Password + "', '" + Email + "')";
+        String sql = "INSERT INTO Users (Username, Password) VALUES ('" + username + "', '" + password + "')";
 
         try (Connection conn = DBConnector.connect();
              Statement stmt = conn.createStatement()) {
             int rowsAffected = stmt.executeUpdate(sql);
             System.out.println("Account Created!");
+            System.out.println(rowsAffected + " rows affected.");
         } catch (SQLException e) {
             System.out.println("Error inserting player: " + e.getMessage());
         }
@@ -109,11 +100,9 @@ public class UserClient {
             if (rs.next()) {
                 String dbUsername = rs.getString("username");
                 String dbPassword = rs.getString("password");
-                String email = rs.getString("email");
-                int phoneNumber = rs.getInt("phoneNumber");
 
                 System.out.println("Login successful! Welcome, " + username);
-                currentUser = new User(dbUsername, dbPassword, email, phoneNumber);
+                currentUser = new User(dbUsername, dbPassword);
                 return currentUser;
             } else {
                 System.out.println("Invalid username or password. Please try again.");
