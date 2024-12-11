@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,13 +10,23 @@ import static org.junit.jupiter.api.Assertions.*;
 class DBConnectorTest {
     private DBConnector dbConnector;
     private Connection connection;
-
-    @BeforeEach
+    
+    @BeforeEach // Create a new instance of DBConnector for each test.
     void setUp() throws SQLException {
-        // Create a new instance of DBConnector and an in-memory SQLite database
         dbConnector = new DBConnector();
         connection = DriverManager.getConnection("jdbc:sqlite:Blogbuster.db");
-        //connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
+
+        // connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
+    }
+
+    // TODO: Clean up database for testusers, then call every test's user "Tester"
+    @AfterEach
+    void deleteTestUser() throws SQLException {
+        String deleteSQL = "DELETE FROM Users WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(deleteSQL)) {
+            pstmt.setString(1, "Tester"); // The test username to delete
+            pstmt.executeUpdate();
+        }
     }
 
     @Test
@@ -23,8 +34,11 @@ class DBConnectorTest {
         // Arrange: Insert a test user into the database
         List<User> userList = dbConnector.readUserData();
         // System.out.println(userList); // Sout to see if list gets filled
+
         assertNotNull(userList);
         assertTrue(userList.size() > 0); // Contains at least 1 movie
+
+        // Act: Searches for diller
         boolean found = false;
         for (User item : userList) {
             if (item instanceof User) {
@@ -36,6 +50,7 @@ class DBConnectorTest {
                 }
             }
         }
+        // Assert: Checks if user is found
         System.out.println("User found: " + found);
         assertTrue(found);
     }
@@ -45,11 +60,12 @@ class DBConnectorTest {
     void testSaveUserDataAddDallerDiller() throws SQLException {
         // Arrange: Create a User object to save
         User user = new User("daller", "diller");
+
         // Act: Save the user data
         dbConnector.saveUserData(user);
+
         // Assert: Verify that the user was inserted into the database
         String selectSQL = "SELECT username, password FROM Users WHERE username = 'daller'";
-
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(selectSQL)) {
             assertTrue(rs.next());
@@ -60,12 +76,13 @@ class DBConnectorTest {
 
     @Test
     void readMediaDataForSpecificMovie() throws SQLException {
-        // Call the method to read movies
+        // Arrange: Read db and arrange in list.
         List<MediaItem> mediaList = dbConnector.readMediaData("movie");
         // System.out.println(mediaList); // Check if list gets filled
         assertNotNull(mediaList); // Ensures that the list isn't null
         assertTrue(mediaList.size() > 0); // Contains at least 1 movie
-        // Search for "The Shawshank Redemption"
+
+        // Act: Search for "The Shawshank Redemption"
         boolean found = false;
         for (MediaItem item : mediaList) {
             if (item instanceof Movie) {
@@ -79,37 +96,13 @@ class DBConnectorTest {
                 }
             }
         }
-        // Assert if movie found
+        // Assert: Checks if movie is found
         System.out.println("Movie found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
         assertTrue(found, "The Shawshank Redemption should be in the database."); // Error message if not true
     }
 
     @Test
     void testReadMediaDataForSpecificSeries() throws SQLException {
-        // Call the method to read movies
-        List<MediaItem> mediaList = dbConnector.readMediaData("series");
-        // System.out.println(mediaList); // Sout for checking if list is filled
-        assertNotNull(mediaList); // Ensures that the list isn't null
-        assertTrue(mediaList.size() > 0); // Contains at least 1 movie
-        // Search for "The Shawshank Redemption"
-        boolean found = false;
-        for (MediaItem item : mediaList) {
-            if (item instanceof Series) {
-                Series series = (Series) item;
-                // Assuming these values for the movie we are testing
-                if ("The Sopranos".equals(series.getTitle()) && series.getEpisode() == 86 && series.getSeason() == 6) { // Skipping rating
-                    found = true;
-                    break;
-                }
-            }
-        }
-        // Assert if series found
-        System.out.println("Series found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
-        assertTrue(found, "The Sopranos should be in the database.");
-    }
-
-    @Test
-    void testReadMediaDataForSpecific() throws SQLException {
         // Call the method to read movies
         List<MediaItem> mediaList = dbConnector.readMediaData("series");
         // System.out.println(mediaList); // Sout for checking if list is filled
@@ -176,16 +169,16 @@ class DBConnectorTest {
      */
 
     @Test
-    void testGetUserMembership() throws SQLException {
-        // Arrange: Insert a test user with membership value
+    void testGetUserWithActiveMembership() throws SQLException {
+        // Arrange: Insert a test user with an active membership
         String insertSQL = "INSERT INTO Users (username, password, balance, membership) VALUES (?, ?, ?, ?)";
         dbConnector.getUserMembership("Tester123");
 
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.setString(1, "Tester123");
-            pstmt.setString(2, "test");
-            pstmt.setInt(3, 1000);  //
-            pstmt.setInt(4, 1);     // Membership value
+            pstmt.setString(1, "Tester123"); // Username
+            pstmt.setString(2, "test"); // Password
+            pstmt.setInt(3, 1000);  // Balance
+            pstmt.setInt(4, 1); // Membership value
             pstmt.executeUpdate();
         }
         // Act: Retrieve membership using getUserMembership
@@ -195,8 +188,31 @@ class DBConnectorTest {
         assertEquals(1, actualMembership, "The membership value for the user should be 1.");
     }
 
+    @Test
+    void testGetUserBalanceFromUserWithFunds() throws SQLException {
+        // Arrange: Insert a test user with funds on his account
+        String insertSQL = "INSERT INTO Users (username, password, balance, membership) VALUES (?, ?, ?, ?)";
+        // dbConnector.getUserBalance("Test12345");
 
-    
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setString(1, "Tester1234567"); // Username
+            pstmt.setString(2, "test"); // Password
+            pstmt.setInt(3, 500); // Balance
+            pstmt.setInt(4, 0); // Membership value
+            pstmt.executeUpdate();
+        }
+        dbConnector.getUserBalance("Test1234567");
+
+        // Act: Retrieve membership using getUserMembership
+        int actualBalance = dbConnector.getUserBalance("Test1234567");
+
+        // Assert: Verify that user's balance is correct
+        assertEquals(500, actualBalance, "The membership value for the user should be 500.");
+
+    }
+
+
+
 
     // Unfinished test methods below the line. Trying to fix interaction issues with the database
     // -------------------------------------------------------------------------------------------
