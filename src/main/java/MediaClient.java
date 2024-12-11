@@ -53,7 +53,7 @@ public class MediaClient {
     public void browseMedia() {
         List<MediaItem> mediaOptions = new ArrayList<>();
 
-        int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n Browse Audiobooks");
+        int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n3. Browse Audiobooks");
 
         switch (answer) {
             case 1:
@@ -74,7 +74,7 @@ public class MediaClient {
                 break;
             case 3:
                 ui.displayMsg("Browsing all Audiobooks");
-                mediaOptions = DBConnector.readMediaData("Audiobooks");
+                mediaOptions = DBConnector.readMediaData("audiobooks");
                 for (int i = 0; i < mediaOptions.size(); i++) {
                     ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
                 }

@@ -76,7 +76,7 @@ public class DBConnector {
 
         String movieSql = "SELECT title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'movie' AS type FROM Movies";
         String seriesSql = "SELECT title, releaseYear, category, rating, season, episode, 'series' AS type FROM Series";
-        String combiSql = movieSql + " UNION ALL " + seriesSql;
+        String audioSql = "SELECT title, author, releaseYear, category, rating,'audiobook' AS type FROM Audiobooks";
         List<MediaItem> mediaList = new ArrayList<>();
 
         String actualSqlQuery = null;
@@ -88,8 +88,8 @@ public class DBConnector {
             case "series":
                 actualSqlQuery = seriesSql;
                 break;
-            case "combi":
-                actualSqlQuery = combiSql;
+            case "audiobooks":
+                actualSqlQuery = audioSql;
                 break;
         }
 
@@ -97,13 +97,13 @@ public class DBConnector {
             try (Connection conn = this.connect();
                  Statement stmt = conn.createStatement();
                  ResultSet rs = stmt.executeQuery(actualSqlQuery)) {
-
                 while (rs.next()) {
                     String title = rs.getString("title");
                     int releaseYear = rs.getInt("releaseYear");
                     String category = rs.getString("category");
                     float rating = rs.getFloat("rating");
                     String type = rs.getString("type");
+
 
                     if (type.equals("movie")) {
                         Movie movie = new Movie(title, releaseYear, category, rating);
@@ -114,7 +114,11 @@ public class DBConnector {
                         int episode = rs.getInt("episode");
                         Series series = new Series(title, releaseYear, category, rating, season, episode);
                         mediaList.add(series);
-
+                    }
+                    if (type.equals("audiobook")) {
+                        String author = rs.getString("author");
+                        Audiobooks audiobooks = new Audiobooks(title, author, releaseYear, category, rating);
+                        mediaList.add(audiobooks);
                     }
                 }
             } catch (SQLException e) {

@@ -1,9 +1,10 @@
-import javax.print.attribute.standard.Media;
 
 public class Audiobooks extends MediaItem {
+    private String author;
 
-    protected Audiobooks(String title, int releaseYear, String category, float rating) {
+    public Audiobooks(String title, String author, int releaseYear, String category, float rating) {
         super(title, releaseYear, category, rating);
+        this.author = author;
     }
 
 
