@@ -155,7 +155,7 @@ public class MediaClient {
             MediaItem selectedMedia = personalList.get(answer -1);
             String choice = ui.promptText("Would you like to check out " + selectedMedia.getTitle() + "? (Y/N)");
             if (choice.equalsIgnoreCase("Y")) {
-                ui.displayMsg(selectedMedia.getTitle() + " is now active. Enjoy!\n");
+                ui.displayMsg("\n" + selectedMedia.getTitle() + " is now active. Enjoy!\n");
                 displayMenu();
             }
             else if (choice.equalsIgnoreCase("N")) {

@@ -127,8 +127,8 @@ public class DBConnector {
         return mediaList;
     }
 
-    //TODO: Mangler audibook
-    public void saveMediaData(MediaItem media) {
+    //TODO: Mangler audiobook
+    /*public void saveMediaData(MediaItem media) {
         String movieSql = "INSERT INTO Movies (title, releaseYear, category, rating, type) VALUES (?,?,?,?, 'movie')";
         String seriesSql = "INSERT INTO Series (title, releaseYear, category, rating, season, episode, type) VALUES (?, ?, ?, ?, ?, ?, 'series')";
 
@@ -156,7 +156,7 @@ public class DBConnector {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-    }
+    }*/
 
     public void updateUserBalance(User user, int amount, boolean isWithdrawal) {
         String sql = "UPDATE Users SET balance = ? WHERE username = ?";
