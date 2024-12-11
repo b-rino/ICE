@@ -231,6 +231,32 @@ class DBConnectorTest {
         assertEquals(5, actualPunchcardBalance, "The punchcard for the user should be 5.");
     }
 
+    @Test // TODO: Currently setting Tester's ID as 1. Do we care about this after db cleanup?
+    void getUserIdOfTesterWithId1() throws SQLException {
+        // Arrange:
+        String insertSQL = "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setInt(1,1); // TEST ID NUMBER
+            pstmt.setString(2, "Tester"); // username
+            pstmt.setInt(3, 69696969); // Phonenumber
+            pstmt.setString(4, "Test"); // Password
+            pstmt.setString(5, "Tester@gmail.com");
+            pstmt.setInt(6, 500); // Balance
+            pstmt.setInt(7, 1); // Membership
+            pstmt.setInt(8, 10); // Punchcard
+            pstmt.executeUpdate();
+        }
+
+        // Act: Retrieve userID with method.
+        int actualUserID = dbConnector.getUserID("Tester");
+        System.out.println("Tester's ID " + actualUserID);
+
+        // Arrange: Verify that tester's userID is 1.
+        assertEquals(1, actualUserID, "The user id for the user should be 23 (Check db...)");
+    }
+
+
+
 
 
 
