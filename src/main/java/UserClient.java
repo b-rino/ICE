@@ -57,13 +57,13 @@ public class UserClient {
 
     public void createUser() {
         String username = ui.promptText("Please enter a username of minimum 1 and maximum 12 characters: ");
-        if (username.equals("") || username.length() > 12 || DBConnector.) {
+        if (username.equals("") || username.length() > 12) {
             ui.displayMsg("Please enter a valid username\n");
             loginMenu();
         }
 
-        String password = ui.promptText("Please enter a password of minimum 1 and maximum 12 characters: ");
-        if (password.equals("") || password.length() > 12) {
+        String password = ui.promptText("Please enter a password of a minimum 4 characters: ");
+        if (password.length() < 4) {
             ui.displayMsg("Please enter a valid password\n");
             loginMenu();
         }
