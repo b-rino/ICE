@@ -44,6 +44,7 @@ public class DBConnector {
         return userData;
     }
 
+    //TODO: Denne metode bruges ikke!
     public void saveUserData(User user) {
         String sql = "INSERT INTO Users (username, password) VALUES (?,?)";
 
@@ -76,7 +77,6 @@ public class DBConnector {
 
         String movieSql = "SELECT title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'movie' AS type FROM Movies";
         String seriesSql = "SELECT title, releaseYear, category, rating, season, episode, 'series' AS type FROM Series";
-        String combiSql = movieSql + " UNION ALL " + seriesSql;
         List<MediaItem> mediaList = new ArrayList<>();
 
         String actualSqlQuery = null;
@@ -87,9 +87,6 @@ public class DBConnector {
                 break;
             case "series":
                 actualSqlQuery = seriesSql;
-                break;
-            case "combi":
-                actualSqlQuery = combiSql;
                 break;
         }
 

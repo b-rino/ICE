@@ -53,7 +53,7 @@ public class MediaClient {
     public void browseMedia() {
         List<MediaItem> mediaOptions = new ArrayList<>();
 
-        int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n3. Browse All");
+        int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n3. Main Menu\n");
 
         switch (answer) {
             case 1:
@@ -73,12 +73,11 @@ public class MediaClient {
                 buyMedia(mediaOptions);
                 break;
             case 3:
-                ui.displayMsg("Browsing All Media");
-                mediaOptions = DBConnector.readMediaData("combi");
-                for (int i = 0; i < mediaOptions.size(); i++) {
-                    ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
-                }
-                buyMedia(mediaOptions);
+                displayMenu();
+                break;
+            default:
+                ui.displayMsg("Invalid choice - please choose an available option\n");
+                browseMedia();
                 break;
         }
 

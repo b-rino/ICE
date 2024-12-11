@@ -12,7 +12,7 @@ public class UserClient {
         this.currentUser = currentUser;
     }
 
-
+    /* //TODO: Bør måske slettes?
     public ArrayList<String> selectUsers() {
         // initialize a List to return the selected data as string elements
         ArrayList<String> data = new ArrayList<>();
@@ -36,7 +36,7 @@ public class UserClient {
             System.out.println(e.getMessage());
         }
         return data;
-    }
+    }*/
 
     public User loginMenu() {
         ui.displayMsg("Welcome to BlogBuster. Please create an account or log in.");
@@ -60,12 +60,20 @@ public class UserClient {
         if (username.equals("") || username.length() > 12) {
             ui.displayMsg("Please enter a valid username\n");
             loginMenu();
+            return;
+        }
+
+        if(doesUsernameExist(username)) {
+            ui.displayMsg("Username already exists\n");
+            loginMenu();
+            return;
         }
 
         String password = ui.promptText("Please enter a password of a minimum 4 characters: ");
         if (password.length() < 4) {
             ui.displayMsg("Please enter a valid password\n");
             loginMenu();
+            return;
         }
 
         String sql = "INSERT INTO Users (Username, Password) VALUES (?, ?)";
@@ -118,24 +126,34 @@ public class UserClient {
     }
 
     public void addFunds() {
-        int amount = ui.promptNumeric("How much do you want to add");
-        String sql = "UPDATE Users SET balance = balance + ? WHERE username = ?";
-        try (Connection conn = DBConnector.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        boolean passwordCheck = false;
+        String password = ui.promptText("Please enter your password: ");
+        if(password.equals(currentUser.getPassword())) {
+            passwordCheck = true;
+        }
+        if (passwordCheck) {
+            int amount = ui.promptNumeric("How much do you want to add");
+            String sql = "UPDATE Users SET balance = balance + ? WHERE username = ?";
+            try (Connection conn = DBConnector.connect();
+                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            pstmt.setInt(1, amount);
-            pstmt.setString(2, currentUser.getUsername());
+                pstmt.setInt(1, amount);
+                pstmt.setString(2, currentUser.getUsername());
 
-            int rowsAffected = pstmt.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Successfully added " + amount + " funds.");
-                displayAccount();
-            } else {
-                System.out.println("Failed to add " + amount + " funds.");
-                displayAccount();
+                int rowsAffected = pstmt.executeUpdate();
+                if (rowsAffected > 0) {
+                    System.out.println("Successfully added " + amount + " funds.");
+                    displayAccount();
+                } else {
+                    System.out.println("Failed to add " + amount + " funds.");
+                    displayAccount();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } else {
+            ui.displayMsg("\nPasswords do not match");
+            displayAccount();
         }
     }
 
@@ -223,5 +241,20 @@ public class UserClient {
         if (answer.equalsIgnoreCase("n")) {
             displayAccount();
         }
+    }
+    private boolean doesUsernameExist(String username){
+        String sql = "SELECT COUNT(*) FROM Users WHERE Username = ?";
+        try(Connection conn = DBConnector.connect();
+        PreparedStatement pstmt = conn.prepareStatement(sql)){
+        pstmt.setString(1, username);
+        ResultSet rs = pstmt.executeQuery();
+        if(rs.next()){
+            int count = rs.getInt(1);
+            return count > 0;
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
 }
