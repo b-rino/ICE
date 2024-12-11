@@ -127,36 +127,6 @@ public class DBConnector {
         return mediaList;
     }
 
-    //TODO: Mangler audiobook
-    /*public void saveMediaData(MediaItem media) {
-        String movieSql = "INSERT INTO Movies (title, releaseYear, category, rating, type) VALUES (?,?,?,?, 'movie')";
-        String seriesSql = "INSERT INTO Series (title, releaseYear, category, rating, season, episode, type) VALUES (?, ?, ?, ?, ?, ?, 'series')";
-
-        try (Connection conn = this.connect()) {
-            if (media instanceof Movie) {
-                try (PreparedStatement pstmt = conn.prepareStatement(movieSql)) {
-                    pstmt.setString(1, media.getTitle());
-                    pstmt.setInt(2, media.getReleaseYear());
-                    pstmt.setString(3, media.getCategory());
-                    pstmt.setFloat(4, media.getRating());
-                    pstmt.executeUpdate();
-                }
-            } else if (media instanceof Series) {
-                try (PreparedStatement pstmt = conn.prepareStatement(seriesSql)) {
-                    Series series = (Series) media;
-                    pstmt.setString(1, media.getTitle());
-                    pstmt.setInt(2, media.getReleaseYear());
-                    pstmt.setString(3, media.getCategory());
-                    pstmt.setFloat(4, media.getRating());
-                    pstmt.setInt(5, series.getSeason());
-                    pstmt.setInt(6, series.getEpisode());
-                    pstmt.executeUpdate();
-                }
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }*/
 
     public void updateUserBalance(User user, int amount, boolean isWithdrawal) {
         String sql = "UPDATE Users SET balance = ? WHERE username = ?";
@@ -279,10 +249,11 @@ public class DBConnector {
 
 
     public void addToPersonalList(User user, int ID, String sql) {
-        String MovieSql = "INSERT INTO PersonalMediaLists (UserID, MovieID) VALUES (?, ?)";
-        String SeriesSql = "INSERT INTO PersonalMediaLists (UserID, SeriesID) VALUES (?, ?)";
-        String AudioSql = "INSERT INTO PersonalMediaLists (UserID, audioID) VALUES (?, ?)";
+        String MovieSql = "INSERT INTO PersonalMediaLists (UserID, MovieID, added_timestamp) VALUES (?, ?, ?)";
+        String SeriesSql = "INSERT INTO PersonalMediaLists (UserID, SeriesID, added_timestamp) VALUES (?, ?, ?)";
+        String AudioSql = "INSERT INTO PersonalMediaLists (UserID, audioID, added_timestamp) VALUES (?, ?, ?)";
         String actualSql = null;
+        long currentTime = System.currentTimeMillis() / 1000;
 
         if (sql.equalsIgnoreCase("movie")){
             actualSql = MovieSql;
@@ -298,6 +269,7 @@ public class DBConnector {
             PreparedStatement pstmt = conn.prepareStatement(actualSql)){
             pstmt.setInt(1, getUserID(user.getUsername()));
             pstmt.setInt(2, ID);
+            pstmt.setLong(3, currentTime);
             pstmt.executeUpdate();
 
         } catch(SQLException e){
