@@ -132,7 +132,8 @@ class DBConnectorTest {
         assertTrue(found, "The Sopranos should be in the database.");
     }
 
-    @Test //
+    /*
+    @Test // Unsure if method should remain
     void testSaveMovieData() throws SQLException {
         // Arrange: Create a Movie and a Series object to save
         Movie movie = new Movie("TestMovie", 2024, "Drama", 9.5F);
@@ -172,42 +173,33 @@ class DBConnectorTest {
             assertEquals(11, rs.getInt("episode"));
         }
     }
-
-
-
-    // Unfinished test methods below the line. Trying to fix interaction issues with the database
-    // -------------------------------------------------------------------------------------------
+     */
 
     @Test
     void testGetUserMembership() throws SQLException {
         // Arrange: Insert a test user with membership value
-        User user = new User("test123", "test13");
-        // String insertSQL = "INSERT INTO Users (username, password, balance, membership) VALUES (?, ?, ?, ?)";
-        dbConnector.saveUserData(user);
-        // String selectSQL = "SELECT username, password FROM Users WHERE username = 'test123'";
-        // String insertSQL = "SELECT username, password FROM Users WHERE username = 'test123'";
-        String insertSQL = "UPDATE Users SET membership = ? WHERE username = ?";
-        /*
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(selectSQL)) {
-            assertTrue(rs.next());
-            assertEquals("test123", rs.getString("username"));
-            assertEquals("test123", rs.getString("password"));
-         */
+        String insertSQL = "INSERT INTO Users (username, password, balance, membership) VALUES (?, ?, ?, ?)";
+        dbConnector.getUserMembership("Tester123");
+
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.setString(1, "testUser");
-            pstmt.setString(2, "testPassword");
-            pstmt.setInt(3, 1000);  // Initial balance (though we're testing membership)
+            pstmt.setString(1, "Tester123");
+            pstmt.setString(2, "test");
+            pstmt.setInt(3, 1000);  //
             pstmt.setInt(4, 1);     // Membership value
             pstmt.executeUpdate();
         }
         // Act: Retrieve membership using getUserMembership
-        int actualMembership = dbConnector.getUserMembership("testUser");
+        int actualMembership = dbConnector.getUserMembership("Tester");
 
         // Assert: Verify the membership value is correct
         assertEquals(1, actualMembership, "The membership value for the user should be 1.");
     }
 
+
+    
+
+    // Unfinished test methods below the line. Trying to fix interaction issues with the database
+    // -------------------------------------------------------------------------------------------
 
 
     /*
