@@ -142,7 +142,7 @@ public class MediaClient {
             System.out.println("");
         }
         else{
-            ui.displayMsg("You currently have no content on your personal list");
+            ui.displayMsg("You currently have no content on your personal list\n");
             displayMenu();
         }
     }
