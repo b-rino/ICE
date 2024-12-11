@@ -12,22 +12,21 @@ class DBConnectorTest {
     void setUp() throws SQLException {
         // Create a new instance of DBConnector and an in-memory SQLite database
         dbConnector = new DBConnector();
-        connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
+        connection = DriverManager.getConnection("jdbc:sqlite:Blogbuster.db"); // In-memory database
     }
 
     @Test
-    void testReadUserDataFindDiller() throws SQLException {
+    void testReadUserDataFindDilleren() throws SQLException {
         // Arrange: Insert a test user into the database
         List<User> userList = dbConnector.readUserData();
-        System.out.println(userList); // Sout to see if list gets filled
+        // System.out.println(userList); // Sout to see if list gets filled
         assertNotNull(userList);
         assertTrue(userList.size() > 0); // Contains at least 1 movie
         boolean found = false;
         for (User item : userList) {
             if (item instanceof User) {
-                User user = (User) item;
-                if ("Diller".equals(user.getUsername())) {
-                        //&& "dalgalasg".equals(user.getEmail())) {
+                User user = item;
+                if ("diller".equals(user.getUsername()) && "dalgalasg".equals(user.getEmail())) {
                     found = true;
                     break;
                 }
@@ -39,20 +38,19 @@ class DBConnectorTest {
 
     /*
     @Test
-    void testSaveUserData() throws SQLException {
+    void testSaveUserDataAddDallerDiller() throws SQLException {
         // Arrange: Create a User object to save
-        User user = new User("newUser", "newPassword");
-
+        User user = new User("daller", "diller", "dallerdiller@gmail.com",69696969);
         // Act: Save the user data
         dbConnector.saveUserData(user);
-
         // Assert: Verify that the user was inserted into the database
-        String selectSQL = "SELECT username, password FROM Users WHERE username = 'newUser'";
+        String selectSQL = "SELECT username, password FROM Users WHERE username = 'daller'";
+
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(selectSQL)) {
             assertTrue(rs.next());
-            assertEquals("newUser", rs.getString("username"));
-            assertEquals("newPassword", rs.getString("password"));
+            assertEquals("daller", rs.getString("username"));
+            assertEquals("diller", rs.getString("password"));
         }
     }
     */
@@ -61,7 +59,7 @@ class DBConnectorTest {
     void readMediaDataForSpecificMovie() throws SQLException {
         // Call the method to read movies
         List<MediaItem> mediaList = dbConnector.readMediaData("movie");
-        System.out.println(mediaList);
+        // System.out.println(mediaList); // Check if list gets filled
         assertNotNull(mediaList); // Ensures that the list isn't null
         assertTrue(mediaList.size() > 0); // Contains at least 1 movie
         // Search for "The Shawshank Redemption"
@@ -140,14 +138,4 @@ class DBConnectorTest {
             assertEquals(1, rs.getInt("episode"));
         }
     }
-
-    @Test
-    void testReadUserDataNoUsers() throws SQLException {
-        // Act: Try to read users when there are no records
-        List<User> users = dbConnector.readUserData();
-
-        // Assert: Check that the list is empty
-        assertTrue(users.isEmpty());
-    }
-}
-*/
+    */
