@@ -42,8 +42,7 @@ class DBConnectorTest {
         boolean found = false;
         for (User item : userList) {
             if (item instanceof User) {
-                User user = item;
-                if ("diller".equals(user.getUsername())) {
+                if ("diller".equals(item.getUsername())) {
                     // && "dalgalasg".equals(user.getEmail())) { // Do we want to use an email column?
                     found = true;
                     break;
@@ -56,7 +55,7 @@ class DBConnectorTest {
     }
 
 
-    @Test
+    @Test // UNIQUE constraint but works. Can just change to Tester but won't show in db because of deleteTestUser
     void testSaveUserDataAddDallerDiller() throws SQLException {
         // Arrange: Create a User object to save
         User user = new User("daller", "diller");
@@ -133,6 +132,7 @@ class DBConnectorTest {
 
         // Act: Save the movie to the database
         dbConnector.saveMediaData(movie);
+
         // Assert: Verify that the movie and series were inserted into the database
         String selectMovieSQL = "SELECT title, releaseYear, category, rating FROM Movies WHERE title = 'TestMovie'";
 
@@ -152,6 +152,7 @@ class DBConnectorTest {
 
         // Act: Save the movie to the database
         dbConnector.saveMediaData(series);
+
         // Assert: Verify that the movie and series were inserted into the database
         String selectSeriesSQL = "SELECT title, releaseYear, category, rating, season, episode FROM Series WHERE title = 'TestSeries'";
 
@@ -205,33 +206,39 @@ class DBConnectorTest {
         int actualBalance = dbConnector.getUserBalance("Tester");
 
         // Assert: Verify that user's balance is correct
-        System.out.println("Tester's Balance: " + actualBalance);
+        System.out.println("Tester's Balance: " + actualBalance); // Sout to show balance
         assertEquals(500, actualBalance, "The membership value for the user should be 500.");
-
     }
 
-
-
-
-    // Unfinished test methods below the line. Trying to fix interaction issues with the database
-    // -------------------------------------------------------------------------------------------
-
-
-    /*
     @Test
-    void testGetUserBalance() throws SQLException {
-        // Arrange: Insert a test user with a specific balance
-        User user = new User("testUser", "testUser");
-        dbConnector.saveUserData(user);
-        String selectSQL = "SELECT balance FROM Users WHERE username = 'testUser'";
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(selectSQL)) {
-            assertTrue(rs.next());
-            assertEquals("testUser", rs.getString("username"));
-            assertEquals(0, rs.getInt("balance"));
+    void testGetUserPunchcardBalanceWith5() throws SQLException {
+        // Arrange: Insert a test user with a punchcard balance of 5
+        String insertSQL = "INSERT INTO Users (username, password, balance, membership, punchcard) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setString(1, "Tester"); // Username
+            pstmt.setString(2, "test"); // Password
+            pstmt.setInt(3, 500); // Balance
+            pstmt.setInt(4, 1); // Membership. 1 = active
+            pstmt.setInt(5, 5); // Punchcard balance
+            pstmt.executeUpdate();
         }
+
+        // Act: Retrieve punchcard balance with method
+        int actualPunchcardBalance = dbConnector.getUserPunchcardBalance("Tester");
+
+        // Arrange: Verify that tester's punchcard balance is 5.
+        System.out.println("Tester's Balance: " + actualPunchcardBalance);
+        assertEquals(5, actualPunchcardBalance, "The punchcard for the user should be 5.");
     }
+
+
+
+
+
+
+
+    // Unfinished test methods below the line.
+    // -------------------------------------------------------------------------------------------
 
     /*
     @Test
@@ -264,10 +271,7 @@ class DBConnectorTest {
             System.out.println(e.getMessage());
         }
 
-
     */
-
-
 
 }
 
