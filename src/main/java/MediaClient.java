@@ -130,7 +130,7 @@ public class MediaClient {
         }else if(selectedMedia instanceof Series){
             DBConnector.addToPersonalList(currentUser, mediaOption, "series");
         } else if (selectedMedia instanceof Audiobooks)
-        DBConnector.addToPersonalList(currentUser, mediaOption, "Audiobooks");{
+        DBConnector.addToPersonalList(currentUser, mediaOption, "audiobook");{
         }
     }
     public void displayPersonalList(){
@@ -155,9 +155,9 @@ public class MediaClient {
 
         if(answer > 0 && answer <= personalList.size()){
             MediaItem selectedMedia = personalList.get(answer -1);
-            String choice = ui.promptText("Do you wanna watch " + selectedMedia.getTitle() + "? (Y/N)");
+            String choice = ui.promptText("Would you like to check out " + selectedMedia.getTitle() + "? (Y/N)");
             if (choice.equalsIgnoreCase("Y")) {
-                ui.displayMsg("You are now watching " + selectedMedia.getTitle() + ".\n");
+                ui.displayMsg(selectedMedia.getTitle() + " is now active. Enjoy!\n");
                 displayMenu();
             }
             else if (choice.equalsIgnoreCase("N")) {
