@@ -25,7 +25,7 @@ public class DBConnector {
     }
 
     public List<User> readUserData() {
-        String sql = "SELECT username, password, email, phonenumber FROM Users"; // Needs to be the same as columns.
+        String sql = "SELECT username, password FROM Users"; // Needs to be the same as columns.
         List<User> userData = new ArrayList<>();
 
         try (Connection conn = this.connect();
@@ -127,6 +127,7 @@ public class DBConnector {
         return mediaList;
     }
 
+    //TODO: Mangler audibook
     public void saveMediaData(MediaItem media) {
         String movieSql = "INSERT INTO Movies (title, releaseYear, category, rating, type) VALUES (?,?,?,?, 'movie')";
         String seriesSql = "INSERT INTO Series (title, releaseYear, category, rating, season, episode, type) VALUES (?, ?, ?, ?, ?, ?, 'series')";
