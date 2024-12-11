@@ -334,14 +334,13 @@ public class DBConnector {
     public List<MediaItem> getPersonalList(User user) {
         List<MediaItem> personalMediaList = new ArrayList<>();
         String sql = "SELECT p.MovieID, p.SeriesID, " +
-                "m.title AS movieTitle, m.category AS movieCategory, m.rating AS movieRating, m.releaseYear AS movieReleaseYear, " + "s.title AS seriesTitle, s.category AS seriesCategory, s.rating AS seriesRating, s.releaseYear AS seriesReleaseYear, s.season, s.episode " + "FROM PersonalMediaLists p " + "LEFT JOIN Movies m ON p.MovieID = m.movieId " + "LEFT JOIN Series s ON p.SeriesID = s.seriesId " + "WHERE p.UserID = ?";
-        /*String sql = "SELECT p.MovieID, p.SeriesID, m.title AS movieTitle, s.title AS seriesTitle, m.category AS movieCategory, s.category AS seriesCategory, m.releaseYear AS movieReleaseYear, s.releaseYear AS seriesReleaseYear, m.rating AS movieRating, s.rating AS seriesRating"
-                + "FROM PersonalMediaLists p "
-                + "LEFT JOIN Movies m ON p.MovieID = m.movieId "
-                + "LEFT JOIN Series s ON p.SeriesID = s.seriesId "
-                + "WHERE p.UserID = ?";
+                "m.title AS movieTitle, m.category AS movieCategory, m.rating AS movieRating, m.releaseYear AS movieReleaseYear, " +
+                "s.title AS seriesTitle, s.category AS seriesCategory, s.rating AS seriesRating, s.releaseYear AS seriesReleaseYear, s.season, s.episode " +
+                "FROM PersonalMediaLists p " +
+                "LEFT JOIN Movies m ON p.MovieID = m.movieId " +
+                "LEFT JOIN Series s ON p.SeriesID = s.seriesId " +
+                "WHERE p.UserID = ?";
 
-         */
         int userID = getUserID(user.getUsername());
 
         try (Connection conn = this.connect();
