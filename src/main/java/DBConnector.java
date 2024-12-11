@@ -117,7 +117,7 @@ public class DBConnector {
                     }
                     if (type.equals("audiobook")) {
                         String author = rs.getString("author");
-                        Audiobooks audiobooks = new Audiobooks(title, author, releaseYear, category, rating);
+                        Audiobooks audiobooks = new Audiobooks(title, releaseYear, category, rating, author);
                         mediaList.add(audiobooks);
                     }
                 }
@@ -318,7 +318,7 @@ public class DBConnector {
     public void addToPersonalList(User user, int ID, String sql) {
         String MovieSql = "INSERT INTO PersonalMediaLists (UserID, MovieID) VALUES (?, ?)";
         String SeriesSql = "INSERT INTO PersonalMediaLists (UserID, SeriesID) VALUES (?, ?)";
-        String AudioSql = "INSERT INTO PersonalMediaLists (UserID, AudioID) VALUES (?, ?)";
+        String AudioSql = "INSERT INTO PersonalMediaLists (UserID, audioID) VALUES (?, ?)";
         String actualSql = null;
 
         if (sql.equalsIgnoreCase("movie")){
@@ -344,14 +344,17 @@ public class DBConnector {
 
     public List<MediaItem> getPersonalList(User user) {
         List<MediaItem> personalMediaList = new ArrayList<>();
-        String sql = "SELECT p.MovieID, p.SeriesID, " +
+       String sql = "SELECT p.MovieID, p.SeriesID, p.AudioID, " + "m.title AS movieTitle, m.category AS movieCategory, m.rating AS movieRating, m.releaseYear AS movieReleaseYear, " + "s.title AS seriesTitle, s.category AS seriesCategory, s.rating AS seriesRating, s.releaseYear AS seriesReleaseYear, s.season, s.episode, " + "a.Title AS audioTitle,a.category AS audioCategory, a.ReleaseYear AS audioReleaseYear, a.Rating AS audioRating, a.Author AS audioAuthor, " + "FROM PersonalMediaLists p " + "LEFT JOIN Movies m ON p.MovieID = m.movieId " + "LEFT JOIN Series s ON p.SeriesID = s.seriesId " + "LEFT JOIN Audiobooks a ON p.AudioID = a.audioId " + "WHERE p.UserID = ?";
+        /*String sql = "SELECT p.MovieID, p.SeriesID, p.AudioId " +
                 "m.title AS movieTitle, m.category AS movieCategory, m.rating AS movieRating, m.releaseYear AS movieReleaseYear, " +
-                "s.title AS seriesTitle, s.category AS seriesCategory, s.rating AS seriesRating, s.releaseYear AS seriesReleaseYear, s.season, s.episode " + "FROM PersonalMediaLists p " +
-                "a.title AS audioTitle, a.author AS audioAuthor, a.releaseYear AS audioRealeaseYear, a.category as audioCategory, a.rating AS audioRating" +
+                "s.title AS seriesTitle, s.category AS seriesCategory, s.rating AS seriesRating, s.releaseYear AS seriesReleaseYear, s.season, s.episode " +
+                "a.title AS audioTitle, a.releaseYear AS audioReleaseYear, a.category as audioCategory, a.rating AS audioRating, a.author AS audioAuthor" + "FROM PersonalMediaLists p " +
                 "LEFT JOIN Movies m ON p.MovieID = m.movieId " +
                 "LEFT JOIN Series s ON p.SeriesID = s.seriesId "+
-                "LEFT JOIN Audios a ON p.AudioID = a.audioID "+
+                "LEFT JOIN Audiobooks a ON p.AudioID = a.audioID "+
                 "WHERE p.UserID = ?";
+
+         */
 
         /*String sql = "SELECT p.MovieID, p.SeriesID, m.title AS movieTitle, s.title AS seriesTitle, m.category AS movieCategory, s.category AS seriesCategory, m.releaseYear AS movieReleaseYear, s.releaseYear AS seriesReleaseYear, m.rating AS movieRating, s.rating AS seriesRating"
                 + "FROM PersonalMediaLists p "
@@ -370,6 +373,7 @@ public class DBConnector {
             while (rs.next()){
                 int movieId = rs.getInt("MovieID");
                 int seriesId = rs.getInt("SeriesID");
+                int audioId = rs.getInt("audioID");
                 if (movieId != 0){
                     String movieTitle = rs.getString("movieTitle");
                     int releaseYear = rs.getInt("movieReleaseYear");
@@ -390,9 +394,20 @@ public class DBConnector {
                     series.setId(seriesId);
                     personalMediaList.add(series);
                 }
+                if (audioId != 0) {
+                    String audioTitle = rs.getString("audioTitle");
+                    int releaseYear = rs.getInt("audioReleaseYear");
+                    String category = rs.getString("audioCategory");
+                    int rating = rs.getInt("audioRating");
+                    String author = rs.getString("audioAuthor");
+                    Audiobooks audiobook = new Audiobooks(audioTitle,releaseYear,category,rating,author);
+                    audiobook.setId(audioId);
+                    personalMediaList.add(audiobook);
+                }
             }
         }catch (SQLException e){
-            System.out.printf(e.getMessage());
+            System.err.println("Error fetching personal media list: " + e.getMessage());
+            e.printStackTrace();
         }
         return personalMediaList;
     }
