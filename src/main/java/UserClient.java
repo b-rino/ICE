@@ -1,3 +1,5 @@
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -76,12 +78,14 @@ public class UserClient {
             return;
         }
 
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+
         String sql = "INSERT INTO Users (Username, Password) VALUES (?, ?)";
 
         try (Connection conn = DBConnector.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
-            pstmt.setString(2, password);
+            pstmt.setString(2, hashedPassword);
             pstmt.executeUpdate();
             System.out.println("Account Created!");
         } catch (SQLException e) {
@@ -90,45 +94,46 @@ public class UserClient {
     }
 
     public User login() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter your username: ");
-        String username = scanner.nextLine();
+        String username = ui.promptText("Please enter a username: ");
+        String password = ui.promptText("Please enter a password: ");
 
-        System.out.println("Please enter your password: ");
-        String password = scanner.nextLine();
 
-        String sql = "SELECT * FROM Users WHERE username = ? AND password = ?"; //Finding the table in Users where "username" and "password" match what the user inputs. The "?" tells the database we will find the value later
+        String sql = "SELECT * FROM Users WHERE username = ?"; //Finding the table in Users where "username" and "password" match what the user inputs. The "?" tells the database we will find the value later
 
         try (Connection conn = DBConnector.connect();
-             PreparedStatement pstm = conn.prepareStatement(sql)) { //PreparedStatement allows the database to pre-compile the query structure, and it knows that the "?" are placeholders.
-
-            pstm.setString(1, username); //Here, with the "setString" method, we tell the database to take the value of the variable "username" and place it in for the first "?" in the query
-            pstm.setString(2, password);
-
-            ResultSet rs = pstm.executeQuery();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) { //PreparedStatement allows the database to pre-compile the query structure, and it knows that the "?" are placeholders.
+            pstmt.setString(1, username); //Here, with the "setString" method, we tell the database to take the value of the variable "username" and place it in for the first "?" in the query
+            ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                String dbUsername = rs.getString("username");
-                String dbPassword = rs.getString("password");
+                String storedHashedPassword = rs.getString("Password");
+                if (BCrypt.checkpw(password, storedHashedPassword)) {
+                    ui.displayMsg("Login successful! Welcome " + username);
+                    String dbUsername = rs.getString("Username");
+                    String dbPassword = rs.getString("Password");
+                    currentUser = new User(dbUsername, dbPassword);
+                    return currentUser;
+                } else {
+                    System.out.println("Invalid username or password. Please try again.");
+                    return loginMenu();
+                }
 
-                System.out.println("Login successful! Welcome, " + username);
-                currentUser = new User(dbUsername, dbPassword);
-                return currentUser;
-            } else {
-                System.out.println("Invalid username or password. Please try again.");
-                login();
+            }else {
+                ui.displayMsg("Invalid username or password. Please try again.");
+                return loginMenu();
             }
         } catch (SQLException e) {
             System.out.println("Error inserting player: " + e.getMessage());
             return null;
         }
-        return currentUser = loginMenu();
+        //return currentUser = loginMenu(); BEHØVES EJ
     }
 
     public void addFunds() {
         boolean passwordCheck = false;
         String password = ui.promptText("Please enter your password: ");
-        if(password.equals(currentUser.getPassword())) {
+        //String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        if(BCrypt.checkpw(password, currentUser.getPassword())) {
             passwordCheck = true;
         }
         if (passwordCheck) {
