@@ -83,7 +83,7 @@ public class UserClient {
             if (rs.next()) {
                 String storedHashedPassword = rs.getString("Password");
                 if (BCrypt.checkpw(password, storedHashedPassword)) {
-                    ui.displayMsg("Login successful! Welcome " + username);
+                    ui.displayMsg("\nLogin successful! Welcome " + username + "\n");
                     String dbUsername = rs.getString("Username");
                     String dbPassword = rs.getString("Password");
                     currentUser = new User(dbUsername, dbPassword);
@@ -106,7 +106,6 @@ public class UserClient {
     public void addFunds() {
         boolean passwordCheck = false;
         String password = ui.promptText("Please enter your password: ");
-        //String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         if(BCrypt.checkpw(password, currentUser.getPassword())) {
             passwordCheck = true;
         }
@@ -158,7 +157,7 @@ public class UserClient {
             System.out.println(accountOptions.get(i));
         }
 
-        int answer = ui.promptNumeric("Please choose a number ");
+        int answer = ui.promptNumeric("Please choose a number");
 
         switch (answer) {
             case 1:

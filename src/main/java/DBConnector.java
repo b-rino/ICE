@@ -328,7 +328,7 @@ public class DBConnector {
         if (sql.equalsIgnoreCase("series")){
             actualSql = SeriesSql;
         }
-        if (sql.equalsIgnoreCase("audiobooks")){
+        if (sql.equalsIgnoreCase("audiobook")){
             actualSql = AudioSql;
         }
 

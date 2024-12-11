@@ -13,9 +13,6 @@ import java.util.Objects;
         this.category = category;
         this.rating = rating;
     }
-    public int getId() {
-        return id;
-    }
 
     public void setId(int id) {
         this.id = id;
