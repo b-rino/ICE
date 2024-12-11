@@ -14,31 +14,6 @@ public class UserClient {
         this.currentUser = currentUser;
     }
 
-    /* //TODO: Bør måske slettes?
-    public ArrayList<String> selectUsers() {
-        // initialize a List to return the selected data as string elements
-        ArrayList<String> data = new ArrayList<>();
-        // make the query string
-        String sql = "SELECT Username, PhoneNumber, Password, Email FROM Users";
-
-        try {
-            Connection conn = DBConnector.connect();
-            Statement stmt = conn.createStatement();
-
-            // execute the query
-            ResultSet rs = stmt.executeQuery(sql);
-
-            while (rs.next()) {
-                //read each row of the result set ( = response from the query execution)
-                String row = rs.getString("Username") + ", " + rs.getInt("PhoneNumber") + ", " + rs.getString("Password") + ", " + rs.getString("Email");
-                //add the string to the ArrayList
-                data.add(row);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return data;
-    }*/
 
     public User loginMenu() {
         ui.displayMsg("Welcome to BlogBuster. Please create an account or log in.");

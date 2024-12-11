@@ -352,24 +352,7 @@ public class DBConnector {
                "LEFT JOIN Series s ON p.SeriesID = s.seriesId " +
                "LEFT JOIN Audiobooks a ON p.AudioID = a.audioId " +
                "WHERE p.UserID = ?";
-        /*String sql = "SELECT p.MovieID, p.SeriesID, p.AudioId " +
-                "m.title AS movieTitle, m.category AS movieCategory, m.rating AS movieRating, m.releaseYear AS movieReleaseYear, " +
-                "s.title AS seriesTitle, s.category AS seriesCategory, s.rating AS seriesRating, s.releaseYear AS seriesReleaseYear, s.season, s.episode " +
-                "a.title AS audioTitle, a.releaseYear AS audioReleaseYear, a.category as audioCategory, a.rating AS audioRating, a.author AS audioAuthor" + "FROM PersonalMediaLists p " +
-                "LEFT JOIN Movies m ON p.MovieID = m.movieId " +
-                "LEFT JOIN Series s ON p.SeriesID = s.seriesId "+
-                "LEFT JOIN Audiobooks a ON p.AudioID = a.audioID "+
-                "WHERE p.UserID = ?";
 
-         */
-
-        /*String sql = "SELECT p.MovieID, p.SeriesID, m.title AS movieTitle, s.title AS seriesTitle, m.category AS movieCategory, s.category AS seriesCategory, m.releaseYear AS movieReleaseYear, s.releaseYear AS seriesReleaseYear, m.rating AS movieRating, s.rating AS seriesRating"
-                + "FROM PersonalMediaLists p "
-                + "LEFT JOIN Movies m ON p.MovieID = m.movieId "
-                + "LEFT JOIN Series s ON p.SeriesID = s.seriesId "
-                + "WHERE p.UserID = ?";
-
-         */
         int userID = getUserID(user.getUsername());
 
         try (Connection conn = this.connect();
