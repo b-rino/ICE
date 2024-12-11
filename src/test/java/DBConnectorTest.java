@@ -109,6 +109,30 @@ class DBConnectorTest {
     }
 
     @Test
+    void testReadMediaDataForSpecific() throws SQLException {
+        // Call the method to read movies
+        List<MediaItem> mediaList = dbConnector.readMediaData("series");
+        // System.out.println(mediaList); // Sout for checking if list is filled
+        assertNotNull(mediaList); // Ensures that the list isn't null
+        assertTrue(mediaList.size() > 0); // Contains at least 1 movie
+        // Search for "The Shawshank Redemption"
+        boolean found = false;
+        for (MediaItem item : mediaList) {
+            if (item instanceof Series) {
+                Series series = (Series) item;
+                // Assuming these values for the movie we are testing
+                if ("The Sopranos".equals(series.getTitle()) && series.getEpisode() == 86 && series.getSeason() == 6) { // Skipping rating
+                    found = true;
+                    break;
+                }
+            }
+        }
+        // Assert if series found
+        System.out.println("Series found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
+        assertTrue(found, "The Sopranos should be in the database.");
+    }
+
+    @Test //
     void testSaveMovieData() throws SQLException {
         // Arrange: Create a Movie and a Series object to save
         Movie movie = new Movie("TestMovie", 2024, "Drama", 9.5F);
@@ -127,7 +151,7 @@ class DBConnectorTest {
         }
     }
 
-    @Test
+    @Test // Unsure if method should remain
     void testSaveSeriesData() throws SQLException {
         // Arrange: Create a Movie and a Series object to save
         Series series = new Series("TestSeries", 2024, "Comedy", 9.2F, 2, 11);
