@@ -233,7 +233,7 @@ class DBConnectorTest {
 
     @Test // TODO: Currently setting Tester's ID as 1. Do we care about this after db cleanup?
     void getUserIdOfTesterWithId1() throws SQLException {
-        // Arrange:
+        // Arrange: Create Test user with ID 1.
         String insertSQL = "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
             pstmt.setInt(1,1); // TEST ID NUMBER
@@ -249,17 +249,13 @@ class DBConnectorTest {
 
         // Act: Retrieve userID with method.
         int actualUserID = dbConnector.getUserID("Tester");
-        System.out.println("Tester's ID " + actualUserID);
 
         // Arrange: Verify that tester's userID is 1.
-        assertEquals(1, actualUserID, "The user id for the user should be 23 (Check db...)");
+        System.out.println("Tester's ID " + actualUserID);
+        assertEquals(1, actualUserID, "The user ID should of Tester should be 1. ");
     }
 
-
-
-
-
-
+    
 
 
 
