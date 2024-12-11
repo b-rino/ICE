@@ -145,7 +145,7 @@ public class UserClient {
         else {
             membershipActive = "INACTIVE";
         }
-        ui.displayMsg("\nACCOUNT INFORMATION\nUSERNAME: " + currentUser.getUsername() + " BALANCE: " + balance + " MEMBERSHIP: " + membershipActive);
+        ui.displayMsg("\nACCOUNT INFORMATION\nUSERNAME:" + currentUser.getUsername() + "   BALANCE:" + balance + "   MEMBERSHIP:" + membershipActive + "   AVAILABLE PUNCHES:" + DBConnector.getUserPunchcardBalance(currentUser.getUsername()));
         ArrayList<String> accountOptions = new ArrayList<>();
         accountOptions.add("1. Add funds");
         accountOptions.add("2. Buy membership");
@@ -199,7 +199,7 @@ public class UserClient {
         MediaClient mc = new MediaClient(currentUser);
         ui.displayMsg("Welcome to Club BlogBuster\nA membership at Club BlogBuster includes:" +
                 "\n- Punch card with 10 punches for using content of you choice\n- Extended rental period (72hrs instead of 48hrs)\n");
-        String answer = ui.promptText("Do you want to buy a membership for 200dkk? Y/N");
+        String answer = ui.promptText("Do you want to buy a membership for 200? Y/N");
         if (answer.equalsIgnoreCase("y")) {
             if (DBConnector.getUserBalance(currentUser.getUsername()) >= 200 && DBConnector.getUserMembership(currentUser.getUsername()) == 0) {
                 ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership\n");
