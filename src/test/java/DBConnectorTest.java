@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class DBConnectorTest {
     private DBConnector dbConnector;
     private Connection connection;
-    
+
     @BeforeEach // Create a new instance of DBConnector for each test.
     void setUp() throws SQLException {
         dbConnector = new DBConnector();
@@ -172,10 +172,10 @@ class DBConnectorTest {
     void testGetUserWithActiveMembership() throws SQLException {
         // Arrange: Insert a test user with an active membership
         String insertSQL = "INSERT INTO Users (username, password, balance, membership) VALUES (?, ?, ?, ?)";
-        dbConnector.getUserMembership("Tester123");
+        dbConnector.getUserMembership("Tester");
 
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.setString(1, "Tester123"); // Username
+            pstmt.setString(1, "Tester"); // Username
             pstmt.setString(2, "test"); // Password
             pstmt.setInt(3, 1000);  // Balance
             pstmt.setInt(4, 1); // Membership value
@@ -192,21 +192,20 @@ class DBConnectorTest {
     void testGetUserBalanceFromUserWithFunds() throws SQLException {
         // Arrange: Insert a test user with funds on his account
         String insertSQL = "INSERT INTO Users (username, password, balance, membership) VALUES (?, ?, ?, ?)";
-        // dbConnector.getUserBalance("Test12345");
 
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.setString(1, "Tester1234567"); // Username
+            pstmt.setString(1, "Tester"); // Username
             pstmt.setString(2, "test"); // Password
             pstmt.setInt(3, 500); // Balance
             pstmt.setInt(4, 0); // Membership value
             pstmt.executeUpdate();
         }
-        dbConnector.getUserBalance("Test1234567");
 
         // Act: Retrieve membership using getUserMembership
-        int actualBalance = dbConnector.getUserBalance("Test1234567");
+        int actualBalance = dbConnector.getUserBalance("Tester");
 
         // Assert: Verify that user's balance is correct
+        System.out.println("Tester's Balance: " + actualBalance);
         assertEquals(500, actualBalance, "The membership value for the user should be 500.");
 
     }
@@ -265,23 +264,7 @@ class DBConnectorTest {
             System.out.println(e.getMessage());
         }
 
-        @Test
-    void testGetUserBalance() throws SQLException {
-        // Arrange: Insert a test user
-        String insertSQL = "INSERT INTO Users (username, password, balance) VALUES (?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.setString(1, "testUser");
-            pstmt.setString(2, "testPassword");
-            pstmt.setInt(3, 0); // Explicitly set balance to 0
-            pstmt.executeUpdate();
-        }
 
-        // Act: Retrieve balance using getUserBalance
-        int actualBalance = dbConnector.getUserBalance("testUser");
-
-        // Assert: Verify the balance is 0
-        assertEquals(0, actualBalance, "The balance for the new user should be 0.");
-    }
     */
 
 
