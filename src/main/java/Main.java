@@ -9,7 +9,7 @@ import java.util.Scanner;
 //User, createUser og Users table i database rettet i.
 
 //deleteAccount og displayAccount + småting hvor programmet crashede
-
+//
 
 public class Main {
     public static void main(String[] args) {
@@ -23,13 +23,6 @@ public class Main {
         MediaClient mediaClient = new MediaClient(loggedInUser);
         mediaClient.displayMenu();
 
-        //
-        /*ArrayList<String> data = dbConnector.selectUsers();
-        printData(data);
-        System.out.println("------------------");
-
-        dbConnector.createUser();
-        printData(data);*/
     }
 
     // Blot til test. Skal ikke være her i main.
