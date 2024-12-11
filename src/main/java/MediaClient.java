@@ -1,3 +1,6 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -13,6 +16,7 @@ public class MediaClient {
 
 
     public void displayMenu() {
+        cleanUpPersonalList(currentUser, 1);
         ArrayList<String> options = new ArrayList<>();
         System.out.println("MAIN MENU");
 
@@ -103,7 +107,7 @@ public class MediaClient {
                     mediaTypeSelection(selectedMedia, mediaOption);
                     displayMenu();
                 }else if(payMethod == 2 && DBConnector.getUserPunchcardBalance(currentUser.getUsername()) == 1) {
-                    ui.displayMsg("You have bought " + selectedMedia.getTitle() + " with your last available punch. You can find your purchase in \"Your Media\"");
+                    ui.displayMsg("You have bought " + selectedMedia.getTitle() + " with your last available punch. You can find your purchase in \"Your Media\"\n");
                     DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) - 1);
                     DBConnector.updateUserMembership(currentUser, 0);
                     mediaTypeSelection(selectedMedia, mediaOption);
@@ -147,6 +151,7 @@ public class MediaClient {
         }
     }
 
+
     public void personalListActions(){
         List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
         int answer = ui.promptNumeric("Please choose the number of the content you want to access");
@@ -165,6 +170,25 @@ public class MediaClient {
         else{
             ui.displayMsg("Invalid option");
             displayMenu();
+        }
+    }
+    public void cleanUpPersonalList(User user, int timeLimit) {
+        long currentTime = System.currentTimeMillis() / 1000L;
+        long timeLimitInSeconds;
+        if(DBConnector.getUserMembership(user.getUsername()) == 1){
+            timeLimitInSeconds = timeLimit * 60 * 2;
+        } else{
+            timeLimitInSeconds = timeLimit * 60;
+        }
+
+        String sql = "DELETE FROM PersonalMediaLists WHERE added_timestamp < ?";
+
+        try (Connection conn = DBConnector.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setLong(1, currentTime - timeLimitInSeconds);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
