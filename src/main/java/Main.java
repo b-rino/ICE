@@ -9,7 +9,7 @@ import java.util.Scanner;
 //User, createUser og Users table i database rettet i.
 
 //deleteAccount og displayAccount + småting hvor programmet crashede
-
+//
 
 public class Main {
     public static void main(String[] args) {
