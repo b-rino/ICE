@@ -164,8 +164,8 @@ public class DBConnector {
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             int currentBalance = getUserBalance(user.getUsername());
-            int newBalance = isWithdrawal ? user.getBalance() - amount : user.getBalance() + amount;
-            pstmt.setInt(1, getUserBalance(user.getUsername()) - amount);
+            int newBalance = isWithdrawal ? currentBalance - amount : currentBalance + amount;
+            pstmt.setInt(1, newBalance);
             pstmt.setString(2, user.getUsername());
             pstmt.executeUpdate();
 
