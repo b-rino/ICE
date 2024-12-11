@@ -53,7 +53,7 @@ public class MediaClient {
     public void browseMedia() {
         List<MediaItem> mediaOptions = new ArrayList<>();
 
-        int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n3. Browse All");
+        int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n Browse Audiobooks");
 
         switch (answer) {
             case 1:
@@ -73,8 +73,8 @@ public class MediaClient {
                 buyMedia(mediaOptions);
                 break;
             case 3:
-                ui.displayMsg("Browsing All Media");
-                mediaOptions = DBConnector.readMediaData("combi");
+                ui.displayMsg("Browsing all Audiobooks");
+                mediaOptions = DBConnector.readMediaData("Audiobooks");
                 for (int i = 0; i < mediaOptions.size(); i++) {
                     ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
                 }
@@ -129,6 +129,8 @@ public class MediaClient {
             DBConnector.addToPersonalList(currentUser, mediaOption, "movie");
         }else if(selectedMedia instanceof Series){
             DBConnector.addToPersonalList(currentUser, mediaOption, "series");
+        } else if (selectedMedia instanceof Audiobooks)
+        DBConnector.addToPersonalList(currentUser, mediaOption, "Audiobooks");{
         }
     }
     public void displayPersonalList(){
