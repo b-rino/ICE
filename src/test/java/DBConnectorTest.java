@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import javax.print.attribute.standard.Media;
 import java.sql.*;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +28,8 @@ class DBConnectorTest {
         for (User item : userList) {
             if (item instanceof User) {
                 User user = item;
-                if ("diller".equals(user.getUsername()) && "dalgalasg".equals(user.getEmail())) {
+                if ("diller".equals(user.getUsername())) {
+                    // && "dalgalasg".equals(user.getEmail())) { // Do we want to use an email column?
                     found = true;
                     break;
                 }
@@ -36,11 +39,11 @@ class DBConnectorTest {
         assertTrue(found);
     }
 
-    /*
+
     @Test
     void testSaveUserDataAddDallerDiller() throws SQLException {
         // Arrange: Create a User object to save
-        User user = new User("daller", "diller", "dallerdiller@gmail.com",69696969);
+        User user = new User("daller", "diller");
         // Act: Save the user data
         dbConnector.saveUserData(user);
         // Assert: Verify that the user was inserted into the database
@@ -53,7 +56,6 @@ class DBConnectorTest {
             assertEquals("diller", rs.getString("password"));
         }
     }
-    */
 
     @Test
     void readMediaDataForSpecificMovie() throws SQLException {
@@ -104,38 +106,67 @@ class DBConnectorTest {
         System.out.println("Series found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
         assertTrue(found, "The Sopranos should be in the database.");
     }
-}
 
-/*
     @Test
-    void testSaveMediaData() throws SQLException {
-        // Arrange: Create a Movie and Series object to save
-        Movie movie = new Movie("NewMovie", 2023, "Comedy", 7);
-        Series series = new Series("NewSeries", 2024, "Sci-Fi", 8, 1, 1);
+    void testSaveMovieData() throws SQLException {
+        // Arrange: Create a Movie and a Series object to save
+        Movie movie = new Movie("TestMovie", 2024, "Drama", 9.5F);
 
-        // Act: Save the movie and series to the database
+        // Act: Save the movie to the database
         dbConnector.saveMediaData(movie);
-        dbConnector.saveMediaData(series);
-
         // Assert: Verify that the movie and series were inserted into the database
-        String selectMovieSQL = "SELECT title, releaseYear, category, rating FROM Movies WHERE title = 'NewMovie'";
+        String selectMovieSQL = "SELECT title, releaseYear, category, rating FROM Movies WHERE title = 'TestMovie'";
+
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(selectMovieSQL)) {
             assertTrue(rs.next());
-            assertEquals("NewMovie", rs.getString("title"));
-            assertEquals(2023, rs.getInt("releaseYear"));
-            assertEquals("Comedy", rs.getString("category"));
+            assertEquals("TestMovie", rs.getString("title"));
+            assertEquals(2024, rs.getInt("releaseYear"));
+            assertEquals("Drama", rs.getString("category"));
         }
+    }
 
-        String selectSeriesSQL = "SELECT title, releaseYear, category, rating, season, episode FROM Series WHERE title = 'NewSeries'";
+    @Test
+    void testSaveSeriesData() throws SQLException {
+        // Arrange: Create a Movie and a Series object to save
+        Series series = new Series("TestSeries", 2024, "Comedy", 9.2F, 2, 11);
+
+        // Act: Save the movie to the database
+        dbConnector.saveMediaData(series);
+        // Assert: Verify that the movie and series were inserted into the database
+        String selectSeriesSQL = "SELECT title, releaseYear, category, rating, season, episode FROM Series WHERE title = 'TestSeries'";
+
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(selectSeriesSQL)) {
             assertTrue(rs.next());
-            assertEquals("NewSeries", rs.getString("title"));
+            assertEquals("TestSeries", rs.getString("title"));
             assertEquals(2024, rs.getInt("releaseYear"));
-            assertEquals("Sci-Fi", rs.getString("category"));
-            assertEquals(1, rs.getInt("season"));
-            assertEquals(1, rs.getInt("episode"));
+            assertEquals("Comedy", rs.getString("category"));
+            assertEquals(9.2F, rs.getFloat("rating"), 0);
+            assertEquals(2, rs.getInt("season"));
+            assertEquals(11, rs.getInt("episode"));
         }
     }
-    */
+
+    @Test
+    void updateUserDallerBalance() throws SQLException {
+        String selectSQL = "SELECT username, password FROM Users WHERE username = 'daller'";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            int currentBalance = getUserBalance(user.getUsername());
+            int newBalance = isWithdrawal ? user.getBalance() - amount : user.getBalance() + amount;
+            pstmt.setInt(1, getUserBalance(user.getUsername()) - amount);
+            pstmt.setString(2, user.getUsername());
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+
+
+}
+
