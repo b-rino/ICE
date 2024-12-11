@@ -114,7 +114,7 @@ public class MediaClient {
                     displayMenu();
                 }
                 else {
-                    ui.displayMsg("Purchase cancelled - insufficient funds");
+                    ui.displayMsg("Purchase cancelled - insufficient funds\n");
                     displayMenu();
                 }
             } else {
@@ -134,11 +134,17 @@ public class MediaClient {
     public void displayPersonalList(){
         List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
         ui.displayMsg("\nYour available content\n");
-        for (int i = 0; i < personalList.size(); i++) {
-            System.out.print((i + 1) + ". " + personalList.get(i) + "\n");
+        if(personalList.size() > 0) {
+
+            for (int i = 0; i < personalList.size(); i++) {
+                System.out.print((i + 1) + ". " + personalList.get(i) + "\n");
+            }
+            System.out.println("");
         }
-        System.out.println("");
-       // displayMenu();
+        else{
+            ui.displayMsg("You currently have no content on your personal list");
+            displayMenu();
+        }
     }
 
     public void personalListActions(){

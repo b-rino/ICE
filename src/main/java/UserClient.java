@@ -39,12 +39,8 @@ public class UserClient {
     }
 
     public User loginMenu() {
-        System.out.println("Welcome to BlogBuster. Please create an account or log in.");
-        System.out.println("1. Log in\n2. Create Account");
-
-        Scanner scanner = new Scanner(System.in);
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+        ui.displayMsg("Welcome to BlogBuster. Please create an account or log in.");
+        int choice = ui.promptNumeric("1. Log in\n2. Create Account");
 
         if (choice == 1) {
             currentUser = login();
@@ -54,34 +50,31 @@ public class UserClient {
             currentUser = login();
             return currentUser;
         } else {
-            System.out.println("Invalid choice.");
+            System.out.println("Invalid choice");
             return loginMenu();
         }
     }
 
     public void createUser() {
-        Scanner scanner = new Scanner(System.in);
-        // TODO: TextUI implemented and used here instead of scanner
-        System.out.println("Please enter your username: ");
-        String Username = scanner.nextLine();
+        String username = ui.promptText("Please enter a username of minimum 1 and maximum 12 characters: ");
+        if (username.equals("") || username.length() > 12) {
+            ui.displayMsg("Please enter a valid username\n");
+            loginMenu();
+        }
 
-        System.out.println("Please enter your phonenumber: ");
-        int PhoneNumber = scanner.nextInt();
-        scanner.nextLine(); // Clear the newline
+        String password = ui.promptText("Please enter a password of a minimum 4 characters: ");
+        if (password.length() < 4) {
+            ui.displayMsg("Please enter a valid password\n");
+            loginMenu();
+        }
 
-
-        System.out.println("Please enter your password: ");
-        String Password = scanner.nextLine();
-
-        System.out.println("Please enter your email: ");
-        String Email = scanner.nextLine();
-
-        //TODO: SQL INJECTION
-        String sql = "INSERT INTO Users (Username, PhoneNumber, Password, Email) VALUES ('" + Username + "', '" + PhoneNumber + "', '" + Password + "', '" + Email + "')";
+        String sql = "INSERT INTO Users (Username, Password) VALUES (?, ?)";
 
         try (Connection conn = DBConnector.connect();
-             Statement stmt = conn.createStatement()) {
-            int rowsAffected = stmt.executeUpdate(sql);
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            pstmt.executeUpdate();
             System.out.println("Account Created!");
         } catch (SQLException e) {
             System.out.println("Error inserting player: " + e.getMessage());
@@ -109,11 +102,9 @@ public class UserClient {
             if (rs.next()) {
                 String dbUsername = rs.getString("username");
                 String dbPassword = rs.getString("password");
-                String email = rs.getString("email");
-                int phoneNumber = rs.getInt("phoneNumber");
 
                 System.out.println("Login successful! Welcome, " + username);
-                currentUser = new User(dbUsername, dbPassword, email, phoneNumber);
+                currentUser = new User(dbUsername, dbPassword);
                 return currentUser;
             } else {
                 System.out.println("Invalid username or password. Please try again.");

@@ -6,20 +6,11 @@ import java.io.File;
 public class User {
     private String password;
     private String username;
-    private String email;
-    private int phoneNumber;
     private int balance;
-    private boolean membership = false;
 
-    public boolean isMembership() {
-        return membership;
-    }
-
-    public User(String username, String password, String email, int phoneNumber) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
     }
 
     public String getUsername() {
@@ -29,15 +20,10 @@ public class User {
     public String getPassword() {
         return password;
     }
-    public String getEmail(){return email;}
-    public int getPhoneNumber(){return phoneNumber;}
 
     public int getBalance(){
         return balance;}
 
-    public void setBalance(int balance) {
-        this.balance = balance;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -49,7 +35,7 @@ public class User {
 
     @Override
     public String toString() {
-        return  username + "; " + password + "; " + email + "; " + phoneNumber;
+        return  "Username: " + username + " Password:  " + password;
     }
 
     @Override

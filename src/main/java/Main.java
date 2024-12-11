@@ -2,9 +2,11 @@ import javax.print.attribute.standard.Media;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-//TODO: HVIS DU FAILER LOGIN I FØRSTE FORSØG SKAL DU LOGGE IND TO GANGE EFTERFØLGENDE!!! DISPLAY FUNDS OG MEMBERSHIP STATUS
+//TODO: HVIS DU FAILER LOGIN I FØRSTE FORSØG SKAL DU LOGGE IND TO GANGE EFTERFØLGENDE!!!
 //TODO: Husk modeller før aflevering
-//TODO: Restriktioner på alle informationer givet med create user
+//TODO: Restriktioner på alle informationer givet med create user --- ER RETTET, men der skal lige kigges på hvad der gøres ved ens usernames (nu kommer den bare med en sql error)
+
+//User, createUser og Users table i database rettet i.
 
 //deleteAccount og displayAccount + småting hvor programmet crashede
 
