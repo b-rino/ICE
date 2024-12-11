@@ -126,7 +126,6 @@ public class UserClient {
             System.out.println("Error inserting player: " + e.getMessage());
             return null;
         }
-        //return currentUser = loginMenu(); BEHØVES EJ
     }
 
     public void addFunds() {
@@ -147,7 +146,7 @@ public class UserClient {
 
                 int rowsAffected = pstmt.executeUpdate();
                 if (rowsAffected > 0) {
-                    System.out.println("Successfully added " + amount + " funds.");
+                    System.out.println("Successfully added " + amount);
                     displayAccount();
                 } else {
                     System.out.println("Failed to add " + amount + " funds.");
