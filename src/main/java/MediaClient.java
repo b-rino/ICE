@@ -24,9 +24,8 @@ public class MediaClient {
         for (int i = 0; i < options.size(); i++) {
             System.out.println(options.get(i));
         }
-        //TODO: Hvorfor scanner her, når vi har UI?
-        Scanner scanner = new Scanner(System.in);
-        int choice = scanner.nextInt();
+
+        int choice = ui.promptNumeric("\nPlease type the number of your choice:");
 
         switch (choice) {
             case 1:
@@ -45,13 +44,13 @@ public class MediaClient {
                 System.exit(0);
                 break;
             default:
-                System.out.println("Invalid choice - please choose a number between 1 and 5");
+                System.out.println("Invalid choice - please choose a number between 1 and 4");
                 displayMenu();
         }
     }
 
     public void browseMedia() {
-        List<MediaItem> mediaOptions = new ArrayList<>();
+        List<MediaItem> mediaOptions;
 
         int answer = ui.promptNumeric("\nYou now have following options:\n1. Browse Movies\n2. Browse Series\n3. Browse Audiobooks");
 
@@ -84,7 +83,6 @@ public class MediaClient {
 
     }
 
-    //Der skal tilføjes så den købte film bliver lagt i en liste over "ejede medier" og måske også en mulighed for at gemme den til senere køb??
     public void buyMedia(List<MediaItem> mediaOptions) {
         int mediaOption = ui.promptNumeric("Please pick a media option");
 
@@ -130,7 +128,7 @@ public class MediaClient {
         }else if(selectedMedia instanceof Series){
             DBConnector.addToPersonalList(currentUser, mediaOption, "series");
         } else if (selectedMedia instanceof Audiobooks)
-        DBConnector.addToPersonalList(currentUser, mediaOption, "Audiobooks");{
+        DBConnector.addToPersonalList(currentUser, mediaOption, "audiobook");{
         }
     }
     public void displayPersonalList(){
@@ -144,7 +142,7 @@ public class MediaClient {
             System.out.println("");
         }
         else{
-            ui.displayMsg("You currently have no content on your personal list");
+            ui.displayMsg("You currently have no content on your personal list\n");
             displayMenu();
         }
     }
@@ -155,9 +153,9 @@ public class MediaClient {
 
         if(answer > 0 && answer <= personalList.size()){
             MediaItem selectedMedia = personalList.get(answer -1);
-            String choice = ui.promptText("Do you wanna watch " + selectedMedia.getTitle() + "? (Y/N)");
+            String choice = ui.promptText("Would you like to check out " + selectedMedia.getTitle() + "? (Y/N)");
             if (choice.equalsIgnoreCase("Y")) {
-                ui.displayMsg("You are now watching " + selectedMedia.getTitle() + ".\n");
+                ui.displayMsg("\n" + selectedMedia.getTitle() + " is now active. Enjoy!\n");
                 displayMenu();
             }
             else if (choice.equalsIgnoreCase("N")) {
