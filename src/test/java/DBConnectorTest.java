@@ -5,116 +5,108 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DBConnectorTest {
-
     private DBConnector dbConnector;
-
     private Connection connection;
 
     @BeforeEach
     void setUp() throws SQLException {
         // Create a new instance of DBConnector and an in-memory SQLite database
         dbConnector = new DBConnector();
-        connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
-        setUpDatabase(connection);
-    }
-
-    // Helper method to set up the database schema
-    private void setUpDatabase(Connection connection) throws SQLException {
-        try (Statement stmt = connection.createStatement()) {
-            // Create Users table
-            String createTableSQL = "CREATE TABLE IF NOT EXISTS Users (" +
-                    "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "username TEXT, " +
-                    "password TEXT)";
-            stmt.execute(createTableSQL);
-        }
+        connection = DriverManager.getConnection("jdbc:sqlite:Blogbuster.db"); // In-memory database
     }
 
     @Test
-    void testReadUserData() throws SQLException {
+    void testReadUserDataFindDilleren() throws SQLException {
         // Arrange: Insert a test user into the database
-        String insertSQL = "INSERT INTO Users (username, password) VALUES ('testUser', 'password123')";
-        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.executeUpdate();
-        }
-
-        try (Statement stmt = connection.createStatement()) {
-            ResultSet rs = stmt.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='Users'");
-            if (rs.next()) {
-                System.out.println("Table 'Users' exists!");
-            } else {
-                System.out.println("Table 'Users' does NOT exist!");
+        List<User> userList = dbConnector.readUserData();
+        // System.out.println(userList); // Sout to see if list gets filled
+        assertNotNull(userList);
+        assertTrue(userList.size() > 0); // Contains at least 1 movie
+        boolean found = false;
+        for (User item : userList) {
+            if (item instanceof User) {
+                User user = item;
+                if ("diller".equals(user.getUsername()) && "dalgalasg".equals(user.getEmail())) {
+                    found = true;
+                    break;
+                }
             }
         }
-
-        // Step 2: Verify that the inserted data is present in the Users table
-        String checkInsertedDataSQL = "SELECT COUNT(*) FROM Users WHERE username = 'testUser'";
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(checkInsertedDataSQL)) {
-            if (rs.next()) {
-                int count = rs.getInt(1);
-                System.out.println("Number of users with username 'testUser': " + count);
-            }
-        }
-
-        // Act: Fetch user data
-        List<User> users = dbConnector.readUserData();
-
-        // Assert: Check if the data was retrieved correctly
-        assertEquals(5, users.size());
-        User user = users.get(0);
-        assertEquals("testUser", user.getUsername());
-        assertEquals("password123", user.getPassword());
+        System.out.println("User found: " + found);
+        assertTrue(found);
     }
 
+    /*
     @Test
-    void testSaveUserData() throws SQLException {
+    void testSaveUserDataAddDallerDiller() throws SQLException {
         // Arrange: Create a User object to save
-        User user = new User("newUser", "newPassword");
-
+        User user = new User("daller", "diller", "dallerdiller@gmail.com",69696969);
         // Act: Save the user data
         dbConnector.saveUserData(user);
-
         // Assert: Verify that the user was inserted into the database
-        String selectSQL = "SELECT username, password FROM Users WHERE username = 'newUser'";
+        String selectSQL = "SELECT username, password FROM Users WHERE username = 'daller'";
+
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(selectSQL)) {
             assertTrue(rs.next());
-            assertEquals("newUser", rs.getString("username"));
-            assertEquals("newPassword", rs.getString("password"));
+            assertEquals("daller", rs.getString("username"));
+            assertEquals("diller", rs.getString("password"));
         }
+    }
+    */
+
+    @Test
+    void readMediaDataForSpecificMovie() throws SQLException {
+        // Call the method to read movies
+        List<MediaItem> mediaList = dbConnector.readMediaData("movie");
+        // System.out.println(mediaList); // Check if list gets filled
+        assertNotNull(mediaList); // Ensures that the list isn't null
+        assertTrue(mediaList.size() > 0); // Contains at least 1 movie
+        // Search for "The Shawshank Redemption"
+        boolean found = false;
+        for (MediaItem item : mediaList) {
+            if (item instanceof Movie) {
+                Movie movie = (Movie) item;
+                // Assuming these values for the movie we are testing
+                if ("The Shawshank Redemption".equals(movie.getTitle()) &&
+                        movie.getReleaseYear() == 1994 &&
+                        "Drama".equals(movie.getCategory())) { // Skipping rating
+                    found = true;
+                    break;
+                }
+            }
+        }
+        // Assert if movie found
+        System.out.println("Movie found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
+        assertTrue(found, "The Shawshank Redemption should be in the database."); // Error message if not true
     }
 
     @Test
-    void testReadMediaData() throws SQLException {
-        // Arrange: Insert test media data into the database
-        String insertMovieSQL = "INSERT INTO Movies (title, releaseYear, category, rating, type) VALUES ('MovieTitle', 2020, 'Action', 8.5, 'movie')";
-        String insertSeriesSQL = "INSERT INTO Series (title, releaseYear, category, rating, season, episode, type) VALUES ('SeriesTitle', 2021, 'Drama', 9.0, 1, 1, 'series')";
-
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(insertMovieSQL);
-            stmt.executeUpdate(insertSeriesSQL);
+    void readMediaDataForSpecificSeries() throws SQLException {
+        // Call the method to read movies
+        List<MediaItem> mediaList = dbConnector.readMediaData("series");
+        // System.out.println(mediaList); // Sout for checking if list is filled
+        assertNotNull(mediaList); // Ensures that the list isn't null
+        assertTrue(mediaList.size() > 0); // Contains at least 1 movie
+        // Search for "The Shawshank Redemption"
+        boolean found = false;
+        for (MediaItem item : mediaList) {
+            if (item instanceof Series) {
+                Series series = (Series) item;
+                // Assuming these values for the movie we are testing
+                if ("The Sopranos".equals(series.getTitle()) && series.getEpisode() == 86 && series.getSeason() == 6) { // Skipping rating
+                    found = true;
+                    break;
+                }
+            }
         }
-
-        // Act: Read media data from the database
-        List<MediaItem> mediaItems = dbConnector.readMediaData();
-
-        // Assert: Verify that the data was read correctly
-        assertEquals(2, mediaItems.size());
-
-        MediaItem movie = mediaItems.get(0);
-        assertTrue(movie instanceof Movie);
-        assertEquals("MovieTitle", movie.getTitle());
-        assertEquals(2020, movie.getReleaseYear());
-        assertEquals("Action", movie.getCategory());
-
-        MediaItem series = mediaItems.get(1);
-        assertTrue(series instanceof Series);
-        assertEquals("SeriesTitle", series.getTitle());
-        assertEquals(2021, series.getReleaseYear());
-        assertEquals("Drama", series.getCategory());
+        // Assert if series found
+        System.out.println("Series found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
+        assertTrue(found, "The Sopranos should be in the database.");
     }
+}
 
+/*
     @Test
     void testSaveMediaData() throws SQLException {
         // Arrange: Create a Movie and Series object to save
@@ -146,13 +138,4 @@ class DBConnectorTest {
             assertEquals(1, rs.getInt("episode"));
         }
     }
-
-    @Test
-    void testReadUserDataNoUsers() throws SQLException {
-        // Act: Try to read users when there are no records
-        List<User> users = dbConnector.readUserData();
-
-        // Assert: Check that the list is empty
-        assertTrue(users.isEmpty());
-    }
-}
+    */

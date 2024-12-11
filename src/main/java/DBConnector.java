@@ -25,7 +25,7 @@ public class DBConnector {
     }
 
     public List<User> readUserData() {
-        String sql = "SELECT username, password FROM Users";
+        String sql = "SELECT username, password, email, phonenumber FROM Users"; // Needs to be the same as columns.
         List<User> userData = new ArrayList<>();
 
         try (Connection conn = this.connect();

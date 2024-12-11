@@ -1,24 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: DBConnectorTest
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 3, Errors: 2, Skipped: 0, Time elapsed: 0.157 s <<< FAILURE! - in DBConnectorTest
-DBConnectorTest.testReadUserDataNoUsers  Time elapsed: 0.126 s  <<< FAILURE!
-org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
-	at DBConnectorTest.testReadUserDataNoUsers(DBConnectorTest.java:155)
-
-DBConnectorTest.testReadUserData  Time elapsed: 0.007 s  <<< FAILURE!
-org.opentest4j.AssertionFailedError: expected: <testUser> but was: <Philip>
-	at DBConnectorTest.testReadUserData(DBConnectorTest.java:65)
-
-DBConnectorTest.testSaveUserData  Time elapsed: 0.004 s  <<< FAILURE!
-org.opentest4j.AssertionFailedError: expected: <true> but was: <false>
-	at DBConnectorTest.testSaveUserData(DBConnectorTest.java:81)
-
-DBConnectorTest.testSaveMediaData  Time elapsed: 0.005 s  <<< ERROR!
-org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (no such table: Movies)
-	at DBConnectorTest.testSaveMediaData(DBConnectorTest.java:130)
-
-DBConnectorTest.testReadMediaData  Time elapsed: 0.002 s  <<< ERROR!
-org.sqlite.SQLiteException: [SQLITE_ERROR] SQL error or missing database (no such table: Movies)
-	at DBConnectorTest.testReadMediaData(DBConnectorTest.java:94)
-
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.156 s - in DBConnectorTest
