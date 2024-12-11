@@ -277,44 +277,6 @@ public class DBConnector {
         return ID;
     }
 
-    /*public int getMovieID(String title) {
-        String sql = "SELECT MovieID FROM Movies WHERE username = ?";
-
-        int ID = 0;
-
-        try(Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql)){
-            pstmt.setString(1, title);
-            ResultSet rs = pstmt.executeQuery();
-
-            if(rs.next()){
-                ID = rs.getInt("MovieID");
-            }
-        } catch(SQLException e){
-            System.out.println(e.getMessage());
-        }
-        return ID;
-    }
-
-    public int getSeriesID(String title) {
-        String sql = "SELECT SeriesID FROM Series WHERE username = ?";
-
-        int ID = 0;
-
-        try(Connection conn = this.connect();
-            PreparedStatement pstmt = conn.prepareStatement(sql)){
-            pstmt.setString(1, title);
-            ResultSet rs = pstmt.executeQuery();
-
-            if(rs.next()){
-                ID = rs.getInt("SeriesID");
-            }
-        } catch(SQLException e){
-            System.out.println(e.getMessage());
-        }
-        return ID;
-    }*/
-
 
     public void addToPersonalList(User user, int ID, String sql) {
         String MovieSql = "INSERT INTO PersonalMediaLists (UserID, MovieID) VALUES (?, ?)";
@@ -402,4 +364,42 @@ public class DBConnector {
         }
         return personalMediaList;
     }
+
+        /*public int getMovieID(String title) {
+        String sql = "SELECT MovieID FROM Movies WHERE username = ?";
+
+        int ID = 0;
+
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, title);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                ID = rs.getInt("MovieID");
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return ID;
+    }
+
+    public int getSeriesID(String title) {
+        String sql = "SELECT SeriesID FROM Series WHERE username = ?";
+
+        int ID = 0;
+
+        try(Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setString(1, title);
+            ResultSet rs = pstmt.executeQuery();
+
+            if(rs.next()){
+                ID = rs.getInt("SeriesID");
+            }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return ID;
+    }*/
 }
