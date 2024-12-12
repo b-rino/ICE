@@ -74,9 +74,9 @@ public class DBConnector {
 
     public List<MediaItem> readMediaData(String sqlQuery) {
 
-        String movieSql = "SELECT title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'movie' AS type FROM Movies";
-        String seriesSql = "SELECT title, releaseYear, category, rating, season, episode, 'series' AS type FROM Series";
-        String audioSql = "SELECT title, author, releaseYear, category, rating,'audiobook' AS type FROM Audiobooks";
+        String movieSql = "SELECT title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'Movie' AS type FROM Movies";
+        String seriesSql = "SELECT title, releaseYear, category, rating, season, episode, 'Series' AS type FROM Series";
+        String audioSql = "SELECT title, author, releaseYear, category, rating,'Audiobook' AS type FROM Audiobooks";
         List<MediaItem> mediaList = new ArrayList<>();
 
         String actualSqlQuery = null;
@@ -88,7 +88,7 @@ public class DBConnector {
             case "series":
                 actualSqlQuery = seriesSql;
                 break;
-            case "audiobooks":
+            case "audiobook":
                 actualSqlQuery = audioSql;
                 break;
         }
@@ -105,17 +105,17 @@ public class DBConnector {
                     String type = rs.getString("type");
 
 
-                    if (type.equals("movie")) {
+                    if (type.equals("Movie")) {
                         Movie movie = new Movie(title, releaseYear, category, rating);
                         mediaList.add(movie);
                     }
-                    if (type.equals("series")) {
+                    if (type.equals("Series")) {
                         int season = rs.getInt("season");
                         int episode = rs.getInt("episode");
                         Series series = new Series(title, releaseYear, category, rating, season, episode);
                         mediaList.add(series);
                     }
-                    if (type.equals("audiobook")) {
+                    if (type.equals("Audiobook")) {
                         String author = rs.getString("author");
                         Audiobooks audiobooks = new Audiobooks(title, releaseYear, category, rating, author);
                         mediaList.add(audiobooks);
@@ -253,7 +253,7 @@ public class DBConnector {
         String SeriesSql = "INSERT INTO PersonalMediaLists (UserID, SeriesID, added_timestamp) VALUES (?, ?, ?)";
         String AudioSql = "INSERT INTO PersonalMediaLists (UserID, audioID, added_timestamp) VALUES (?, ?, ?)";
         String actualSql = null;
-        long currentTime = System.currentTimeMillis() / 1000;
+        long currentTime = System.currentTimeMillis() / 1000L;
 
         if (sql.equalsIgnoreCase("movie")){
             actualSql = MovieSql;
@@ -336,6 +336,40 @@ public class DBConnector {
         }
         return personalMediaList;
     }
+
+    public String getType(String sql) {
+        String sqlMovie = "SELECT Type FROM movies";
+        String sqlSeries = "SELECT Type FROM series";
+        String sqlAudio = "SELECT Type FROM audiobooks";
+        String actualSql = null;
+
+        String type = null;
+        switch (sql){
+        case "movie":
+            actualSql = sqlMovie;
+            break;
+        case "series":
+            actualSql = sqlSeries;
+            break;
+        case "audiobook":
+            actualSql = sqlAudio;
+            break;
+        }
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmt = conn.prepareStatement(actualSql)) {
+            ResultSet rs = pstmt.executeQuery();
+
+        if(rs.next()){
+            type = rs.getString("Type");
+        }
+        } catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return type;
+
+    }
+
 
         //TODO: Disse 3 metoder bruges ikke indtil videre og bør slettes hvis ikke de kommer i brug!
         /*public int getMovieID(String title) {

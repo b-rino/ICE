@@ -77,7 +77,7 @@ public class MediaClient {
                 break;
             case 3:
                 ui.displayMsg("Browsing all Audiobooks");
-                mediaOptions = DBConnector.readMediaData("audiobooks");
+                mediaOptions = DBConnector.readMediaData("audiobook");
                 for (int i = 0; i < mediaOptions.size(); i++) {
                     ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
                 }
@@ -138,13 +138,24 @@ public class MediaClient {
     public void displayPersonalList(){
         List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
         ui.displayMsg("\nYour available content\n");
-        int count = personalList.size()+ 1;
-        if(personalList.size() > 0) {
+        int counter = personalList.size()+1;
 
-            for (int i = 0; i < personalList.size(); i++) {
-                System.out.print((i + 1) + ". " + personalList.get(i) + "\n");
+        if(personalList.size() > 0) {
+        for (int i = 0; i < personalList.size(); i++) {
+            MediaItem item = personalList.get(i); // Get the current media item
+            String type = null;
+            if (item instanceof Movie) {
+                type = DBConnector.getType("movie");
             }
-            System.out.println(count + ". Return to main menu");
+            else if (item instanceof Series) {
+                type = DBConnector.getType("series");
+            }
+            else if (item instanceof Audiobooks) {
+                type = DBConnector.getType("audiobook");
+            }
+            System.out.print((i + 1) + ". " + type + " - " + item + "\n");
+        }
+            System.out.println(counter + ". Main Menu");
             System.out.println("");
         }
         else{
@@ -157,8 +168,10 @@ public class MediaClient {
     public void personalListActions(){
         List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
         int answer = ui.promptNumeric("Please choose the number of the content you want to access");
-        int count = personalList.size()+ 1;
-
+        int counter = personalList.size()+1;
+        if (counter == answer) {
+            displayMenu();
+        }
         if(answer > 0 && answer <= personalList.size()){
             MediaItem selectedMedia = personalList.get(answer -1);
             String choice = ui.promptText("Would you like to check out " + selectedMedia.getTitle() + "? (Y/N)");
