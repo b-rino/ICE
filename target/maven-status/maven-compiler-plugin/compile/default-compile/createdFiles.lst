@@ -4,6 +4,7 @@ Main.class
 User.class
 Movie.class
 TextUI.class
+Audiobooks.class
 MediaItem.class
 UserClient.class
 DBConnector.class

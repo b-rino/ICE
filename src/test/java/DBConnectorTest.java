@@ -184,6 +184,11 @@ class DBConnectorTest {
         assertEquals(1, actualMembership, "The membership value for the user should be 1.");
     }
 
+    @Test
+    void testGetTypeDRAMA() throws SQLException {
+
+    }
+
 
 
     /*
