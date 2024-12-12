@@ -2,20 +2,28 @@
 !pragma layout smetana
 
 object MediaClient
-object Media
+object UserClient
+object MediaItem
+object TextUI
+object DBConnector
 object Series
 object Movie
+object AudioBooks
 object User
 
 
 
 
-MediaClient*-- User
-MediaClient *-- Media
+UserClient *-- User
+MediaClient *-- MediaItem
+UserClient *-- DBConnector
+UserClient *-- TextUI
+MediaClient *-- DBConnector
+MediaClient *-- TextUI
 
-Media <|--"100" Movie
-Media <|--"100" Series
-
+MediaItem <|--"100" Movie
+MediaItem <|--"100" Series
+MediaItem <|--"50" AudioBooks
 
 
 
