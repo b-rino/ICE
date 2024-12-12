@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,12 +11,22 @@ class DBConnectorTest {
     private DBConnector dbConnector;
     private Connection connection;
 
-    @BeforeEach
+    @BeforeEach // Create a new instance of DBConnector for each test.
     void setUp() throws SQLException {
-        // Create a new instance of DBConnector and an in-memory SQLite database
         dbConnector = new DBConnector();
         connection = DriverManager.getConnection("jdbc:sqlite:Blogbuster.db");
-        //connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
+
+        // connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
+    }
+
+    // TODO: Clean up database for testusers, then call every test's user "Tester"
+    @AfterEach
+    void deleteTestUser() throws SQLException {
+        String deleteSQL = "DELETE FROM Users WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(deleteSQL)) {
+            pstmt.setString(1, "Tester"); // The test username to delete
+            pstmt.executeUpdate();
+        }
     }
 
     @Test
@@ -23,33 +34,37 @@ class DBConnectorTest {
         // Arrange: Insert a test user into the database
         List<User> userList = dbConnector.readUserData();
         // System.out.println(userList); // Sout to see if list gets filled
+
         assertNotNull(userList);
         assertTrue(userList.size() > 0); // Contains at least 1 movie
+
+        // Act: Searches for diller
         boolean found = false;
         for (User item : userList) {
             if (item instanceof User) {
-                User user = item;
-                if ("diller".equals(user.getUsername())) {
+                if ("diller".equals(item.getUsername())) {
                     // && "dalgalasg".equals(user.getEmail())) { // Do we want to use an email column?
                     found = true;
                     break;
                 }
             }
         }
+        // Assert: Checks if user is found
         System.out.println("User found: " + found);
         assertTrue(found);
     }
 
 
-    @Test
+    @Test // UNIQUE constraint but works. Can just change to Tester but won't show in db because of deleteTestUser
     void testSaveUserDataAddDallerDiller() throws SQLException {
         // Arrange: Create a User object to save
         User user = new User("daller", "diller");
+
         // Act: Save the user data
         dbConnector.saveUserData(user);
+
         // Assert: Verify that the user was inserted into the database
         String selectSQL = "SELECT username, password FROM Users WHERE username = 'daller'";
-
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(selectSQL)) {
             assertTrue(rs.next());
@@ -60,12 +75,13 @@ class DBConnectorTest {
 
     @Test
     void readMediaDataForSpecificMovie() throws SQLException {
-        // Call the method to read movies
+        // Arrange: Read db and arrange in list.
         List<MediaItem> mediaList = dbConnector.readMediaData("movie");
         // System.out.println(mediaList); // Check if list gets filled
         assertNotNull(mediaList); // Ensures that the list isn't null
         assertTrue(mediaList.size() > 0); // Contains at least 1 movie
-        // Search for "The Shawshank Redemption"
+
+        // Act: Search for "The Shawshank Redemption"
         boolean found = false;
         for (MediaItem item : mediaList) {
             if (item instanceof Movie) {
@@ -79,7 +95,7 @@ class DBConnectorTest {
                 }
             }
         }
-        // Assert if movie found
+        // Assert: Checks if movie is found
         System.out.println("Movie found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
         assertTrue(found, "The Shawshank Redemption should be in the database."); // Error message if not true
     }
@@ -108,13 +124,15 @@ class DBConnectorTest {
         assertTrue(found, "The Sopranos should be in the database.");
     }
 
-    @Test
+    /*
+    @Test // Unsure if method should remain
     void testSaveMovieData() throws SQLException {
         // Arrange: Create a Movie and a Series object to save
         Movie movie = new Movie("TestMovie", 2024, "Drama", 9.5F);
 
         // Act: Save the movie to the database
         dbConnector.saveMediaData(movie);
+
         // Assert: Verify that the movie and series were inserted into the database
         String selectMovieSQL = "SELECT title, releaseYear, category, rating FROM Movies WHERE title = 'TestMovie'";
 
@@ -127,13 +145,14 @@ class DBConnectorTest {
         }
     }
 
-    @Test
+    @Test // Unsure if method should remain
     void testSaveSeriesData() throws SQLException {
         // Arrange: Create a Movie and a Series object to save
         Series series = new Series("TestSeries", 2024, "Comedy", 9.2F, 2, 11);
 
         // Act: Save the movie to the database
         dbConnector.saveMediaData(series);
+
         // Assert: Verify that the movie and series were inserted into the database
         String selectSeriesSQL = "SELECT title, releaseYear, category, rating, season, episode FROM Series WHERE title = 'TestSeries'";
 
@@ -148,64 +167,100 @@ class DBConnectorTest {
             assertEquals(11, rs.getInt("episode"));
         }
     }
-
-
-
-    // Unfinished test methods below the line. Trying to fix interaction issues with the database
-    // -------------------------------------------------------------------------------------------
+     */
 
     @Test
-    void testGetUserMembership() throws SQLException {
-        // Arrange: Insert a test user with membership value
-        User user = new User("test123", "test13");
-        // String insertSQL = "INSERT INTO Users (username, password, balance, membership) VALUES (?, ?, ?, ?)";
-        dbConnector.saveUserData(user);
-        // String selectSQL = "SELECT username, password FROM Users WHERE username = 'test123'";
-        // String insertSQL = "SELECT username, password FROM Users WHERE username = 'test123'";
-        String insertSQL = "UPDATE Users SET membership = ? WHERE username = ?";
-        /*
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(selectSQL)) {
-            assertTrue(rs.next());
-            assertEquals("test123", rs.getString("username"));
-            assertEquals("test123", rs.getString("password"));
-         */
+    void testGetUserWithActiveMembership() throws SQLException {
+        // Arrange: Insert a test user with an active membership
+        String insertSQL = "INSERT INTO Users (username, password, balance, membership) VALUES (?, ?, ?, ?)";
+        dbConnector.getUserMembership("Tester");
+
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.setString(1, "testUser");
-            pstmt.setString(2, "testPassword");
-            pstmt.setInt(3, 1000);  // Initial balance (though we're testing membership)
-            pstmt.setInt(4, 1);     // Membership value
+            pstmt.setString(1, "Tester"); // Username
+            pstmt.setString(2, "test"); // Password
+            pstmt.setInt(3, 1000);  // Balance
+            pstmt.setInt(4, 1); // Membership value
             pstmt.executeUpdate();
         }
         // Act: Retrieve membership using getUserMembership
-        int actualMembership = dbConnector.getUserMembership("testUser");
+        int actualMembership = dbConnector.getUserMembership("Tester");
 
         // Assert: Verify the membership value is correct
         assertEquals(1, actualMembership, "The membership value for the user should be 1.");
     }
 
     @Test
-    void testGetTypeDRAMA() throws SQLException {
+    void testGetUserBalanceFromUserWithFunds() throws SQLException {
+        // Arrange: Insert a test user with funds on his account
+        String insertSQL = "INSERT INTO Users (username, password, balance, membership) VALUES (?, ?, ?, ?)";
 
-    }
-
-
-
-    /*
-    @Test
-    void testGetUserBalance() throws SQLException {
-        // Arrange: Insert a test user with a specific balance
-        User user = new User("testUser", "testUser");
-        dbConnector.saveUserData(user);
-        String selectSQL = "SELECT balance FROM Users WHERE username = 'testUser'";
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(selectSQL)) {
-            assertTrue(rs.next());
-            assertEquals("testUser", rs.getString("username"));
-            assertEquals(0, rs.getInt("balance"));
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setString(1, "Tester"); // Username
+            pstmt.setString(2, "test"); // Password
+            pstmt.setInt(3, 500); // Balance
+            pstmt.setInt(4, 0); // Membership value
+            pstmt.executeUpdate();
         }
+
+        // Act: Retrieve membership using getUserMembership
+        int actualBalance = dbConnector.getUserBalance("Tester");
+
+        // Assert: Verify that user's balance is correct
+        System.out.println("Tester's Balance: " + actualBalance); // Sout to show balance
+        assertEquals(500, actualBalance, "The membership value for the user should be 500.");
     }
+
+    @Test
+    void testGetUserPunchcardBalanceWith5() throws SQLException {
+        // Arrange: Insert a test user with a punchcard balance of 5
+        String insertSQL = "INSERT INTO Users (username, password, balance, membership, punchcard) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setString(1, "Tester"); // Username
+            pstmt.setString(2, "test"); // Password
+            pstmt.setInt(3, 500); // Balance
+            pstmt.setInt(4, 1); // Membership. 1 = active
+            pstmt.setInt(5, 5); // Punchcard balance
+            pstmt.executeUpdate();
+        }
+
+        // Act: Retrieve punchcard balance with method
+        int actualPunchcardBalance = dbConnector.getUserPunchcardBalance("Tester");
+
+        // Arrange: Verify that tester's punchcard balance is 5.
+        System.out.println("Tester's Balance: " + actualPunchcardBalance);
+        assertEquals(5, actualPunchcardBalance, "The punchcard for the user should be 5.");
+    }
+
+    @Test // TODO: Currently setting Tester's ID as 1. Do we care about this after db cleanup?
+    void getUserIdOfTesterWithId1() throws SQLException {
+        // Arrange: Create Test user with ID 1.
+        String insertSQL = "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setInt(1,1); // TEST ID NUMBER
+            pstmt.setString(2, "Tester"); // username
+            pstmt.setInt(3, 69696969); // Phonenumber
+            pstmt.setString(4, "Test"); // Password
+            pstmt.setString(5, "Tester@gmail.com");
+            pstmt.setInt(6, 500); // Balance
+            pstmt.setInt(7, 1); // Membership
+            pstmt.setInt(8, 10); // Punchcard
+            pstmt.executeUpdate();
+        }
+
+        // Act: Retrieve userID with method.
+        int actualUserID = dbConnector.getUserID("Tester");
+
+        // Arrange: Verify that tester's userID is 1.
+        System.out.println("Tester's ID " + actualUserID);
+        assertEquals(1, actualUserID, "The user ID should of Tester should be 1. ");
+    }
+
+
+
+
+
+    // Unfinished test methods below the line.
+    // -------------------------------------------------------------------------------------------
 
     /*
     @Test
@@ -238,26 +293,7 @@ class DBConnectorTest {
             System.out.println(e.getMessage());
         }
 
-        @Test
-    void testGetUserBalance() throws SQLException {
-        // Arrange: Insert a test user
-        String insertSQL = "INSERT INTO Users (username, password, balance) VALUES (?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
-            pstmt.setString(1, "testUser");
-            pstmt.setString(2, "testPassword");
-            pstmt.setInt(3, 0); // Explicitly set balance to 0
-            pstmt.executeUpdate();
-        }
-
-        // Act: Retrieve balance using getUserBalance
-        int actualBalance = dbConnector.getUserBalance("testUser");
-
-        // Assert: Verify the balance is 0
-        assertEquals(0, actualBalance, "The balance for the new user should be 0.");
-    }
     */
-
-
 
 }
 
