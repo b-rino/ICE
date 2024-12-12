@@ -1,0 +1,58 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant BlogBuster as Foo
+actor User as Foo1
+entity TextUI as Foo4
+control ControlUserClient as Foo5
+database Database as Foo6
+Foo --> Foo4: (AuthenticationRequest)
+Foo4 --> Foo1: loginMenu = promptText("Welcome to BlogBuster. Please create an account or log in")
+Foo4 --> Foo1: loginMenu = promptText("1. Log in 2. Create account")
+group login If [1.userLoginSuccessful]
+Foo1 --> Foo5: loginRequest = promptText("Username, Password)
+Foo5 --> Foo6: loginRequest
+Foo6 --> Foo1: loginRequest successful
+group Alt [userLoginUnsuccessful]]
+Foo1 --> Foo5: loginRequest = promptText("Username, Password)
+Foo5 --> Foo6: loginRequest
+Foo6 --> Foo5: loginRequest Unsuccessful
+Foo5 --> Foo1: loginRequest Unsuccessful = promptText("Please try again")
+end
+end
+group createAccount [2.createUser]
+group createAccountSuccessful IF [Successful]
+Foo4 --> Foo1: createAccount = promptText("Please enter Username")
+Foo1 --> Foo5: User entered username
+Foo5 --> Foo6: IsValidUsername?
+Foo6 --> Foo5: Username Valid
+Foo5 --> Foo1: Valid Username
+
+Foo4 --> Foo1: createAccount = promptText("Please enter Password")
+Foo1 --> Foo5: User entered password
+Foo5 --> Foo6: IsValidPassword?
+Foo6 --> Foo5: Password Valid
+Foo5 --> Foo1: Valid Password + accountCreated
+group Alt [Unsuccessful]
+Foo4 --> Foo1: createAccount = promptText("Please enter Username")
+Foo1 --> Foo5: User entered username
+Foo5 --> Foo6: IsValidUsername?
+Foo6 --> Foo5: Invalid Username
+Foo5 --> Foo1: Invalid username = promptText("("Please enter a valid Username")
+
+Foo4 --> Foo1: createAccount = promptText("Please enter Password")
+Foo1 --> Foo5: User entered Password
+Foo5 --> Foo6: IsValidPassword?
+Foo6 --> Foo5: Invalid Password
+Foo5 --> Foo1: Invalid Password = promptText("("Please enter a valid Password")
+
+
+end
+end
+alt
+
+
+
+@enduml

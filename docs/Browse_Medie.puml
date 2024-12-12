@@ -1,0 +1,15 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+actor User as Foo1
+entity TextUI as Foo2
+control ControlUserClient as Foo3
+control MediaClient as Foo4
+database Database as Foo5
+
+
+
+
+
+@enduml
