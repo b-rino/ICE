@@ -138,11 +138,13 @@ public class MediaClient {
     public void displayPersonalList(){
         List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
         ui.displayMsg("\nYour available content\n");
+        int count = personalList.size()+ 1;
         if(personalList.size() > 0) {
 
             for (int i = 0; i < personalList.size(); i++) {
                 System.out.print((i + 1) + ". " + personalList.get(i) + "\n");
             }
+            System.out.println(count + ". Return to main menu");
             System.out.println("");
         }
         else{
@@ -155,6 +157,7 @@ public class MediaClient {
     public void personalListActions(){
         List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
         int answer = ui.promptNumeric("Please choose the number of the content you want to access");
+        int count = personalList.size()+ 1;
 
         if(answer > 0 && answer <= personalList.size()){
             MediaItem selectedMedia = personalList.get(answer -1);
