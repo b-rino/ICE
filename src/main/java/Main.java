@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 //TODO: HVIS DU FAILER LOGIN I FØRSTE FORSØG SKAL DU LOGGE IND TO GANGE EFTERFØLGENDE!!!
 //TODO: Husk modeller før aflevering
+//TODO: display balance ved køb
 
 
 public class Main {
