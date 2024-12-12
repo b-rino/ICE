@@ -83,6 +83,9 @@ public class MediaClient {
                 }
                 buyMedia(mediaOptions);
                 break;
+            default:
+                ui.displayMsg("Invalid choice");
+                browseMedia();
         }
 
     }
@@ -93,7 +96,9 @@ public class MediaClient {
         if (mediaOption > 0 && mediaOption <= mediaOptions.size()) {
             MediaItem selectedMedia = mediaOptions.get(mediaOption - 1);
             String confirmation = ui.promptText("Do you want to buy \"" + selectedMedia.getTitle() + "\" for 30dkk or 1 punch? (Y/N)");
-
+            if (confirmation.equalsIgnoreCase("N")) {
+                displayMenu();
+            }
             if (confirmation.equalsIgnoreCase("Y")) {
                 int payMethod = ui.promptNumeric("How do you want to pay?\n1. Account Wallet\n2. Punch card\n3. Go back to main menu");
                 if (payMethod == 1 && DBConnector.getUserBalance(currentUser.getUsername()) >= 30) {
@@ -115,14 +120,28 @@ public class MediaClient {
                 }else if(payMethod == 3){
                     displayMenu();
                 }
-                else {
+                else if (payMethod == 1 && DBConnector.getUserBalance(currentUser.getUsername()) < 30) {
                     ui.displayMsg("Purchase cancelled - insufficient funds\n");
                     displayMenu();
                 }
-            } else {
-                ui.displayMsg("Invalid option");
+                else if (payMethod == 2 && DBConnector.getUserPunchcardBalance(currentUser.getUsername()) == 0) {
+                    ui.displayMsg("Purchase cancelled - insufficient funds\n");
+                    displayMenu();
+                }
+                else {
+                    ui.displayMsg("Invalid choice");
+                    displayMenu();
+                }
             }
-            displayMenu();
+            else {
+                ui.displayMsg("Invalid choice");
+                browseMedia();
+            }
+
+        }
+        else {
+            ui.displayMsg("Invalid option");
+            browseMedia();
         }
     }
 

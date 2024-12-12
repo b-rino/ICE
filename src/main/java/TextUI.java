@@ -16,7 +16,7 @@ public class TextUI {
             number = Integer.parseInt(input);
         }
         catch(NumberFormatException e){
-            displayMsg("Please type a number");
+            displayMsg("Only numbers are allowed.");
             number = promptNumeric(msg);
         }
         return number;
