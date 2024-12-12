@@ -35,6 +35,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Password encryption -->
         <dependency>
                 <groupId>org.mindrot</groupId>
                 <artifactId>jbcrypt</artifactId>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="DBConnectorTest" time="0.177" tests="6" errors="0" skipped="0" failures="1">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="DBConnectorTest" time="0.177" tests="8" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="23"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/opt/jdk-23/lib"/>
-    <property name="sun.java.command" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter2706932097562332445.jar /home/mikkel/Desktop/Code/ICE/target/surefire 2024-12-11T19-45-16_556-jvmRun1 surefire15277336284840344658tmp surefire_010486737375853675739tmp"/>
+    <property name="sun.java.command" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter4735295499134712900.jar /home/mikkel/Desktop/Code/ICE/target/surefire 2024-12-11T20-57-09_607-jvmRun1 surefire9532924867038479773tmp surefire_014113610729395593796tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/mikkel/Desktop/Code/ICE/target/test-classes:/home/mikkel/Desktop/Code/ICE/target/classes:/home/mikkel/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2.jar:/home/mikkel/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/home/mikkel/.m2/repository/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2.jar:/home/mikkel/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/mikkel/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.2/junit-jupiter-engine-5.8.2.jar:/home/mikkel/.m2/repository/org/junit/platform/junit-platform-engine/1.8.2/junit-platform-engine-1.8.2.jar:/home/mikkel/.m2/repository/org/mindrot/jbcrypt/0.4/jbcrypt-0.4.jar:/home/mikkel/.m2/repository/org/mockito/mockito-inline/4.8.0/mockito-inline-4.8.0.jar:/home/mikkel/.m2/repository/org/mockito/mockito-core/4.8.0/mockito-core-4.8.0.jar:/home/mikkel/.m2/repository/net/bytebuddy/byte-buddy/1.12.14/byte-buddy-1.12.14.jar:/home/mikkel/.m2/repository/net/bytebuddy/byte-buddy-agent/1.12.14/byte-buddy-agent-1.12.14.jar:/home/mikkel/.m2/repository/org/objenesis/objenesis/3.2/objenesis-3.2.jar:/home/mikkel/.m2/repository/org/xerial/sqlite-jdbc/3.42.0.0/sqlite-jdbc-3.42.0.0.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -28,7 +28,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter2706932097562332445.jar"/>
+    <property name="surefire.real.class.path" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter4735295499134712900.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="23.0.1+11-39"/>
     <property name="user.name" value="mikkel"/>
@@ -54,25 +54,32 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="67.0"/>
   </properties>
-  <testcase name="testSaveUserDataAddDallerDiller" classname="DBConnectorTest" time="0.133">
+  <testcase name="testSaveUserDataAddDallerDiller" classname="DBConnectorTest" time="0.134">
     <system-out><![CDATA[[SQLITE_CONSTRAINT_UNIQUE] A UNIQUE constraint failed (UNIQUE constraint failed: Users.Username)
 ]]></system-out>
   </testcase>
-  <testcase name="testGetUserBalanceFromUserWithFunds" classname="DBConnectorTest" time="0.01">
-    <failure type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: The membership value for the user should be 500. ==> expected: <500> but was: <0>
-	at DBConnectorTest.testGetUserBalanceFromUserWithFunds(DBConnectorTest.java:210)
-]]></failure>
+  <testcase name="getUserIdOfTesterWithId1" classname="DBConnectorTest" time="0.009">
+    <system-out><![CDATA[Tester's ID 1
+]]></system-out>
   </testcase>
-  <testcase name="readMediaDataForSpecificMovie" classname="DBConnectorTest" time="0.008">
+  <testcase name="testGetUserBalanceFromUserWithFunds" classname="DBConnectorTest" time="0.004">
+    <system-out><![CDATA[Tester's Balance: 500
+]]></system-out>
+  </testcase>
+  <testcase name="readMediaDataForSpecificMovie" classname="DBConnectorTest" time="0.005">
     <system-out><![CDATA[Movie found: true
 ]]></system-out>
   </testcase>
-  <testcase name="testReadUserDataFindDilleren" classname="DBConnectorTest" time="0.001">
+  <testcase name="testReadUserDataFindDilleren" classname="DBConnectorTest" time="0.002">
     <system-out><![CDATA[User found: true
 ]]></system-out>
   </testcase>
+  <testcase name="testGetUserPunchcardBalanceWith5" classname="DBConnectorTest" time="0.004">
+    <system-out><![CDATA[Tester's Balance: 5
+]]></system-out>
+  </testcase>
   <testcase name="testGetUserWithActiveMembership" classname="DBConnectorTest" time="0.005"/>
-  <testcase name="testReadMediaDataForSpecificSeries" classname="DBConnectorTest" time="0.004">
+  <testcase name="testReadMediaDataForSpecificSeries" classname="DBConnectorTest" time="0.003">
     <system-out><![CDATA[Series found: true
 ]]></system-out>
   </testcase>
