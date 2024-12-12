@@ -88,7 +88,7 @@ public class DBConnector {
             case "series":
                 actualSqlQuery = seriesSql;
                 break;
-            case "audiobooks":
+            case "audiobook":
                 actualSqlQuery = audioSql;
                 break;
         }
@@ -105,17 +105,17 @@ public class DBConnector {
                     String type = rs.getString("type");
 
 
-                    if (type.equals("movie")) {
+                    if (type.equals("Movie")) {
                         Movie movie = new Movie(title, releaseYear, category, rating);
                         mediaList.add(movie);
                     }
-                    if (type.equals("series")) {
+                    if (type.equals("Series")) {
                         int season = rs.getInt("season");
                         int episode = rs.getInt("episode");
                         Series series = new Series(title, releaseYear, category, rating, season, episode);
                         mediaList.add(series);
                     }
-                    if (type.equals("audiobook")) {
+                    if (type.equals("Audiobook")) {
                         String author = rs.getString("author");
                         Audiobooks audiobooks = new Audiobooks(title, releaseYear, category, rating, author);
                         mediaList.add(audiobooks);

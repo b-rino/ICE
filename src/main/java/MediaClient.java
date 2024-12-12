@@ -77,7 +77,7 @@ public class MediaClient {
                 break;
             case 3:
                 ui.displayMsg("Browsing all Audiobooks");
-                mediaOptions = DBConnector.readMediaData("audiobooks");
+                mediaOptions = DBConnector.readMediaData("audiobook");
                 for (int i = 0; i < mediaOptions.size(); i++) {
                     ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
                 }
