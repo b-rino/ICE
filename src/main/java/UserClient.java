@@ -200,6 +200,9 @@ public class UserClient {
         ui.displayMsg("Welcome to Club BlogBuster\nA membership at Club BlogBuster includes:" +
                 "\n- Punch card with 10 punches for using content of your choice\n- Extended rental period\n"); //1 min for non-members and 2 min for members
         String answer = ui.promptText("Do you want to buy a membership for 200? (Y/N)");
+        if (answer.equalsIgnoreCase("n")) {
+            displayAccount();
+        }
         if (answer.equalsIgnoreCase("y")) {
             if (DBConnector.getUserBalance(currentUser.getUsername()) >= 200 && DBConnector.getUserMembership(currentUser.getUsername()) == 0) {
                 ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership\n");
@@ -216,7 +219,8 @@ public class UserClient {
                 displayAccount();
             }
         }
-        if (answer.equalsIgnoreCase("n")) {
+        else {
+            ui.displayMsg("Invalid choice");
             displayAccount();
         }
     }
