@@ -18,7 +18,7 @@ public class UserClient {
 
     public User loginMenu() {
         ui.displayMsg("Welcome to BlogBuster. Please create an account or log in.");
-        int choice = ui.promptNumeric("1. Log in\n2. Create Account");
+        int choice = ui.promptNumeric("1. Log in\n2. Create Account\n3. Forgot Password");
 
         if (choice == 1) {
             currentUser = login();
@@ -27,13 +27,95 @@ public class UserClient {
             createUser();
             currentUser = login();
             return currentUser;
+        }else if(choice == 3) {
+            forgotPassword();
+            return loginMenu();
         } else {
             System.out.println("Invalid choice");
             return loginMenu();
         }
     }
+    public void forgotPassword() {
+        String enterUsername = ui.promptText("Please enter your username: ");
+        if (!doesUsernameExist(enterUsername)) {
+            ui.displayMsg("The username does not exist.");
+            return;
+        }
+        String enterEmail = ui.promptText("Please enter your email: ");
+        if (enterEmail.isEmpty() || !enterEmail.contains("@")){
+            ui.displayMsg("Email does not exist.");
+            return;
+        }
+        String newPassword = ui.promptText("Please enter your new password (minimum 4 character)");
+        if (newPassword.length() < 4) {
+            ui.displayMsg("Password is too short, minimum 4 characters long");
+            return;
+        }
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+
+        String sql = "UPDATE Users SET Password = ? WHERE Username = ?";
+
+        try (Connection conn = DBConnector.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, hashedPassword);
+            pstmt.setString(2, enterUsername);
+            int rowsUpdated = pstmt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                ui.displayMsg("Your password has been updated successfully!");
+            } else {
+                ui.displayMsg("An error occurred. Please try again.");
+            }
+        } catch (SQLException e) {
+            ui.displayMsg("Error updating password: " + e.getMessage());
+        }
+    }
+    public void changePassword() {
+        String enterUsername = ui.promptText("Please enter your username: ");
+        if (!doesUsernameExist(enterUsername)) {
+            ui.displayMsg("The username does not exist.");
+            return;
+        }
+        String enterEmail = ui.promptText("Please enter your email: ");
+        if (enterEmail.isEmpty() || !enterEmail.contains("@")){
+            changePassword();
+            return;
+        }
+
+        String newPassword = ui.promptText("Please enter your new password (minimum 4 character)");
+        if (newPassword.length() < 4) {
+            ui.displayMsg("Password is too short, minimum 4 characters long");
+            return;
+        }
+        String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+
+        String sql = "UPDATE Users SET Password = ? WHERE Username = ?";
+
+        try (Connection conn = DBConnector.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, hashedPassword);
+            pstmt.setString(2, enterUsername);
+            int rowsUpdated = pstmt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                ui.displayMsg("Your password has been updated successfully!");
+            } else {
+                ui.displayMsg("An error occurred. Please try again.");
+            }
+        } catch (SQLException e) {
+            ui.displayMsg("Error updating password: " + e.getMessage());
+        }
+    }
 
     public void createUser() {
+        String email = ui.promptText("Please enter your email: ");
+        if (email.equals("") || !email.contains("@")){
+            ui.displayMsg("Email must not be empty and must contain '@'. Please try again.");
+            loginMenu();
+            return;
+        }
         String username = ui.promptText("Please enter a username of minimum 1 and maximum 12 characters: ");
         if (username.equals("") || username.length() > 12) {
             ui.displayMsg("Please enter a valid username\n");
@@ -56,12 +138,13 @@ public class UserClient {
 
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-        String sql = "INSERT INTO Users (Username, Password) VALUES (?, ?)";
+        String sql = "INSERT INTO Users (Username, Password, email) VALUES (?, ?, ?)";
 
         try (Connection conn = DBConnector.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, username);
             pstmt.setString(2, hashedPassword);
+            pstmt.setString(3, email);
             pstmt.executeUpdate();
             System.out.println("Account Created!");
         } catch (SQLException e) {
@@ -87,7 +170,8 @@ public class UserClient {
                     ui.displayMsg("\nLogin successful! Welcome " + username + "\n");
                     String dbUsername = rs.getString("Username");
                     String dbPassword = rs.getString("Password");
-                    currentUser = new User(dbUsername, dbPassword);
+                    String dbEmail = rs.getString("Email");
+                    currentUser = new User(dbUsername, dbPassword,dbEmail);
                     return currentUser;
                 } else {
                     System.out.println("Invalid username or password. Please try again.");
@@ -151,7 +235,8 @@ public class UserClient {
         accountOptions.add("1. Add funds");
         accountOptions.add("2. Buy membership");
         accountOptions.add("3. Return to main menu");
-        accountOptions.add("4. Delete account");
+        accountOptions.add("4. Change Password");
+        accountOptions.add("5. Delete account");
 
 
         for (int i = 0; i < accountOptions.size(); i++) {
@@ -171,6 +256,10 @@ public class UserClient {
                 mc.displayMenu();
                 break;
             case 4:
+                changePassword();
+                displayAccount();
+                break;
+            case 5:
                 deleteAccount();
                 break;
             default:

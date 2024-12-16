@@ -40,7 +40,8 @@ public class DBConnector {
             while (rs.next()) {
                 String username = rs.getString("username");
                 String password = rs.getString("password");
-                User user = new User(username, password);
+                String email = rs.getString("email");
+                User user = new User(username, password,email);
                 userData.add(user);
             }
         } catch (SQLException e) {
@@ -50,12 +51,13 @@ public class DBConnector {
     }
 
     public void saveUserData(User user) {
-        String sql = "INSERT INTO Users (username, password) VALUES (?,?)";
+        String sql = "INSERT INTO Users (username, password,email) VALUES (?,?,?)";
 
         try (Connection conn = this.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, user.getUsername());
             pstmt.setString(2, user.getPassword());
+            pstmt.setString(3, user.getEmail());
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
