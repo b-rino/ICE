@@ -19,6 +19,8 @@ class MediaItem{
 class MediaClient{
 -TextUI ui
 -DBConnector dbc
+- MediaMapper mediaMapper
+- UserMapper userMapper
 -User currentUser;
 +MediaClient(User currentUser)
 +displayMenu()
@@ -62,6 +64,7 @@ class AudioBooks{
 class UserClient{
 -TextUI ui
 -DBConnector dbc
+- UserMapper userMapper
 -User currentUser
 +UserClient(User currentUser)
 +loginMenu()
@@ -85,22 +88,29 @@ class TextUI{
 }
 
 package "mapper" {
-class DBConnector{
--static final String URL = "jdbc:sqlite:Blogbuster.db"
-+Connection connect()
+class UserMapper {
+- DBConnector DBConnector
 +List<User> readUserData()
 +saveUserData(User user)
 +deleteUserData(User user)
-+List<MediaItem> readMediaData(String sqlQuery)
 +updateUserBalance(User user, int amount, boolean isWithdrawal)
 +int getUserBalance(String username)
 +updateUserMembership(User user, int membership)
 +int getUserMembership(String username)
-+updateUserPunchcard(User user, int punchcard)
-+int getUserPunchcardBalance(String username)
 +int getUserID(String username)
 +addToPersonalList(User user, int ID, String sql)
 +List<MediaItem> getPersonalList(User user)
+
+}
+class MediaMapper {
+- DBConnector DBConnector
+- UserMapper userMapper
++List<MediaItem> readMediaData(String sqlQuery)
++getType(String sqlQuery)
+}
+class DBConnector{
+-static final String URL = "jdbc:sqlite:Blogbuster.db"
++Connection connect()
 }
 }
 

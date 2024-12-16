@@ -24,6 +24,11 @@ public class DBConnector {
         return conn;
     }
 
+
+
+
+
+    /*
     public List<User> readUserData() {
         String sql = "SELECT username, password FROM Users"; // Needs to be the same as columns.
         List<User> userData = new ArrayList<>();

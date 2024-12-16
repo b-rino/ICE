@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class UserClient {
 
     private DBConnector DBConnector = new DBConnector();
+    private UserMapper userMapper = new UserMapper();
     private TextUI ui = new TextUI();
     private User currentUser;
 
@@ -138,14 +139,14 @@ public class UserClient {
     public void displayAccount() {
         MediaClient mc = new MediaClient(currentUser);
         String membershipActive;
-        int balance = DBConnector.getUserBalance(currentUser.getUsername());
-        if (DBConnector.getUserMembership(currentUser.getUsername()) == 1){
+        int balance = userMapper.getUserBalance(currentUser.getUsername());
+        if (userMapper.getUserMembership(currentUser.getUsername()) == 1){
             membershipActive = "ACTIVE";
         }
         else {
             membershipActive = "INACTIVE";
         }
-        ui.displayMsg("\nACCOUNT INFORMATION\nUSERNAME:" + currentUser.getUsername() + "   BALANCE:" + balance + "   MEMBERSHIP:" + membershipActive + "   AVAILABLE PUNCHES:" + DBConnector.getUserPunchcardBalance(currentUser.getUsername()));
+        ui.displayMsg("\nACCOUNT INFORMATION\nUSERNAME:" + currentUser.getUsername() + "   BALANCE:" + balance + "   MEMBERSHIP:" + membershipActive + "   AVAILABLE PUNCHES:" + userMapper.getUserPunchcardBalance(currentUser.getUsername()));
         ArrayList<String> accountOptions = new ArrayList<>();
         accountOptions.add("1. Add funds");
         accountOptions.add("2. Buy membership");
@@ -183,7 +184,7 @@ public class UserClient {
         String answer = ui.promptText("Are you sure you want to delete this account? (Y/N)");
         if (answer.equalsIgnoreCase("Y")) {
             ui.displayMsg("Thanks for using BlogBuster. You are always welcome back.\nYour account has been deleted.");
-            DBConnector.deleteUserData(currentUser);
+            userMapper.deleteUserData(currentUser);
             System.exit(0);
         }
         else if (answer.equalsIgnoreCase("N")) {
@@ -204,15 +205,15 @@ public class UserClient {
             displayAccount();
         }
         if (answer.equalsIgnoreCase("y")) {
-            if (DBConnector.getUserBalance(currentUser.getUsername()) >= 200 && DBConnector.getUserMembership(currentUser.getUsername()) == 0) {
+            if (userMapper.getUserBalance(currentUser.getUsername()) >= 200 && userMapper.getUserMembership(currentUser.getUsername()) == 0) {
                 ui.displayMsg("Congratulations! You are now a member of Club BlogBuster - enjoy your membership\n");
-                DBConnector.updateUserBalance(currentUser, 200, true);
-                DBConnector.updateUserPunchcard(currentUser, 10);
-                DBConnector.updateUserMembership(currentUser, 1);
+                userMapper.updateUserBalance(currentUser, 200, true);
+                userMapper.updateUserPunchcard(currentUser, 10);
+                userMapper.updateUserMembership(currentUser, 1);
                 mc.displayMenu();
             }
-            else if (DBConnector.getUserMembership(currentUser.getUsername()) == 1) {
-                ui.displayMsg("You are already member of Club BlogBuster and have " + DBConnector.getUserPunchcardBalance(currentUser.getUsername()) + " punches left");
+            else if (userMapper.getUserMembership(currentUser.getUsername()) == 1) {
+                ui.displayMsg("You are already member of Club BlogBuster and have " + userMapper.getUserPunchcardBalance(currentUser.getUsername()) + " punches left");
                 displayAccount();
             }else{
                 ui.displayMsg("You have insufficient funds to buy a membership");
