@@ -18,7 +18,8 @@ public class UserMapper {
             while (rs.next()) {
                 String username = rs.getString("username");
                 String password = rs.getString("password");
-                User user = new User(username, password);
+                String email = rs.getString("email");
+                User user = new User(username, password, email);
                 userData.add(user);
             }
         } catch (SQLException e) {
