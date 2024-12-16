@@ -96,6 +96,7 @@ public class MediaClient {
         if (mediaOption > 0 && mediaOption <= mediaOptions.size()) {
             MediaItem selectedMedia = mediaOptions.get(mediaOption - 1);
             ui.displayMsg("BALANCE: " + DBConnector.getUserBalance(currentUser.getUsername()) + " AVAILABLE PUNCHES: " + DBConnector.getUserPunchcardBalance(currentUser.getUsername()) + "\n");
+
             String confirmation = ui.promptText("Do you want to buy \"" + selectedMedia.getTitle() + "\" for 30dkk or 1 punch? (Y/N)");
             if (confirmation.equalsIgnoreCase("N")) {
                 displayMenu();
@@ -104,32 +105,10 @@ public class MediaClient {
                 int payMethod = ui.promptNumeric("How do you want to pay?\n1. Account Wallet\n2. Punch card\n3. Go back to main menu");
                 switch (payMethod) {
                     case 1:
-                        if (DBConnector.getUserBalance(currentUser.getUsername()) >= 30) {
-                            ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"");
-                            DBConnector.updateUserBalance(currentUser, 30, true);
-                            mediaTypeSelection(selectedMedia, mediaOption);
-                            displayMenu();
-                        } else {
-                            ui.displayMsg("\nPurchase cancelled - insufficient funds\n");
-                            displayMenu();
-                        }
+                        buyWithWallet(selectedMedia, mediaOption);
                         break;
                     case 2:
-                        if (DBConnector.getUserPunchcardBalance(currentUser.getUsername()) > 1) {
-                            ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"");
-                            DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) - 1);
-                            mediaTypeSelection(selectedMedia, mediaOption);
-                            displayMenu();
-                        } else if (DBConnector.getUserPunchcardBalance(currentUser.getUsername()) == 1) {
-                            ui.displayMsg("You have bought " + selectedMedia.getTitle() + " with your last available punch. You can find your purchase in \"Your Media\"\n");
-                            DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) - 1);
-                            DBConnector.updateUserMembership(currentUser, 0);
-                            mediaTypeSelection(selectedMedia, mediaOption);
-                            displayMenu();
-                        } else {
-                            ui.displayMsg("\nPurchase cancelled - insufficient funds\n");
-                            displayMenu();
-                        }
+                        buyWithPunchcard(selectedMedia, mediaOption);
                         break;
                     case 3:
                         displayMenu();
@@ -140,6 +119,41 @@ public class MediaClient {
 
                 }
             }
+        }
+        else{
+            ui.displayMsg("\nInvalid choice");
+            browseMedia();
+        }
+    }
+
+
+    public void buyWithPunchcard(MediaItem selectedMedia, int mediaOption){
+        if (DBConnector.getUserPunchcardBalance(currentUser.getUsername()) > 1) {
+            ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"\n");
+            DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) - 1);
+            mediaTypeSelection(selectedMedia, mediaOption);
+            displayMenu();
+        } else if (DBConnector.getUserPunchcardBalance(currentUser.getUsername()) == 1) {
+            ui.displayMsg("You have bought " + selectedMedia.getTitle() + " with your last available punch. You can find your purchase in \"Your Media\"\n");
+            DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) - 1);
+            DBConnector.updateUserMembership(currentUser, 0);
+            mediaTypeSelection(selectedMedia, mediaOption);
+            displayMenu();
+        } else {
+            ui.displayMsg("\nPurchase cancelled - insufficient funds\n");
+            displayMenu();
+        }
+    }
+
+    public void buyWithWallet(MediaItem selectedMedia, int mediaOption){
+        if (DBConnector.getUserBalance(currentUser.getUsername()) >= 30) {
+            ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"");
+            DBConnector.updateUserBalance(currentUser, 30, true);
+            mediaTypeSelection(selectedMedia, mediaOption);
+            displayMenu();
+        } else {
+            ui.displayMsg("\nPurchase cancelled - insufficient funds\n");
+            displayMenu();
         }
     }
 
