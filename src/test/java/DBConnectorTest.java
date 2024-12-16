@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class DBConnectorTest {
     private DBConnector dbConnector;
     private Connection connection;
+    private UserMapper userMapper;
+    private MediaMapper mediaMapper;
 
     @BeforeEach // Create a new instance of DBConnector for each test.
     void setUp() throws SQLException {
@@ -32,7 +34,7 @@ class DBConnectorTest {
     @Test
     void testReadUserDataFindDilleren() throws SQLException {
         // Arrange: Insert a test user into the database
-        List<User> userList = dbConnector.readUserData();
+        List<User> userList = userMapper.readUserData();
         // System.out.println(userList); // Sout to see if list gets filled
 
         assertNotNull(userList);
@@ -61,7 +63,7 @@ class DBConnectorTest {
         User user = new User("daller", "diller");
 
         // Act: Save the user data
-        dbConnector.saveUserData(user);
+        userMapper.saveUserData(user);
 
         // Assert: Verify that the user was inserted into the database
         String selectSQL = "SELECT username, password FROM Users WHERE username = 'daller'";
@@ -76,7 +78,7 @@ class DBConnectorTest {
     @Test
     void readMediaDataForSpecificMovie() throws SQLException {
         // Arrange: Read db and arrange in list.
-        List<MediaItem> mediaList = dbConnector.readMediaData("movie");
+        List<MediaItem> mediaList = mediaMapper.readMediaData("movie");
         // System.out.println(mediaList); // Check if list gets filled
         assertNotNull(mediaList); // Ensures that the list isn't null
         assertTrue(mediaList.size() > 0); // Contains at least 1 movie
@@ -103,7 +105,7 @@ class DBConnectorTest {
     @Test
     void testReadMediaDataForSpecificSeries() throws SQLException {
         // Call the method to read movies
-        List<MediaItem> mediaList = dbConnector.readMediaData("series");
+        List<MediaItem> mediaList = mediaMapper.readMediaData("series");
         // System.out.println(mediaList); // Sout for checking if list is filled
         assertNotNull(mediaList); // Ensures that the list isn't null
         assertTrue(mediaList.size() > 0); // Contains at least 1 movie
@@ -169,12 +171,13 @@ class DBConnectorTest {
     }
      */
 
-    /*
+/*
+
     @Test
     void testGetUserWithActiveMembership() throws SQLException {
         // Arrange: Insert a test user with an active membership
         String insertSQL = "INSERT INTO Users (username, password, balance, membership) VALUES (?, ?, ?, ?)";
-        dbConnector.getUserMembership("Tester");
+        userMapper.getUserMembership("Tester");
 
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
             pstmt.setString(1, "Tester"); // Username
@@ -184,7 +187,7 @@ class DBConnectorTest {
             pstmt.executeUpdate();
         }
         // Act: Retrieve membership using getUserMembership
-        int actualMembership = dbConnector.getUserMembership("Tester");
+        int actualMembership = userMapper.getUserMembership("Tester");
 
         // Assert: Verify the membership value is correct
         assertEquals(1, actualMembership, "The membership value for the user should be 1.");
@@ -204,7 +207,7 @@ class DBConnectorTest {
         }
 
         // Act: Retrieve membership using getUserMembership
-        int actualBalance = dbConnector.getUserBalance("Tester");
+        int actualBalance = userMapper.getUserBalance("Tester");
 
         // Assert: Verify that user's balance is correct
         System.out.println("Tester's Balance: " + actualBalance); // Sout to show balance
@@ -225,7 +228,7 @@ class DBConnectorTest {
         }
 
         // Act: Retrieve punchcard balance with method
-        int actualPunchcardBalance = dbConnector.getUserPunchcardBalance("Tester");
+        int actualPunchcardBalance = userMapper.getUserPunchcardBalance("Tester");
 
         // Arrange: Verify that tester's punchcard balance is 5.
         System.out.println("Tester's Balance: " + actualPunchcardBalance);
@@ -249,7 +252,7 @@ class DBConnectorTest {
         }
 
         // Act: Retrieve userID with method.
-        int actualUserID = dbConnector.getUserID("Tester");
+        int actualUserID = userMapper.getUserID("Tester");
 
         // Arrange  : Verify that tester's userID is 1.
         System.out.println("Tester's ID " + actualUserID);
@@ -296,5 +299,4 @@ class DBConnectorTest {
 
     */
 
-}
 
