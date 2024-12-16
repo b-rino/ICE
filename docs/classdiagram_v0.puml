@@ -24,10 +24,13 @@ class MediaClient{
 +displayMenu()
 +browseMedia()
 +buyMedia(List<MediaItem> mediaOptions)
++buyWithWallet(MediaItem selectedMedia, int mediaOption)
++buyWithPunchcard(MediaItem selectedMedia, int mediaOption)
 +mediaTypeSelection(MediaItem SelectedMedia, int mediaOption)
 +displayPersonalList()
 +personalListActions()
 +cleanUpPersonalList(User user, int timeLimit)
+
 }
 
 
