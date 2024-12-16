@@ -27,14 +27,15 @@ public class UserClient {
             createUser();
             currentUser = login();
             return currentUser;
-        }else if(choice == 3) {
+        } else if (choice == 3) {
             forgotPassword();
             return loginMenu();
         } else {
-            System.out.println("Invalid choice");
+            ui.displayMsg("Invalid choice");
             return loginMenu();
         }
     }
+
     public void forgotPassword() {
         String enterUsername = ui.promptText("Please enter your username: ");
         if (!doesUsernameExist(enterUsername)) {
@@ -42,7 +43,7 @@ public class UserClient {
             return;
         }
         String enterEmail = ui.promptText("Please enter your email: ");
-        if (enterEmail.isEmpty() || !enterEmail.contains("@")){
+        if (enterEmail.isEmpty() || !enterEmail.contains("@")) {
             ui.displayMsg("Email does not exist.");
             return;
         }
@@ -71,6 +72,7 @@ public class UserClient {
             ui.displayMsg("Error updating password: " + e.getMessage());
         }
     }
+
     public void changePassword() {
         String enterUsername = ui.promptText("Please enter your username: ");
         if (!doesUsernameExist(enterUsername)) {
@@ -78,7 +80,7 @@ public class UserClient {
             return;
         }
         String enterEmail = ui.promptText("Please enter your email: ");
-        if (enterEmail.isEmpty() || !enterEmail.contains("@")){
+        if (enterEmail.isEmpty() || !enterEmail.contains("@")) {
             changePassword();
             return;
         }
@@ -111,28 +113,28 @@ public class UserClient {
 
     public void createUser() {
         String email = ui.promptText("Please enter your email: ");
-        if (email.equals("") || !email.contains("@")){
+        if (email.equals("") || !email.contains("@")) {
             ui.displayMsg("Email must not be empty and must contain '@'. Please try again.");
-            loginMenu();
+            createUser();
             return;
         }
         String username = ui.promptText("Please enter a username of minimum 1 and maximum 12 characters: ");
         if (username.equals("") || username.length() > 12) {
             ui.displayMsg("Please enter a valid username\n");
-            loginMenu();
+            createUser();
             return;
         }
 
-        if(doesUsernameExist(username)) {
+        if (doesUsernameExist(username)) {
             ui.displayMsg("Username already exists\n");
-            loginMenu();
+            createUser();
             return;
         }
 
         String password = ui.promptText("Please enter a password of a minimum 4 characters: ");
         if (password.length() < 4) {
             ui.displayMsg("Please enter a valid password\n");
-            loginMenu();
+            createUser();
             return;
         }
 
@@ -171,14 +173,16 @@ public class UserClient {
                     String dbUsername = rs.getString("Username");
                     String dbPassword = rs.getString("Password");
                     String dbEmail = rs.getString("Email");
-                    currentUser = new User(dbUsername, dbPassword,dbEmail);
+                    currentUser = new User(dbUsername, dbPassword, dbEmail);
                     return currentUser;
-                } else {
-                    System.out.println("Invalid username or password. Please try again.");
+                }
+                else {
+                    ui.displayMsg("Invalid username or password. Please try again.");
                     return loginMenu();
                 }
 
-            }else {
+            }
+            else {
                 ui.displayMsg("Invalid username or password. Please try again.");
                 return loginMenu();
             }
