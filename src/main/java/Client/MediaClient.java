@@ -27,7 +27,7 @@ public class MediaClient {
     public void displayMenu() {
         cleanUpPersonalList(currentUser, 1);
         ArrayList<String> options = new ArrayList<>();
-        System.out.println("MAIN MENU");
+        ui.displayMsg("MAIN MENU");
 
         options.add("1. Browse Media");
         options.add("2. Your Media");
@@ -53,11 +53,11 @@ public class MediaClient {
                 userClient.displayAccount();
                 break;
             case 4:
-                System.out.println("Thank you for using BlogBuster");
+                ui.displayMsg("Thank you for using BlogBuster");
                 System.exit(0);
                 break;
             default:
-                System.out.println("Invalid choice - please choose a number between 1 and 4");
+                ui.displayMsg("Invalid choice - please choose a number between 1 and 4");
                 displayMenu();
         }
     }
@@ -115,7 +115,7 @@ public class MediaClient {
                             mediaOptions.sort(Comparator.comparing(MediaItem::getRating));
                             break;
                             default:
-                                System.out.println("Invalid choice - please choose a number between 1 and 4");
+                                ui.displayMsg("Invalid choice - please choose a number between 1 and 4");
                                 sortMediaList(mediaOptions);
                                 break;
             }
@@ -218,10 +218,10 @@ public class MediaClient {
             else if (item instanceof Audiobooks) {
                 type = mediaMapper.getType("audiobook");
             }
-            System.out.print((i + 1) + ". " + type + " - " + item + "\n");
+            ui.displayMsg((i + 1) + ". " + type + " - " + item + "\n");
         }
-            System.out.println(counter + ". Main Menu");
-            System.out.println("");
+            ui.displayMsg(counter + ". Main Menu");
+            ui.displayMsg("");
         }
         else{
             ui.displayMsg("You currently have no content on your personal list\n");

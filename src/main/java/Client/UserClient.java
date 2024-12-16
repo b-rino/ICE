@@ -272,7 +272,7 @@ public class UserClient {
                 deleteAccount();
                 break;
             default:
-                System.out.println("Invalid choice - please choose a number between 1 and 4");
+                ui.displayMsg("Invalid choice - please choose a number between 1 and 4");
                 displayAccount();
                 break;
         }
@@ -289,7 +289,7 @@ public class UserClient {
             displayAccount();
         }
         else{
-            System.out.println("Invalid choice");
+            ui.displayMsg("Invalid choice");
             displayAccount();
         }
     }
