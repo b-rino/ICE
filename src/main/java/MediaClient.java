@@ -2,13 +2,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
 public class MediaClient {
     private DBConnector DBConnector = new DBConnector();
-    private MediaMapper mediaMapper = new MediaMapper();
-    private UserMapper userMapper = new UserMapper();
     private TextUI ui = new TextUI();
     private User currentUser;
 
@@ -63,101 +62,138 @@ public class MediaClient {
         switch (answer) {
             case 1:
                 ui.displayMsg("Browsing All Movies");
-                mediaOptions = mediaMapper.readMediaData("movie");
-                for (int i = 0; i < mediaOptions.size(); i++) {
-                    ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
-                }
-                buyMedia(mediaOptions);
+                mediaOptions = DBConnector.readMediaData("movie");
+                displaySortedList(mediaOptions);
                 break;
             case 2:
                 ui.displayMsg("Browsing All Series");
-                mediaOptions = mediaMapper.readMediaData("series");
-                for (int i = 0; i < mediaOptions.size(); i++) {
-                    ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
-                }
-                buyMedia(mediaOptions);
+                mediaOptions = DBConnector.readMediaData("series");
+                displaySortedList(mediaOptions);
                 break;
             case 3:
                 ui.displayMsg("Browsing all Audiobooks");
-                mediaOptions = mediaMapper.readMediaData("audiobook");
-                for (int i = 0; i < mediaOptions.size(); i++) {
-                    ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
-                }
-                buyMedia(mediaOptions);
+                mediaOptions = DBConnector.readMediaData("audiobook");
+                displaySortedList(mediaOptions);
                 break;
             default:
                 ui.displayMsg("Invalid choice");
                 browseMedia();
+
         }
+    }
+
+    public void displaySortedList(List<MediaItem> mediaOptions) {
+        List<MediaItem> sortedMediaList = sortMediaList(mediaOptions);
+        for (int i = 0; i < sortedMediaList.size(); i++) {
+            ui.displayMsg((i + 1) + ". " + sortedMediaList.get(i).toString());
+        }
+        buyMedia(mediaOptions);
 
     }
+
+    public List<MediaItem> sortMediaList(List<MediaItem> mediaOptions) {
+        if(!mediaOptions.isEmpty()){
+            int sortChoice = ui.promptNumeric("\nSort by:\n1. Title\n2. Release year\n3. Category\n4. Rating\n");
+            switch (sortChoice) {
+                case 1: mediaOptions.sort(Comparator.comparing(MediaItem::getTitle));
+                break;
+                case 2:
+                    mediaOptions.sort(Comparator.comparing(MediaItem::getReleaseYear));
+                    break;
+                    case 3:
+                        mediaOptions.sort(Comparator.comparing(MediaItem::getCategory));
+                        break;
+                        case 4:
+                            mediaOptions.sort(Comparator.comparing(MediaItem::getRating));
+                            break;
+                            default:
+                                System.out.println("Invalid choice - please choose a number between 1 and 4");
+                                sortMediaList(mediaOptions);
+                                break;
+            }
+        }
+        return mediaOptions;
+    }
+
+
 
     public void buyMedia(List<MediaItem> mediaOptions) {
         int mediaOption = ui.promptNumeric("Please pick a media option");
 
         if (mediaOption > 0 && mediaOption <= mediaOptions.size()) {
             MediaItem selectedMedia = mediaOptions.get(mediaOption - 1);
+            ui.displayMsg("BALANCE: " + DBConnector.getUserBalance(currentUser.getUsername()) + " AVAILABLE PUNCHES: " + DBConnector.getUserPunchcardBalance(currentUser.getUsername()) + "\n");
+
             String confirmation = ui.promptText("Do you want to buy \"" + selectedMedia.getTitle() + "\" for 30dkk or 1 punch? (Y/N)");
             if (confirmation.equalsIgnoreCase("N")) {
                 displayMenu();
             }
             if (confirmation.equalsIgnoreCase("Y")) {
                 int payMethod = ui.promptNumeric("How do you want to pay?\n1. Account Wallet\n2. Punch card\n3. Go back to main menu");
-                if (payMethod == 1 && userMapper.getUserBalance(currentUser.getUsername()) >= 30) {
-                    ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"");
-                    userMapper.updateUserBalance(currentUser, 30, true);
-                    mediaTypeSelection(selectedMedia, mediaOption);
-                    displayMenu();
-                } else if (payMethod == 2 && userMapper.getUserPunchcardBalance(currentUser.getUsername()) > 1) {
-                    ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"");
-                    userMapper.updateUserPunchcard(currentUser, userMapper.getUserPunchcardBalance(currentUser.getUsername()) - 1);
-                    mediaTypeSelection(selectedMedia, mediaOption);
-                    displayMenu();
-                }else if(payMethod == 2 && userMapper.getUserPunchcardBalance(currentUser.getUsername()) == 1) {
-                    ui.displayMsg("You have bought " + selectedMedia.getTitle() + " with your last available punch. You can find your purchase in \"Your Media\"\n");
-                    userMapper.updateUserPunchcard(currentUser, userMapper.getUserPunchcardBalance(currentUser.getUsername()) - 1);
-                    userMapper.updateUserMembership(currentUser, 0);
-                    mediaTypeSelection(selectedMedia, mediaOption);
-                    displayMenu();
-                }else if(payMethod == 3){
-                    displayMenu();
-                }
-                else if (payMethod == 1 && userMapper.getUserBalance(currentUser.getUsername()) < 30) {
-                    ui.displayMsg("Purchase cancelled - insufficient funds\n");
-                    displayMenu();
-                }
-                else if (payMethod == 2 && userMapper.getUserPunchcardBalance(currentUser.getUsername()) == 0) {
-                    ui.displayMsg("Purchase cancelled - insufficient funds\n");
-                    displayMenu();
-                }
-                else {
-                    ui.displayMsg("Invalid choice");
-                    displayMenu();
+                switch (payMethod) {
+                    case 1:
+                        buyWithWallet(selectedMedia, mediaOption);
+                        break;
+                    case 2:
+                        buyWithPunchcard(selectedMedia, mediaOption);
+                        break;
+                    case 3:
+                        displayMenu();
+                        break;
+                    default:
+                        ui.displayMsg("Invalid choice");
+                        browseMedia();
                 }
             }
-            else {
-                ui.displayMsg("Invalid choice");
-                browseMedia();
-            }
-
         }
-        else {
-            ui.displayMsg("Invalid option");
+        else{
+            ui.displayMsg("\nInvalid choice");
             browseMedia();
+        }
+    }
+
+
+    public void buyWithPunchcard(MediaItem selectedMedia, int mediaOption){
+        if (DBConnector.getUserPunchcardBalance(currentUser.getUsername()) > 1) {
+            ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"\n");
+            DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) - 1);
+            mediaTypeSelection(selectedMedia, mediaOption);
+            displayMenu();
+        } else if (DBConnector.getUserPunchcardBalance(currentUser.getUsername()) == 1) {
+            ui.displayMsg("You have bought " + selectedMedia.getTitle() + " with your last available punch. You can find your purchase in \"Your Media\"\n");
+            DBConnector.updateUserPunchcard(currentUser, DBConnector.getUserPunchcardBalance(currentUser.getUsername()) - 1);
+            DBConnector.updateUserMembership(currentUser, 0);
+            mediaTypeSelection(selectedMedia, mediaOption);
+            displayMenu();
+        } else {
+            ui.displayMsg("\nPurchase cancelled - insufficient funds\n");
+            displayMenu();
+        }
+    }
+
+    public void buyWithWallet(MediaItem selectedMedia, int mediaOption){
+        if (DBConnector.getUserBalance(currentUser.getUsername()) >= 30) {
+            ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"");
+            DBConnector.updateUserBalance(currentUser, 30, true);
+            mediaTypeSelection(selectedMedia, mediaOption);
+            displayMenu();
+        } else {
+            ui.displayMsg("\nPurchase cancelled - insufficient funds\n");
+            displayMenu();
         }
     }
 
     public void mediaTypeSelection(MediaItem selectedMedia, int mediaOption) {
         if(selectedMedia instanceof Movie){
-            userMapper.addToPersonalList(currentUser, mediaOption, "movie");
+            DBConnector.addToPersonalList(currentUser, mediaOption, "movie");
         }else if(selectedMedia instanceof Series){
-            userMapper.addToPersonalList(currentUser, mediaOption, "series");
+            DBConnector.addToPersonalList(currentUser, mediaOption, "series");
         } else if (selectedMedia instanceof Audiobooks)
-        userMapper.addToPersonalList(currentUser, mediaOption, "audiobook");{
+        DBConnector.addToPersonalList(currentUser, mediaOption, "audiobook");{
         }
     }
     public void displayPersonalList(){
-        List<MediaItem> personalList = userMapper.getPersonalList(currentUser);
+        List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
         ui.displayMsg("\nYour available content\n");
         int counter = personalList.size()+1;
 
@@ -166,13 +202,13 @@ public class MediaClient {
             MediaItem item = personalList.get(i); // Get the current media item
             String type = null;
             if (item instanceof Movie) {
-                type = mediaMapper.getType("movie");
+                type = DBConnector.getType("movie");
             }
             else if (item instanceof Series) {
-                type = mediaMapper.getType("series");
+                type = DBConnector.getType("series");
             }
             else if (item instanceof Audiobooks) {
-                type = mediaMapper.getType("audiobook");
+                type = DBConnector.getType("audiobook");
             }
             System.out.print((i + 1) + ". " + type + " - " + item + "\n");
         }
@@ -187,7 +223,7 @@ public class MediaClient {
 
 
     public void personalListActions(){
-            List<MediaItem> personalList = userMapper.getPersonalList(currentUser);
+        List<MediaItem> personalList = DBConnector.getPersonalList(currentUser);
         int answer = ui.promptNumeric("Please choose the number of the content you want to access");
         int counter = personalList.size()+1;
         if (counter == answer) {
@@ -212,7 +248,7 @@ public class MediaClient {
     public void cleanUpPersonalList(User user, int timeLimit) {
         long currentTime = System.currentTimeMillis() / 1000L;
         long timeLimitInSeconds;
-        if(userMapper.getUserMembership(user.getUsername()) == 1){
+        if(DBConnector.getUserMembership(user.getUsername()) == 1){
             timeLimitInSeconds = timeLimit * 60 * 2;
         } else{
             timeLimitInSeconds = timeLimit * 60;

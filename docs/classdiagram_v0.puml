@@ -25,6 +25,8 @@ class MediaClient{
 +MediaClient(User currentUser)
 +displayMenu()
 +browseMedia()
++sortMediaList(List<MediaItem> mediaOptions)
++displaySortedList(List<MediaItem> mediaOptions)
 +buyMedia(List<MediaItem> mediaOptions)
 +buyWithWallet(MediaItem selectedMedia, int mediaOption)
 +buyWithPunchcard(MediaItem selectedMedia, int mediaOption)
