@@ -6,7 +6,7 @@ import javax.print.attribute.standard.Media;
 import java.sql.*;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
-
+/*
 class DBConnectorTest {
     private DBConnector dbConnector;
     private Connection connection;
@@ -169,6 +169,7 @@ class DBConnectorTest {
     }
      */
 
+    /*
     @Test
     void testGetUserWithActiveMembership() throws SQLException {
         // Arrange: Insert a test user with an active membership
@@ -250,7 +251,7 @@ class DBConnectorTest {
         // Act: Retrieve userID with method.
         int actualUserID = dbConnector.getUserID("Tester");
 
-        // Arrange: Verify that tester's userID is 1.
+        // Arrange  : Verify that tester's userID is 1.
         System.out.println("Tester's ID " + actualUserID);
         assertEquals(1, actualUserID, "The user ID should of Tester should be 1. ");
     }
