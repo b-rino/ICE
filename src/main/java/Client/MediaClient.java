@@ -1,10 +1,16 @@
+package Client;
+
+import Model.*;
+
+import DataSource.*;
+import UI.*;
+import Model.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 
 public class MediaClient {
     private DBConnector DBConnector = new DBConnector();

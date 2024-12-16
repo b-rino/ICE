@@ -1,3 +1,5 @@
+package Model;
+
 public class Series extends MediaItem {
 
     private int season;

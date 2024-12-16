@@ -1,7 +1,6 @@
-import java.io.IOException;
-import java.util.List;
+package Model;
+
 import java.util.Objects;
-import java.io.File;
 
 public class User {
     private String password;

@@ -1,5 +1,10 @@
-import org.sqlite.core.DB;
+package DataSource;
 
+import Model.MediaItem;
+import Model.Series;
+import UI.*;
+import Model.*;
+import Client.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

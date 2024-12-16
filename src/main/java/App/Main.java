@@ -1,7 +1,9 @@
-import javax.print.attribute.standard.Media;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+package App;
+
+import Model.*;
+import Client.*;
+
+import Client.MediaClient;
 //TODO: Husk modeller før aflevering
 
 

@@ -1,8 +1,13 @@
+package Client;
+
+import DataSource.UserMapper;
 import org.mindrot.jbcrypt.BCrypt;
+import DataSource.*;
+import UI.*;
+import Model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class UserClient {
 

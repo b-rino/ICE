@@ -1,9 +1,17 @@
+package DataSource;
+
+import Model.Audiobooks;
+import Model.MediaItem;
+import Model.Series;
+import UI.*;
+import Model.*;
+import Client.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MediaMapper {
-    private DBConnector DBConnector = new DBConnector();
+    private DataSource.DBConnector DBConnector = new DBConnector();
 
 
     public List<MediaItem> readMediaData(String sqlQuery) {
