@@ -116,7 +116,6 @@ public class MediaClient {
                     default:
                         ui.displayMsg("Invalid choice");
                         browseMedia();
-
                 }
             }
         }
