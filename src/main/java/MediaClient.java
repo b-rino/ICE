@@ -2,6 +2,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -62,33 +63,59 @@ public class MediaClient {
             case 1:
                 ui.displayMsg("Browsing All Movies");
                 mediaOptions = DBConnector.readMediaData("movie");
-                for (int i = 0; i < mediaOptions.size(); i++) {
-                    ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
-                }
-                buyMedia(mediaOptions);
+                displaySortedList(mediaOptions);
                 break;
             case 2:
                 ui.displayMsg("Browsing All Series");
                 mediaOptions = DBConnector.readMediaData("series");
-                for (int i = 0; i < mediaOptions.size(); i++) {
-                    ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
-                }
-                buyMedia(mediaOptions);
+                displaySortedList(mediaOptions);
                 break;
             case 3:
                 ui.displayMsg("Browsing all Audiobooks");
                 mediaOptions = DBConnector.readMediaData("audiobook");
-                for (int i = 0; i < mediaOptions.size(); i++) {
-                    ui.displayMsg((i + 1) + ". " + mediaOptions.get(i).toString());
-                }
-                buyMedia(mediaOptions);
+                displaySortedList(mediaOptions);
                 break;
             default:
                 ui.displayMsg("Invalid choice");
                 browseMedia();
+
         }
+    }
+
+    public void displaySortedList(List<MediaItem> mediaOptions) {
+        List<MediaItem> sortedMediaList = sortMediaList(mediaOptions);
+        for (int i = 0; i < sortedMediaList.size(); i++) {
+            ui.displayMsg((i + 1) + ". " + sortedMediaList.get(i).toString());
+        }
+        buyMedia(mediaOptions);
 
     }
+
+    public List<MediaItem> sortMediaList(List<MediaItem> mediaOptions) {
+        if(!mediaOptions.isEmpty()){
+            int sortChoice = ui.promptNumeric("\nSort by:\n1. Title\n2. Release year\n3. Category\n4. Rating\n");
+            switch (sortChoice) {
+                case 1: mediaOptions.sort(Comparator.comparing(MediaItem::getTitle));
+                break;
+                case 2:
+                    mediaOptions.sort(Comparator.comparing(MediaItem::getReleaseYear));
+                    break;
+                    case 3:
+                        mediaOptions.sort(Comparator.comparing(MediaItem::getCategory));
+                        break;
+                        case 4:
+                            mediaOptions.sort(Comparator.comparing(MediaItem::getRating));
+                            break;
+                            default:
+                                System.out.println("Invalid choice - please choose a number between 1 and 4");
+                                sortMediaList(mediaOptions);
+                                break;
+            }
+        }
+        return mediaOptions;
+    }
+
+
 
     public void buyMedia(List<MediaItem> mediaOptions) {
         int mediaOption = ui.promptNumeric("Please pick a media option");
