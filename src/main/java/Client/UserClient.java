@@ -201,7 +201,7 @@ public class UserClient {
     public void addFunds() {
         boolean passwordCheck = false;
         String password = ui.promptText("Please enter your password: ");
-        if(BCrypt.checkpw(password, currentUser.getPassword())) {
+        if(BCrypt.checkpw(password, userMapper.getUserPassword(currentUser.getUsername()))) {
             passwordCheck = true;
         }
         if (passwordCheck) {

@@ -266,5 +266,23 @@ public class UserMapper {
             System.out.println(e.getMessage());
         }
     }
+    public String getUserPassword(String username) {
+        String sql = "SELECT password FROM users WHERE username = ?";
+
+        String password = null;
+        try (Connection conn = DBConnector.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                password = rs.getString("Password");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return password;
+    }
+
 }
 
