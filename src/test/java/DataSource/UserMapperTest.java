@@ -37,42 +37,45 @@ class UserMapperTest {
         }
     }
 
-    /*
     @Test // Find specific user that doesn't get deleted like Tester does.
-    void testReadUserDataFindDilleren() throws SQLException {
+    void testReadUserDataFindBlogbuster() throws SQLException {
         // Arrange: Insert a test user into the database
         List<User> userList = userMapper.readUserData();
         // System.out.println(userList); // Sout to see if list gets filled
-
-        assertNotNull(userList);
-        assertTrue(userList.size() > 0); // Contains at least 1 movie
 
         // Act: Searches for diller
         boolean found = false;
         for (User item : userList) {
             if (item instanceof User) {
-                if ("diller".equals(item.getUsername())) {
-                    // && "dalgalasg".equals(user.getEmail())) { // Do we want to use an email column?
+                if ("blogbuster".equals(item.getUsername())) {
                     found = true;
                     break;
                 }
             }
         }
         // Assert: Checks if user is found
-        System.out.println("User found: " + found);
+        // System.out.println("User found: " + found);
         assertTrue(found);
     }
 
-    /*
     @Test
     void testReadUserDataFindTester() throws SQLException {
-        // Arrange: Insert a test user into the database
-        User user = new User("Tester", "Tester", "Tester@gmail.com");
-
+         // Arrange: Creates Tester and readsUserData to put in list
+        String insertSQL = "INSERT INTO Users VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setInt(1,1); // TEST ID NUMBER
+            pstmt.setString(2, "Tester"); // username
+            pstmt.setInt(3, 69696969); // Phonenumber
+            pstmt.setString(4, "Test"); // Password
+            pstmt.setString(5, "Tester@gmail.com");
+            pstmt.setInt(6, 500); // Balance
+            pstmt.setInt(7, 1); // Membership
+            pstmt.setInt(8, 10); // Punchcard
+            pstmt.executeUpdate();
+        }
         List<User> userList = userMapper.readUserData();
-        System.out.println(userList); // Sout to see if list gets filled
 
-        // Act: Searches for diller
+        // Act: Searches list for Tester
         boolean found = false;
         for (User item : userList) {
             if (item instanceof User) {
@@ -82,10 +85,11 @@ class UserMapperTest {
                 }
             }
         }
-        System.out.println("User found: " + found);
+        // System.out.println("User found: " + found);
         assertTrue(found);
     }
-    */
+
+
 
 
     @Test // Using Tester to avoid UNIQUE constraint. Tester gets deleted after Test and won't show in db.

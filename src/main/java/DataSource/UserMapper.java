@@ -13,7 +13,7 @@ public class UserMapper {
     private DBConnector DBConnector = new DBConnector();
 
     public List<User> readUserData() {
-        String sql = "SELECT username, password FROM Users"; // Needs to be the same as columns.
+        String sql = "SELECT username, password, email FROM Users"; // Edited to have email as well.
         List<User> userData = new ArrayList<>();
 
         try (Connection conn = DBConnector.connect();
