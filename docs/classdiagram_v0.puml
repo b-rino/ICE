@@ -16,7 +16,7 @@ class MediaItem{
 - String category
 - float rating
 - int id
-+MediaItem(String title, int year, String category, float rating)
++MediaItem(String title, int year, String category, float rating, int id)
 
 }
 
@@ -27,17 +27,17 @@ class MediaClient{
 - UserMapper userMapper
 -User currentUser;
 +MediaClient(User currentUser)
-+displayMenu()
-+browseMedia()
-+sortMediaList(List<MediaItem> mediaOptions)
-+displaySortedList(List<MediaItem> mediaOptions)
-+buyMedia(List<MediaItem> mediaOptions)
-+buyWithWallet(MediaItem selectedMedia, int mediaOption)
-+buyWithPunchcard(MediaItem selectedMedia, int mediaOption)
-+mediaTypeSelection(MediaItem SelectedMedia, int mediaOption)
-+displayPersonalList()
-+personalListActions()
-+cleanUpPersonalList(User user, int timeLimit)
++void displayMenu()
++void browseMedia()
++List<MediaItem> sortMediaList(List<MediaItem> mediaOptions)
++void displaySortedList(List<MediaItem> mediaOptions)
++void buyMedia(List<MediaItem> sortedMediaOptions, (List<MediaItem> originalMediaOptions))
++void buyWithWallet(MediaItem selectedMedia)
++void buyWithPunchcard(MediaItem selectedMedia)
++void mediaTypeSelection(MediaItem SelectedMedia)
++void displayPersonalList()
++void personalListActions()
++void cleanUpPersonalList(User user, int timeLimit)
 
 }
 
@@ -53,18 +53,18 @@ class User{
 
 class Movie{
 
-+ Movie(String title, int releaseYear, String category, float rating)
++ Movie(String title, int releaseYear, String category, float rating, int id)
 }
 
 class Series{
 - int episodes
 - int seasons
-+Series(String title, int year, String category, float rating, int episodes)
++Series(String title, int year, String category, float rating, int id, int seasons, int episodes)
 }
 
 class AudioBooks{
 - String author
-+ AudioBooks(String title, int releaseYear, String category, float rating, String author)
++ AudioBooks(String title, int releaseYear, String category, float rating, int id, String author)
 }
 
 
@@ -74,14 +74,16 @@ class UserClient{
 - UserMapper userMapper
 -User currentUser
 +UserClient(User currentUser)
-+loginMenu()
-+createUser()
-+login()
-+addFunds()
-+displayAccount()
-+deleteAccount()
-+buyMembership()
-+doesUsernameExist(String username)
++User loginMenu()
++void createUser()
++User login()
++void addFunds()
++void displayAccount()
++void deleteAccount()
++void buyMembership()
++void forgotPassword()
++void changePassword()
++boolean doesUsernameExist(String username)
 }
 
 
@@ -98,22 +100,26 @@ package "mapper" {
 class UserMapper {
 - DBConnector DBConnector
 +List<User> readUserData()
-+saveUserData(User user)
-+deleteUserData(User user)
-+updateUserBalance(User user, int amount, boolean isWithdrawal)
++void saveUserData(User user)
++void deleteUserData(User user)
++void updateUserBalance(User user, int amount, boolean isWithdrawal)
 +int getUserBalance(String username)
-+updateUserMembership(User user, int membership)
++void updateUserMembership(User user, int membership)
 +int getUserMembership(String username)
 +int getUserID(String username)
++void updateUserPunchcard(User user, int amount)
++int getUserPunchcardBalance(String username)
++int getUserId(String username)
 +addToPersonalList(User user, int ID, String sql)
 +List<MediaItem> getPersonalList(User user)
++String getUserPassword(String username)
 
 }
 class MediaMapper {
 - DBConnector DBConnector
 - UserMapper userMapper
 +List<MediaItem> readMediaData(String sqlQuery)
-+getType(String sqlQuery)
++String getType(String sqlQuery)
 }
 class DBConnector{
 -static final String URL = "jdbc:sqlite:Blogbuster.db"
