@@ -62,22 +62,28 @@ class UserMapperTest {
         assertTrue(found);
     }
 
+    @Test
+    void testReadUserDataFindTester() throws SQLException {
+        // Arrange: Insert a test user into the database
+        List<User> userList = userMapper.readUserData();
+        // System.out.println(userList); // Sout to see if list gets filled
+    }
 
-    @Test // UNIQUE constraint but works. Can just change to Tester but won't show in db because of deleteTestUser
-    void testSaveUserDataAddDallerDiller() throws SQLException {
+    @Test // Using Tester to avoid UNIQUE constraint. Tester gets deleted after Test and won't show in db.
+    void testSaveUserDataAddTester() throws SQLException {
         // Arrange: Create a User object to save
-        User user = new User("daller", "diller", "dillerdaller@gmail.com");
+        User user = new User("Tester", "Tester", "Tester@gmail.com");
 
         // Act: Save the user data
         userMapper.saveUserData(user);
 
         // Assert: Verify that the user was inserted into the database
-        String selectSQL = "SELECT username, password FROM Users WHERE username = 'daller'";
+        String selectSQL = "SELECT username, password FROM Users WHERE username = 'Tester'";
         try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(selectSQL)) {
+        ResultSet rs = stmt.executeQuery(selectSQL)) {
             assertTrue(rs.next());
-            assertEquals("daller", rs.getString("username"));
-            assertEquals("diller", rs.getString("password"));
+            assertEquals("Tester", rs.getString("username"));
+            assertEquals("Tester", rs.getString("password"));
         }
     }
 
@@ -118,7 +124,7 @@ class UserMapperTest {
         int actualBalance = userMapper.getUserBalance("Tester");
 
         // Assert: Verify that user's balance is correct
-        System.out.println("Tester's Balance: " + actualBalance); // Sout to show balance
+        // System.out.println("Tester's Balance: " + actualBalance); // Sout to show balance
         assertEquals(500, actualBalance, "The membership value for the user should be 500.");
     }
 
@@ -139,7 +145,7 @@ class UserMapperTest {
         int actualPunchcardBalance = userMapper.getUserPunchcardBalance("Tester");
 
         // Arrange: Verify that tester's punchcard balance is 5.
-        System.out.println("Tester's Balance: " + actualPunchcardBalance);
+        // System.out.println("Tester's Balance: " + actualPunchcardBalance);
         assertEquals(5, actualPunchcardBalance, "The punchcard for the user should be 5.");
     }
 
