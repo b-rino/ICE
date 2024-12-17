@@ -8,6 +8,7 @@ import Model.*;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class UserClient {
 
@@ -338,4 +339,6 @@ public class UserClient {
         }
         return false;
     }
+
+
 }

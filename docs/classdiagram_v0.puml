@@ -6,6 +6,10 @@ class Main{
 
 }
 
+class BlogBuster{
++setup()
+}
+
 class MediaItem{
 - String title
 - int releaseYear
@@ -41,7 +45,8 @@ class MediaClient{
 class User{
 -String password
 -String username
-+User(String username, String password)
+-String email
++User(String username, String password, String email)
 +boolean equals(Object o)
 }
 
@@ -119,10 +124,11 @@ class DBConnector{
 
 MediaItem<|--Series
 MediaItem <|-- Movie
-Main *-- MediaClient
+Main *-- BlogBuster
 MediaClient *-- "util"
 MediaClient -- MediaItem
-Main *-- UserClient
+BlogBuster *-- UserClient
+BlogBuster *-- MediaClient
 UserClient -- User
 UserClient *--"util"
 UserClient *-- "mapper"
