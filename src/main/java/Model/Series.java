@@ -19,14 +19,6 @@ public class Series extends MediaItem {
         return episode;
     }
 
-    public void setSeason(int season) {
-        this.season = season;
-    }
-
-    public void setEpisode(int episode) {
-        this.episode = episode;
-    }
-
     @Override
     public String toString() {
         return super.toString() + " Season: " + season + " Episode: " + episode;

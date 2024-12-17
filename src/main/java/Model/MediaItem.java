@@ -17,10 +17,6 @@ import java.util.Objects;
         this.id = id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getId() {
         return id;
     }
@@ -41,21 +37,6 @@ import java.util.Objects;
         return rating;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public void setRating(float rating) {
-        this.rating = rating;
-    }
 
     @Override
     public String toString() {
