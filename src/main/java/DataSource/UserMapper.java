@@ -208,8 +208,7 @@ public class UserMapper {
                     int releaseYear = rs.getInt("movieReleaseYear");
                     String category = rs.getString("movieCategory");
                     int rating = rs.getInt("movieRating");
-                    Movie movie = new Movie(movieTitle, releaseYear, category, rating);
-                    movie.setId(movieId);
+                    Movie movie = new Movie(movieTitle, releaseYear, category, rating, movieId);
                     personalMediaList.add(movie);
                 }
                 if (seriesId != 0) {
@@ -219,8 +218,7 @@ public class UserMapper {
                     int rating = rs.getInt("seriesRating");
                     int season = rs.getInt("season");
                     int episode = rs.getInt("episode");
-                    Series series = new Series(seriesTitle, releaseYear, category, rating, season, episode);
-                    series.setId(seriesId);
+                    Series series = new Series(seriesTitle, releaseYear, category, rating, seriesId, season, episode);
                     personalMediaList.add(series);
                 }
                 if (audioId != 0) {
@@ -229,8 +227,7 @@ public class UserMapper {
                     String category = rs.getString("audioCategory");
                     int rating = rs.getInt("audioRating");
                     String author = rs.getString("audioAuthor");
-                    Audiobooks audiobook = new Audiobooks(audioTitle, releaseYear, category, rating, author);
-                    audiobook.setId(audioId);
+                    Audiobooks audiobook = new Audiobooks(audioTitle, releaseYear, category, rating, audioId, author);
                     personalMediaList.add(audiobook);
                 }
             }

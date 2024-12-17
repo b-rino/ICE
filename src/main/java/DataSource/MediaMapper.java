@@ -49,21 +49,18 @@ public class MediaMapper {
 
 
                 if (type.equals("Movie")) {
-                    Movie movie = new Movie(title, releaseYear, category, rating);
-                    movie.setId(id);
+                    Movie movie = new Movie(title, releaseYear, category, rating, id);
                     mediaList.add(movie);
                 }
                 if (type.equals("Series")) {
                     int season = rs.getInt("season");
                     int episode = rs.getInt("episode");
-                    Series series = new Series(title, releaseYear, category, rating, season, episode);
-                    series.setId(id);
+                    Series series = new Series(title, releaseYear, category, rating, id, season, episode);
                     mediaList.add(series);
                 }
                 if (type.equals("Audiobook")) {
                     String author = rs.getString("author");
-                    Audiobooks audiobooks = new Audiobooks(title, releaseYear, category, rating, author);
-                    audiobooks.setId(id);
+                    Audiobooks audiobooks = new Audiobooks(title, releaseYear, category, rating, id, author);
                     mediaList.add(audiobooks);
                 }
             }
