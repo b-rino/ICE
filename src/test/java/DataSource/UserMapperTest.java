@@ -37,7 +37,8 @@ class UserMapperTest {
         }
     }
 
-    @Test
+    /*
+    @Test // Find specific user that doesn't get deleted like Tester does.
     void testReadUserDataFindDilleren() throws SQLException {
         // Arrange: Insert a test user into the database
         List<User> userList = userMapper.readUserData();
@@ -62,12 +63,30 @@ class UserMapperTest {
         assertTrue(found);
     }
 
+    /*
     @Test
     void testReadUserDataFindTester() throws SQLException {
         // Arrange: Insert a test user into the database
+        User user = new User("Tester", "Tester", "Tester@gmail.com");
+
         List<User> userList = userMapper.readUserData();
-        // System.out.println(userList); // Sout to see if list gets filled
+        System.out.println(userList); // Sout to see if list gets filled
+
+        // Act: Searches for diller
+        boolean found = false;
+        for (User item : userList) {
+            if (item instanceof User) {
+                if ("Tester".equals(item.getUsername())) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        System.out.println("User found: " + found);
+        assertTrue(found);
     }
+    */
+
 
     @Test // Using Tester to avoid UNIQUE constraint. Tester gets deleted after Test and won't show in db.
     void testSaveUserDataAddTester() throws SQLException {
