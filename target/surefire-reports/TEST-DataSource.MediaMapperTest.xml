@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="DataSource.MediaMapperTest" time="0.147" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="DataSource.MediaMapperTest" time="0.141" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="23"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -13,7 +13,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/opt/jdk-23/lib"/>
-    <property name="sun.java.command" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter6753054450319712381.jar /home/mikkel/Desktop/Code/ICE/target/surefire 2024-12-17T10-19-48_730-jvmRun1 surefire2754754050489695452tmp surefire_017076435127799039727tmp"/>
+    <property name="sun.java.command" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter12378233630973958552.jar /home/mikkel/Desktop/Code/ICE/target/surefire 2024-12-17T10-48-02_359-jvmRun1 surefire11877436626418426112tmp surefire_07318446674074603302tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/mikkel/Desktop/Code/ICE/target/test-classes:/home/mikkel/Desktop/Code/ICE/target/classes:/home/mikkel/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.8.2/junit-jupiter-api-5.8.2.jar:/home/mikkel/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/home/mikkel/.m2/repository/org/junit/platform/junit-platform-commons/1.8.2/junit-platform-commons-1.8.2.jar:/home/mikkel/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/mikkel/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.8.2/junit-jupiter-engine-5.8.2.jar:/home/mikkel/.m2/repository/org/junit/platform/junit-platform-engine/1.8.2/junit-platform-engine-1.8.2.jar:/home/mikkel/.m2/repository/org/mindrot/jbcrypt/0.4/jbcrypt-0.4.jar:/home/mikkel/.m2/repository/org/mockito/mockito-inline/4.8.0/mockito-inline-4.8.0.jar:/home/mikkel/.m2/repository/org/mockito/mockito-core/4.8.0/mockito-core-4.8.0.jar:/home/mikkel/.m2/repository/net/bytebuddy/byte-buddy/1.12.14/byte-buddy-1.12.14.jar:/home/mikkel/.m2/repository/net/bytebuddy/byte-buddy-agent/1.12.14/byte-buddy-agent-1.12.14.jar:/home/mikkel/.m2/repository/org/objenesis/objenesis/3.2/objenesis-3.2.jar:/home/mikkel/.m2/repository/org/xerial/sqlite-jdbc/3.42.0.0/sqlite-jdbc-3.42.0.0.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -28,7 +28,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter6753054450319712381.jar"/>
+    <property name="surefire.real.class.path" value="/home/mikkel/Desktop/Code/ICE/target/surefire/surefirebooter12378233630973958552.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="23.0.1+11-39"/>
     <property name="user.name" value="mikkel"/>
@@ -54,6 +54,6 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="67.0"/>
   </properties>
-  <testcase name="readMediaDataForSpecificMovie" classname="DataSource.MediaMapperTest" time="0.131"/>
-  <testcase name="testReadMediaDataForSpecificSeries" classname="DataSource.MediaMapperTest" time="0.004"/>
+  <testcase name="readMediaDataForSpecificMovie" classname="DataSource.MediaMapperTest" time="0.128"/>
+  <testcase name="testReadMediaDataForSpecificSeries" classname="DataSource.MediaMapperTest" time="0.003"/>
 </testsuite>

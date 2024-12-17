@@ -79,6 +79,28 @@ class MediaMapperTest {
         assertTrue(found, "The Sopranos should be in the database.");
     }
 
+
+    @Test
+    void testGetTypeForMovie() {
+        String type = mediaMapper.getType("movie");
+        // System.out.println(type);
+        assertEquals("Movie", type, "The type for 'movie' should be 'Movie'");
+    }
+
+    @Test
+    void testGetTypeForSeries() {
+        String type = mediaMapper.getType("series");
+        // System.out.println(type);
+        assertEquals("Series", type, "The type for 'series' should be 'Series'");
+    }
+
+    @Test
+    void testGetTypeForAudioBook() {
+        String type = mediaMapper.getType("audiobook");
+        // System.out.println(type);
+        assertEquals("Audiobook", type, "The type for 'audioBook' should be 'AudioBook'");
+    }
+
      /*
     @Test // Unsure if method should remain
     void testSaveMovieData() throws SQLException {
