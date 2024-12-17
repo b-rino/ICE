@@ -22,6 +22,7 @@ class UserMapperTest {
     void setUp() throws SQLException {
         dbConnector = new DBConnector();
         connection = DriverManager.getConnection("jdbc:sqlite:Blogbuster.db");
+        userMapper = new UserMapper();
 
         // connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
     }

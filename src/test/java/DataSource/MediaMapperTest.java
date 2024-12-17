@@ -1,7 +1,9 @@
 package DataSource;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,12 +12,21 @@ import Model.*;
 import Client.*;
 import DataSource.*;
 
-
 class MediaMapperTest {
     private Connection connection;
     private DBConnector dbConnector;
     private MediaMapper mediaMapper;
-    private UserMapper userMapper;
+
+    @BeforeEach
+        // Create a new instance of DBConnector for each test.
+    void setUp() throws SQLException {
+        dbConnector = new DBConnector();
+        connection = DriverManager.getConnection("jdbc:sqlite:Blogbuster.db");
+        // Initialize MediaMapper with the required dependencies
+        mediaMapper = new MediaMapper();
+
+        // connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
+    }
 
     @Test
     void readMediaDataForSpecificMovie() throws SQLException {
@@ -40,7 +51,7 @@ class MediaMapperTest {
             }
         }
         // Assert: Checks if movie is found
-        System.out.println("Movie found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
+        // System.out.println("Movie found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
         assertTrue(found, "The Shawshank Redemption should be in the database."); // Error message if not true
     }
 
@@ -64,7 +75,7 @@ class MediaMapperTest {
             }
         }
         // Assert if series found
-        System.out.println("Series found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
+        // System.out.println("Series found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
         assertTrue(found, "The Sopranos should be in the database.");
     }
 
