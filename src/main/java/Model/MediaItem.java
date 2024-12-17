@@ -9,16 +9,22 @@ import java.util.Objects;
     private float rating;
     private int id;
 
-    public MediaItem(String title, int releaseYear, String category, float rating) {
+    public MediaItem(String title, int releaseYear, String category, float rating, int id) {
         this.title = title;
         this.releaseYear = releaseYear;
         this.category = category;
         this.rating = rating;
+        this.id = id;
     }
 
     public void setId(int id) {
         this.id = id;
     }
+
+    public int getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }

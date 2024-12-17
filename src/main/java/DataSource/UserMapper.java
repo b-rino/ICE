@@ -207,30 +207,27 @@ public class UserMapper {
                     String movieTitle = rs.getString("movieTitle");
                     int releaseYear = rs.getInt("movieReleaseYear");
                     String category = rs.getString("movieCategory");
-                    int rating = rs.getInt("movieRating");
-                    Movie movie = new Movie(movieTitle, releaseYear, category, rating);
-                    movie.setId(movieId);
+                    float rating = rs.getFloat("movieRating");
+                    Movie movie = new Movie(movieTitle, releaseYear, category, rating, movieId);
                     personalMediaList.add(movie);
                 }
                 if (seriesId != 0) {
                     String seriesTitle = rs.getString("seriesTitle");
                     int releaseYear = rs.getInt("seriesReleaseYear");
                     String category = rs.getString("seriesCategory");
-                    int rating = rs.getInt("seriesRating");
+                    float rating = rs.getFloat("seriesRating");
                     int season = rs.getInt("season");
                     int episode = rs.getInt("episode");
-                    Series series = new Series(seriesTitle, releaseYear, category, rating, season, episode);
-                    series.setId(seriesId);
+                    Series series = new Series(seriesTitle, releaseYear, category, rating, seriesId, season, episode);
                     personalMediaList.add(series);
                 }
                 if (audioId != 0) {
                     String audioTitle = rs.getString("audioTitle");
                     int releaseYear = rs.getInt("audioReleaseYear");
                     String category = rs.getString("audioCategory");
-                    int rating = rs.getInt("audioRating");
+                    float rating = rs.getFloat("audioRating");
                     String author = rs.getString("audioAuthor");
-                    Audiobooks audiobook = new Audiobooks(audioTitle, releaseYear, category, rating, author);
-                    audiobook.setId(audioId);
+                    Audiobooks audiobook = new Audiobooks(audioTitle, releaseYear, category, rating, audioId, author);
                     personalMediaList.add(audiobook);
                 }
             }

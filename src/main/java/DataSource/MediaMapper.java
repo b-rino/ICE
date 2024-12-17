@@ -16,9 +16,9 @@ public class MediaMapper {
 
     public List<MediaItem> readMediaData(String sqlQuery) {
 
-        String movieSql = "SELECT title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'Movie' AS type FROM Movies";
-        String seriesSql = "SELECT title, releaseYear, category, rating, season, episode, 'Series' AS type FROM Series";
-        String audioSql = "SELECT title, author, releaseYear, category, rating,'Audiobook' AS type FROM Audiobooks";
+        String movieSql = "SELECT MovieId AS id, title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'Movie' AS type FROM Movies";
+        String seriesSql = "SELECT SeriesId AS id, title, releaseYear, category, rating, season, episode, 'Series' AS type FROM Series";
+        String audioSql = "SELECT AudioId as id, title, author, releaseYear, category, rating,'Audiobook' AS type FROM Audiobooks";
         List<MediaItem> mediaList = new ArrayList<>();
 
         String actualSqlQuery = null;
@@ -40,6 +40,7 @@ public class MediaMapper {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(actualSqlQuery)) {
             while (rs.next()) {
+                int id = rs.getInt("id");
                 String title = rs.getString("title");
                 int releaseYear = rs.getInt("releaseYear");
                 String category = rs.getString("category");
@@ -48,18 +49,18 @@ public class MediaMapper {
 
 
                 if (type.equals("Movie")) {
-                    Movie movie = new Movie(title, releaseYear, category, rating);
+                    Movie movie = new Movie(title, releaseYear, category, rating, id);
                     mediaList.add(movie);
                 }
                 if (type.equals("Series")) {
                     int season = rs.getInt("season");
                     int episode = rs.getInt("episode");
-                    Series series = new Series(title, releaseYear, category, rating, season, episode);
+                    Series series = new Series(title, releaseYear, category, rating, id, season, episode);
                     mediaList.add(series);
                 }
                 if (type.equals("Audiobook")) {
                     String author = rs.getString("author");
-                    Audiobooks audiobooks = new Audiobooks(title, releaseYear, category, rating, author);
+                    Audiobooks audiobooks = new Audiobooks(title, releaseYear, category, rating, id, author);
                     mediaList.add(audiobooks);
                 }
             }
@@ -102,48 +103,4 @@ public class MediaMapper {
 
     }
 
-     /*
-    @Test // Unsure if method should remain
-    void testSaveMovieData() throws SQLException {
-        // Arrange: Create a Movie and a Series object to save
-        Movie movie = new Movie("TestMovie", 2024, "Drama", 9.5F);
-
-        // Act: Save the movie to the database
-        dbConnector.saveMediaData(movie);
-
-        // Assert: Verify that the movie and series were inserted into the database
-        String selectMovieSQL = "SELECT title, releaseYear, category, rating FROM Movies WHERE title = 'TestMovie'";
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(selectMovieSQL)) {
-            assertTrue(rs.next());
-            assertEquals("TestMovie", rs.getString("title"));
-            assertEquals(2024, rs.getInt("releaseYear"));
-            assertEquals("Drama", rs.getString("category"));
-        }
-    }
-
-    @Test // Unsure if method should remain
-    void testSaveSeriesData() throws SQLException {
-        // Arrange: Create a Movie and a Series object to save
-        Series series = new Series("TestSeries", 2024, "Comedy", 9.2F, 2, 11);
-
-        // Act: Save the movie to the database
-        dbConnector.saveMediaData(series);
-
-        // Assert: Verify that the movie and series were inserted into the database
-        String selectSeriesSQL = "SELECT title, releaseYear, category, rating, season, episode FROM Series WHERE title = 'TestSeries'";
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(selectSeriesSQL)) {
-            assertTrue(rs.next());
-            assertEquals("TestSeries", rs.getString("title"));
-            assertEquals(2024, rs.getInt("releaseYear"));
-            assertEquals("Comedy", rs.getString("category"));
-            assertEquals(9.2F, rs.getFloat("rating"), 0);
-            assertEquals(2, rs.getInt("season"));
-            assertEquals(11, rs.getInt("episode"));
-        }
-    }
-     */
 }
