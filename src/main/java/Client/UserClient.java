@@ -180,7 +180,6 @@ public class UserClient {
                     String dbPassword = rs.getString("Password");
                     String dbEmail = rs.getString("Email");
                     currentUser = new User(dbUsername, dbPassword, dbEmail);
-                    currentUser.setBalance(userMapper.getUserBalance(dbUsername));
                     return currentUser;
                 }
                 else {
