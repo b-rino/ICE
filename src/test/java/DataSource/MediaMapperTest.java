@@ -30,7 +30,6 @@ class MediaMapperTest {
     void readMediaDataForSpecificMovie() throws SQLException {
         // Arrange: Read db and arrange in list.
         List<MediaItem> mediaList = mediaMapper.readMediaData("movie");
-        // System.out.println(mediaList); // Check if list gets filled
         assertNotNull(mediaList); // Ensures that the list isn't null
         assertTrue(mediaList.size() > 0); // Contains at least 1 movie
 
@@ -49,7 +48,7 @@ class MediaMapperTest {
             }
         }
         // Assert: Checks if movie is found
-        // System.out.println("Movie found: " + found); // Passed test doesn't showcase anything. Just to ensure correct test
+        // System.out.println("Movie found: " + found);
         assertTrue(found, "The Shawshank Redemption should be in the database."); // Error message if not true
     }
 

@@ -15,14 +15,13 @@ class UserMapperTest {
     private Connection connection;
     private UserMapper userMapper;
 
-    @BeforeEach // Create a new instance of DBConnector & Mapper for each test.
+    @BeforeEach // Connection to db before every test
     void setUp() throws SQLException {
         connection = DriverManager.getConnection("jdbc:sqlite:Blogbuster.db");
         userMapper = new UserMapper();
         // connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
     }
 
-    // TODO: Clean up database for testusers, then call every test's user "Tester"
     @AfterEach
     void deleteTestUser() throws SQLException {
         String deleteSQL = "DELETE FROM Users WHERE username = ?";
@@ -34,11 +33,10 @@ class UserMapperTest {
 
     @Test // Find specific user that doesn't get deleted like Tester does.
     void testReadUserDataFindBlogbuster() throws SQLException {
-        // Arrange: Insert a test user into the database
+        // Arrange: Read current Users and put into list
         List<User> userList = userMapper.readUserData();
-        // System.out.println(userList); // Sout to see if list gets filled
 
-        // Act: Searches for diller
+        // Act: Searches list for blogbuster
         boolean found = false;
         for (User item : userList) {
             if (item instanceof User) {
@@ -143,7 +141,7 @@ class UserMapperTest {
         int actualBalance = userMapper.getUserBalance("Tester");
 
         // Assert: Verify that user's balance is correct
-        // System.out.println("Tester's Balance: " + actualBalance); // Sout to show balance
+        // System.out.println("Tester's Balance: " + actualBalance);
         assertEquals(500, actualBalance, "The membership value for the user should be 500.");
     }
 

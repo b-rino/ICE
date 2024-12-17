@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: DataSource.UserMapperTest
 -------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.043 s - in DataSource.UserMapperTest
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.04 s - in DataSource.UserMapperTest
