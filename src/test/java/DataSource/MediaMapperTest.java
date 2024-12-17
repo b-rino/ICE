@@ -14,13 +14,11 @@ import DataSource.*;
 
 class MediaMapperTest {
     private Connection connection;
-    private DBConnector dbConnector;
     private MediaMapper mediaMapper;
 
     @BeforeEach
         // Create a new instance of DBConnector for each test.
     void setUp() throws SQLException {
-        dbConnector = new DBConnector();
         connection = DriverManager.getConnection("jdbc:sqlite:Blogbuster.db");
         // Initialize MediaMapper with the required dependencies
         mediaMapper = new MediaMapper();

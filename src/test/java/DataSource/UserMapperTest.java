@@ -12,18 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserMapperTest {
 
-    private DBConnector dbConnector;
     private Connection connection;
     private UserMapper userMapper;
-    private MediaMapper mediaMapper;
 
-    @BeforeEach
-        // Create a new instance of DBConnector for each test.
+    @BeforeEach // Create a new instance of DBConnector & Mapper for each test.
     void setUp() throws SQLException {
-        dbConnector = new DBConnector();
         connection = DriverManager.getConnection("jdbc:sqlite:Blogbuster.db");
         userMapper = new UserMapper();
-
         // connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
     }
 
@@ -85,6 +80,7 @@ class UserMapperTest {
                 }
             }
         }
+        // Assert: Checks if user found
         // System.out.println("User found: " + found);
         assertTrue(found);
     }
