@@ -101,4 +101,49 @@ public class MediaMapper {
         return type;
 
     }
+
+     /*
+    @Test // Unsure if method should remain
+    void testSaveMovieData() throws SQLException {
+        // Arrange: Create a Movie and a Series object to save
+        Movie movie = new Movie("TestMovie", 2024, "Drama", 9.5F);
+
+        // Act: Save the movie to the database
+        dbConnector.saveMediaData(movie);
+
+        // Assert: Verify that the movie and series were inserted into the database
+        String selectMovieSQL = "SELECT title, releaseYear, category, rating FROM Movies WHERE title = 'TestMovie'";
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(selectMovieSQL)) {
+            assertTrue(rs.next());
+            assertEquals("TestMovie", rs.getString("title"));
+            assertEquals(2024, rs.getInt("releaseYear"));
+            assertEquals("Drama", rs.getString("category"));
+        }
+    }
+
+    @Test // Unsure if method should remain
+    void testSaveSeriesData() throws SQLException {
+        // Arrange: Create a Movie and a Series object to save
+        Series series = new Series("TestSeries", 2024, "Comedy", 9.2F, 2, 11);
+
+        // Act: Save the movie to the database
+        dbConnector.saveMediaData(series);
+
+        // Assert: Verify that the movie and series were inserted into the database
+        String selectSeriesSQL = "SELECT title, releaseYear, category, rating, season, episode FROM Series WHERE title = 'TestSeries'";
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(selectSeriesSQL)) {
+            assertTrue(rs.next());
+            assertEquals("TestSeries", rs.getString("title"));
+            assertEquals(2024, rs.getInt("releaseYear"));
+            assertEquals("Comedy", rs.getString("category"));
+            assertEquals(9.2F, rs.getFloat("rating"), 0);
+            assertEquals(2, rs.getInt("season"));
+            assertEquals(11, rs.getInt("episode"));
+        }
+    }
+     */
 }
