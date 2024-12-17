@@ -8,6 +8,7 @@ public class User {
     private int balance;
     private String email;
 
+
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
@@ -36,7 +37,9 @@ public class User {
     public void setBalance(int balance){
         this.balance = balance;
     }
-
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     @Override
     public boolean equals(Object o) {
