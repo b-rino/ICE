@@ -11,16 +11,30 @@ import static org.junit.jupiter.api.Assertions.*;
 class DBConnectorTest {
     private DBConnector dbConnector;
     private Connection connection;
-    private UserMapper userMapper;
-    private MediaMapper mediaMapper;
 
     @BeforeEach
         // Create a new instance of DBConnector for each test.
     void setUp() throws SQLException {
         dbConnector = new DBConnector();
         connection = DriverManager.getConnection("jdbc:sqlite:Blogbuster.db");
-
         // connection = DriverManager.getConnection("jdbc:sqlite::memory:"); // In-memory database
+    }
+
+    @Test
+    void testConnectionIsValid() throws SQLException {
+        try {
+            // Act: Create connection from the connector
+            dbConnector.connect();
+
+            // Assert: Check if the connection is valid
+            assertNotNull(connection, "Connection should not be null");
+            assertTrue(connection.isValid(2), "Connection should be valid");
+
+            // Close connection after testing.
+            connection.close();
+        } catch (SQLException e) {
+            fail("SQLException occurred: " + e.getMessage());
+        }
     }
 }
 

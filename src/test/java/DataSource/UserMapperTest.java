@@ -188,7 +188,7 @@ class UserMapperTest {
         int actualUserID = userMapper.getUserID("Tester");
 
         // Arrange  : Verify that tester's userID is 1.
-        System.out.println("Tester's ID " + actualUserID);
+        // System.out.println("Tester's ID " + actualUserID);
         assertEquals(1, actualUserID, "The user ID should of Tester should be 1. ");
     }
 }
