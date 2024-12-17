@@ -7,7 +7,7 @@ class Main{
 }
 
 class BlogBuster{
-+setup()
++void setup()
 }
 
 class MediaItem{
