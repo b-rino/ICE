@@ -95,7 +95,7 @@ public class MediaClient {
         for (int i = 0; i < sortedMediaList.size(); i++) {
             ui.displayMsg((i + 1) + ". " + sortedMediaList.get(i).toString());
         }
-        buyMedia(mediaOptions);
+        buyMedia(sortedMediaList, mediaOptions);
 
     }
 
@@ -125,11 +125,13 @@ public class MediaClient {
 
 
 
-    public void buyMedia(List<MediaItem> mediaOptions) {
+    public void buyMedia(List<MediaItem> sortedMediaOptions, List<MediaItem> originalMediaOptions) {
         int mediaOption = ui.promptNumeric("Please pick a media option");
 
-        if (mediaOption > 0 && mediaOption <= mediaOptions.size()) {
-            MediaItem selectedMedia = mediaOptions.get(mediaOption - 1);
+        if (mediaOption > 0 && mediaOption <= sortedMediaOptions.size()) {
+            MediaItem selectedMedia = sortedMediaOptions.get(mediaOption - 1);
+            int originalIndex = originalMediaOptions.indexOf(selectedMedia);
+
             ui.displayMsg("BALANCE: " + userMapper.getUserBalance(currentUser.getUsername()) + " AVAILABLE PUNCHES: " + userMapper.getUserPunchcardBalance(currentUser.getUsername()) + "\n");
 
             String confirmation = ui.promptText("Do you want to buy \"" + selectedMedia.getTitle() + "\" for 30dkk or 1 punch? (Y/N)");
@@ -140,10 +142,10 @@ public class MediaClient {
                 int payMethod = ui.promptNumeric("How do you want to pay?\n1. Account Wallet\n2. Punch card\n3. Go back to main menu");
                 switch (payMethod) {
                     case 1:
-                        buyWithWallet(selectedMedia, mediaOption);
+                        buyWithWallet(selectedMedia);
                         break;
                     case 2:
-                        buyWithPunchcard(selectedMedia, mediaOption);
+                        buyWithPunchcard(selectedMedia);
                         break;
                     case 3:
                         displayMenu();
@@ -161,17 +163,17 @@ public class MediaClient {
     }
 
 
-    public void buyWithPunchcard(MediaItem selectedMedia, int mediaOption){
+    public void buyWithPunchcard(MediaItem selectedMedia){
         if (userMapper.getUserPunchcardBalance(currentUser.getUsername()) > 1) {
             ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"\n");
             userMapper.updateUserPunchcard(currentUser, userMapper.getUserPunchcardBalance(currentUser.getUsername()) - 1);
-            mediaTypeSelection(selectedMedia, mediaOption);
+            mediaTypeSelection(selectedMedia);
             displayMenu();
         } else if (userMapper.getUserPunchcardBalance(currentUser.getUsername()) == 1) {
             ui.displayMsg("You have bought " + selectedMedia.getTitle() + " with your last available punch. You can find your purchase in \"Your Media\"\n");
             userMapper.updateUserPunchcard(currentUser, userMapper.getUserPunchcardBalance(currentUser.getUsername()) - 1);
             userMapper.updateUserMembership(currentUser, 0);
-            mediaTypeSelection(selectedMedia, mediaOption);
+            mediaTypeSelection(selectedMedia);
             displayMenu();
         } else {
             ui.displayMsg("\nPurchase cancelled - insufficient funds\n");
@@ -179,11 +181,11 @@ public class MediaClient {
         }
     }
 
-    public void buyWithWallet(MediaItem selectedMedia, int mediaOption){
+    public void buyWithWallet(MediaItem selectedMedia){
         if (userMapper.getUserBalance(currentUser.getUsername()) >= 30) {
             ui.displayMsg("You have bought " + selectedMedia.getTitle() + ". You can find your purchase in \"Your Media\"");
             userMapper.updateUserBalance(currentUser, 30, true);
-            mediaTypeSelection(selectedMedia, mediaOption);
+            mediaTypeSelection(selectedMedia);
             displayMenu();
         } else {
             ui.displayMsg("\nPurchase cancelled - insufficient funds\n");
@@ -191,13 +193,15 @@ public class MediaClient {
         }
     }
 
-    public void mediaTypeSelection(MediaItem selectedMedia, int mediaOption) {
+    public void mediaTypeSelection(MediaItem selectedMedia) {
+        int mediaId = selectedMedia.getId();
+
         if(selectedMedia instanceof Movie){
-            userMapper.addToPersonalList(currentUser, mediaOption, "movie");
+            userMapper.addToPersonalList(currentUser, mediaId, "movie");
         }else if(selectedMedia instanceof Series){
-            userMapper.addToPersonalList(currentUser, mediaOption, "series");
+            userMapper.addToPersonalList(currentUser, mediaId, "series");
         } else if (selectedMedia instanceof Audiobooks)
-            userMapper.addToPersonalList(currentUser, mediaOption, "audiobook");{
+            userMapper.addToPersonalList(currentUser, mediaId, "audiobook");{
         }
     }
     public void displayPersonalList(){

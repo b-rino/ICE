@@ -16,9 +16,9 @@ public class MediaMapper {
 
     public List<MediaItem> readMediaData(String sqlQuery) {
 
-        String movieSql = "SELECT title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'Movie' AS type FROM Movies";
-        String seriesSql = "SELECT title, releaseYear, category, rating, season, episode, 'Series' AS type FROM Series";
-        String audioSql = "SELECT title, author, releaseYear, category, rating,'Audiobook' AS type FROM Audiobooks";
+        String movieSql = "SELECT MovieId AS id, title, releaseYear, category, rating, NULL AS season, NULL AS episode, 'Movie' AS type FROM Movies";
+        String seriesSql = "SELECT SeriesId AS id, title, releaseYear, category, rating, season, episode, 'Series' AS type FROM Series";
+        String audioSql = "SELECT AudioId as id, title, author, releaseYear, category, rating,'Audiobook' AS type FROM Audiobooks";
         List<MediaItem> mediaList = new ArrayList<>();
 
         String actualSqlQuery = null;
@@ -40,6 +40,7 @@ public class MediaMapper {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(actualSqlQuery)) {
             while (rs.next()) {
+                int id = rs.getInt("id");
                 String title = rs.getString("title");
                 int releaseYear = rs.getInt("releaseYear");
                 String category = rs.getString("category");
@@ -49,17 +50,20 @@ public class MediaMapper {
 
                 if (type.equals("Movie")) {
                     Movie movie = new Movie(title, releaseYear, category, rating);
+                    movie.setId(id);
                     mediaList.add(movie);
                 }
                 if (type.equals("Series")) {
                     int season = rs.getInt("season");
                     int episode = rs.getInt("episode");
                     Series series = new Series(title, releaseYear, category, rating, season, episode);
+                    series.setId(id);
                     mediaList.add(series);
                 }
                 if (type.equals("Audiobook")) {
                     String author = rs.getString("author");
                     Audiobooks audiobooks = new Audiobooks(title, releaseYear, category, rating, author);
+                    audiobooks.setId(id);
                     mediaList.add(audiobooks);
                 }
             }
@@ -101,4 +105,5 @@ public class MediaMapper {
         return type;
 
     }
+
 }

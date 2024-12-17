@@ -33,6 +33,10 @@ public class User {
     public int getBalance(){
         return balance;}
 
+    public void setBalance(int balance){
+        this.balance = balance;
+    }
+
 
     @Override
     public boolean equals(Object o) {

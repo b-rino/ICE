@@ -19,6 +19,10 @@ import java.util.Objects;
     public void setId(int id) {
         this.id = id;
     }
+
+    public int getId() {
+        return id;
+    }
     public String getTitle() {
         return title;
     }
